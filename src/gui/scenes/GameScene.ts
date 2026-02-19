@@ -145,6 +145,22 @@ export class GameScene extends Phaser.Scene {
       color: "#556655",
     }).setOrigin(1, 0);
 
+    // Inventory button (bottom-right)
+    const invBtn = this.add.text(width - 16, this.scale.height - 16, "[I] Inventory", {
+      fontSize: "13px",
+      color: "#88aa88",
+      stroke: "#000",
+      strokeThickness: 2,
+    }).setOrigin(1, 1).setInteractive({ useHandCursor: true });
+    invBtn.on("pointerover", () => invBtn.setColor("#c0e8c0"));
+    invBtn.on("pointerout",  () => invBtn.setColor("#88aa88"));
+    invBtn.on("pointerdown", () => {
+      if (!this.scene.isPaused()) {
+        this.scene.launch("InventoryOverlayScene", { adapter: this.adapter });
+        this.scene.pause();
+      }
+    });
+
     this.phaseLabel = this.add.text(this.CX, this.PLAYER_Y - 100, "", {
       fontSize: "13px",
       color: "#f0e68c",
@@ -187,13 +203,28 @@ export class GameScene extends Phaser.Scene {
       this.scene.pause();
     });
 
-    this.adapter.on("gameOver", ({ finalBankroll }) => {
-      this.showMessage(`GAME OVER  $${finalBankroll.toFixed(2)}`);
+    this.adapter.on("gameOver", ({ finalBankroll, reason }) => {
+      const msg = reason === "stage_fail"
+        ? `STAGE FAILED  $${finalBankroll.toFixed(2)}`
+        : `GAME OVER  $${finalBankroll.toFixed(2)}`;
+      this.showMessage(msg);
+    });
+
+    this.adapter.on("stageFailed", ({ stage, threshold, bankroll }) => {
+      this.showTemporaryMessage(`Stage ${stage} failed — needed $${threshold.toFixed(0)}, had $${bankroll.toFixed(2)}`, 2500);
     });
 
     // Resume from summary overlay
     this.scene.get(SUMMARY_OVERLAY_KEY)?.events.on("shutdown", () => {
       this.scene.resume();
+    });
+
+    // Inventory button: click or press I
+    this.input.keyboard?.on("keydown-I", () => {
+      if (!this.scene.isPaused()) {
+        this.scene.launch("InventoryOverlayScene", { adapter: this.adapter });
+        this.scene.pause();
+      }
     });
   }
 

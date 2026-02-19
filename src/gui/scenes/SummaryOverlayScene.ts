@@ -83,7 +83,18 @@ export class SummaryOverlayScene extends Phaser.Scene {
       stroke: "#000",
       strokeThickness: 3,
     }).setOrigin(0.5, 0);
-    currentY += 36;
+    currentY += 32;
+
+    // ── Stage / hand progress line ────────────────────────────────────────────
+    const handsLeft = state.handsPerStage - state.handsPlayed % state.handsPerStage;
+    const stageColor =
+      state.metaPhase === "game_over" && state.phase !== "game_over" ? "#e74c3c" :
+      state.metaPhase === "shop" ? "#f1c40f" : "#88bb88";
+    this.add.text(cx, currentY, `Stage ${state.stage}  ·  Hand ${state.handsPlayed % state.handsPerStage === 0 ? state.handsPerStage : state.handsPlayed % state.handsPerStage} / ${state.handsPerStage}  ·  Need $${state.stageMoneyThreshold.toFixed(0)}`, {
+      fontSize: "13px",
+      color: stageColor,
+    }).setOrigin(0.5, 0);
+    currentY += 22;
 
     // ── Dealer line ───────────────────────────────────────────────────────────
     const dealerLine = summary.dealerBusted
@@ -137,8 +148,7 @@ export class SummaryOverlayScene extends Phaser.Scene {
     currentY += 34;
 
     // ── Continue / New Game button ────────────────────────────────────────────
-    const isGameOver = state.phase === "game_over";
-    this.createContinueButton(cx, panelY + panelH - 44, isGameOver, data);
+    this.createContinueButton(cx, panelY + panelH - 44, data);
 
     // ── Animate in ───────────────────────────────────────────────────────────
     const allObjects = this.children.list.slice();
@@ -206,13 +216,50 @@ export class SummaryOverlayScene extends Phaser.Scene {
   private createContinueButton(
     x: number,
     y: number,
-    isGameOver: boolean,
     data: SummarySceneData,
   ): void {
-    const w = 200;
+    const { adapter, state } = data;
+
+    // Determine destination based on meta phase
+    const goToShop     = state.metaPhase === "shop";
+    const gameOver     = state.metaPhase === "game_over";
+    const stageFail    = gameOver && state.phase !== "game_over"; // engine still in round_settled
+
+    let label: string;
+    let color: number;
+    if (goToShop) {
+      label = "TO SHOP  →";
+      color = 0xf39c12;
+    } else if (stageFail) {
+      label = "END RUN";
+      color = 0xe74c3c;
+    } else if (gameOver) {
+      label = "NEW GAME";
+      color = 0xe74c3c;
+    } else {
+      label = "CONTINUE";
+      color = 0x27ae60;
+    }
+
+    // Stage-fail annotation
+    if (stageFail) {
+      this.add.text(x, y - 28, `✗  Stage ${state.stage} failed — needed $${state.stageMoneyThreshold.toFixed(0)}`, {
+        fontSize: "13px",
+        color: "#e74c3c",
+        stroke: "#000",
+        strokeThickness: 2,
+      }).setOrigin(0.5, 0.5);
+    } else if (goToShop) {
+      this.add.text(x, y - 28, `✓  Stage ${state.stage} cleared — visit the shop!`, {
+        fontSize: "13px",
+        color: "#f1c40f",
+        stroke: "#000",
+        strokeThickness: 2,
+      }).setOrigin(0.5, 0.5);
+    }
+
+    const w = 220;
     const h = 42;
-    const label = isGameOver ? "NEW GAME" : "CONTINUE";
-    const color = isGameOver ? 0xe74c3c : 0x27ae60;
 
     const bg = this.add.graphics();
     const draw = (hovered: boolean): void => {
@@ -234,12 +281,17 @@ export class SummaryOverlayScene extends Phaser.Scene {
     zone.on(Phaser.Input.Events.POINTER_OVER, () => draw(true));
     zone.on(Phaser.Input.Events.POINTER_OUT, () => draw(false));
     zone.on(Phaser.Input.Events.POINTER_DOWN, () => {
-      if (isGameOver) {
+      if (goToShop) {
+        // Stop overlay + GameScene, launch ShopScene fresh
+        this.scene.stop();
+        this.scene.stop("GameScene");
+        this.scene.start("ShopScene", { adapter, state });
+      } else if (gameOver) {
         this.scene.stop("GameScene");
         this.scene.stop();
         this.scene.start("MenuScene");
       } else {
-        this.scene.stop(); // Shuts down → resumes GameScene (via 'shutdown' event)
+        this.scene.stop();
         this.scene.resume("GameScene");
       }
     });

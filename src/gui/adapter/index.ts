@@ -8,6 +8,12 @@ export type {
   GuiHand,
   GuiHandOutcome,
   GuiHandResult,
+  GuiItem,
+  GuiItemEffect,
+  GuiItemEffectTrigger,
+  GuiItemRarity,
+  GuiMetaPhase,
   GuiPlayerAction,
   GuiRoundSummary,
+  GuiShopOffering,
 } from "./ViewTypes.js";

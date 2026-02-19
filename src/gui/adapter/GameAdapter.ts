@@ -10,10 +10,12 @@
  * potentially ViewTypes.ts if the GUI needs new data) should need to change.
  */
 
-import { BlackjackEngine } from "../../engine/engine.js";
+import { GameManager } from "../../engine/game-manager.js";
 import type { EngineOptions } from "../../engine/engine.js";
 import type { Card, GameState, HandState, RoundSummary } from "../../engine/types.js";
 import type { PlayerAction } from "../../engine/types.js";
+import type { Item } from "../../engine/item.js";
+import type { ShopOffering } from "../../engine/shop.js";
 
 import { TypedEmitter } from "./TypedEmitter.js";
 import type { GameEventMap } from "./GameEvents.js";
@@ -23,89 +25,197 @@ import type {
   GuiGameState,
   GuiHand,
   GuiHandResult,
+  GuiItem,
+  GuiItemEffect,
+  GuiMetaPhase,
   GuiPlayerAction,
   GuiRoundSummary,
+  GuiShopOffering,
 } from "./ViewTypes.js";
 
-export type { GuiCard, GuiGamePhase, GuiGameState, GuiHand, GuiHandResult, GuiPlayerAction, GuiRoundSummary };
+export type {
+  GuiCard,
+  GuiGamePhase,
+  GuiGameState,
+  GuiHand,
+  GuiHandResult,
+  GuiItem,
+  GuiItemEffect,
+  GuiMetaPhase,
+  GuiPlayerAction,
+  GuiRoundSummary,
+  GuiShopOffering,
+};
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 export interface AdapterOptions extends EngineOptions {}
 
 export class GameAdapter extends TypedEmitter<GameEventMap> {
-  private readonly engine: BlackjackEngine;
+  private readonly manager: GameManager;
 
   constructor(options: AdapterOptions = {}) {
     super();
-    this.engine = new BlackjackEngine(options);
+    this.manager = new GameManager(options);
   }
 
   // ── Queries ──────────────────────────────────────────────────────────────
 
   /** Returns a complete GUI-facing snapshot. Safe to call at any time. */
   getState(): GuiGameState {
-    return this.buildGuiState(this.engine.getState());
+    return this.buildGuiState();
   }
 
-  // ── Commands ─────────────────────────────────────────────────────────────
+  // ── Blackjack commands ────────────────────────────────────────────────────
 
   /**
    * Place a wager and start a new round.
-   * Emits: roundStarted, stateChanged.
-   * Throws if the wager is invalid (invalid amount, phase wrong, etc.).
+   * Emits: roundStarted, then conditionally shopOpened/gameOver, then stateChanged.
+   * Throws on invalid wager or wrong phase.
    */
   startRound(wager: number): void {
-    this.engine.startRound(wager);
+    this.manager.startRound(wager);
+
+    // Edge case: natural blackjack — engine settles the round immediately inside
+    // startRound() without any player action. The GameManager only increments
+    // handsPlayed in performAction/acknowledgeRoundSettled, so we must call
+    // acknowledgeRoundSettled here if the round already settled.
+    const enginePhase = this.manager.getGameState().phase;
+    if (enginePhase === "round_settled" || enginePhase === "game_over") {
+      this.manager.acknowledgeRoundSettled();
+    }
+
     const state = this.getState();
     this.emit("roundStarted", { wager, state });
+    this.emitMetaTransitions(state);
     this.emit("stateChanged", { state });
   }
 
   /**
    * Execute a player action (hit / stand / double / split).
-   * Emits: actionApplied, then optionally roundSettled and/or gameOver, then stateChanged.
+   * Emits: actionApplied, then conditionally roundSettled/shopOpened/gameOver,
+   * then stateChanged.
    * Throws if the action is unavailable.
    */
   performAction(action: GuiPlayerAction): void {
-    this.engine.performAction(action as PlayerAction);
+    this.manager.performAction(action as PlayerAction);
     const state = this.getState();
 
     this.emit("actionApplied", { action, state });
 
-    if (state.phase === "round_settled" || state.phase === "game_over") {
+    if (
+      state.phase === "round_settled" ||
+      state.phase === "game_over"
+    ) {
       if (state.lastRoundSummary) {
         this.emit("roundSettled", { summary: state.lastRoundSummary, state });
       }
     }
 
-    if (state.phase === "game_over") {
-      this.emit("gameOver", { finalBankroll: state.bankroll });
-    }
-
+    this.emitMetaTransitions(state);
     this.emit("stateChanged", { state });
   }
 
-  // ── Private translation helpers ───────────────────────────────────────────
+  // ── Shop commands ─────────────────────────────────────────────────────────
 
-  private buildGuiState(raw: GameState): GuiGameState {
+  /**
+   * Purchase the shop item at the given index.
+   * Emits: itemPurchased, stateChanged.
+   * Returns the purchased GuiItem, or null if the purchase failed.
+   */
+  purchaseShopItem(index: number): GuiItem | null {
+    const item = this.manager.purchaseShopItem(index);
+    if (!item) {
+      return null;
+    }
+    const guiItem = this.toGuiItem(item);
+    const state = this.getState();
+    this.emit("itemPurchased", { item: guiItem, cost: 0, state });
+    this.emit("stateChanged", { state });
+    return guiItem;
+  }
+
+  /**
+   * Leave the shop and return to the playing phase.
+   * Emits: shopClosed, stateChanged.
+   */
+  leaveShop(): void {
+    this.manager.leaveShop();
+    const state = this.getState();
+    this.emit("shopClosed", { state });
+    this.emit("stateChanged", { state });
+  }
+
+  // ── Private: meta-event fan-out ───────────────────────────────────────────
+
+  /**
+   * Emit shop/stage/game-over events based on the current meta-phase.
+   * Called after every state-mutating command.
+   */
+  private emitMetaTransitions(state: GuiGameState): void {
+    const meta = this.manager.getMetaState();
+
+    if (meta.metaPhase === "shop") {
+      this.emit("shopOpened", {
+        stage: meta.stage,
+        offerings: state.shopOfferings,
+        state,
+      });
+      return;
+    }
+
+    if (meta.metaPhase === "game_over") {
+      const enginePhase = this.manager.getGameState().phase;
+      // Distinguish: was it the engine running out of bankroll, or a stage fail?
+      if (enginePhase === "game_over") {
+        // Engine itself ended: bankroll too low
+        this.emit("gameOver", { finalBankroll: state.bankroll, reason: "bankroll" });
+      } else {
+        // Engine phase is still round_settled but meta says game_over → stage fail
+        const threshold = meta.stageMoneyThreshold;
+        this.emit("stageFailed", {
+          stage: meta.stage,
+          threshold,
+          bankroll: state.bankroll,
+        });
+        this.emit("gameOver", { finalBankroll: state.bankroll, reason: "stage_fail" });
+      }
+    }
+  }
+
+  // ── Private: state translation ────────────────────────────────────────────
+
+  private buildGuiState(): GuiGameState {
+    const raw: GameState = this.manager.getGameState();
+    const meta = this.manager.getMetaState();
+    const engine = this.manager.getEngine();
+
     const isPlayerTurn = raw.phase === "player_turn";
-    const availableActions = this.engine.getAvailableActions() as GuiPlayerAction[];
+    const availableActions = engine.getAvailableActions() as GuiPlayerAction[];
 
     const dealerCards = raw.dealerHand.map((card, index) =>
       this.toGuiCard(card, isPlayerTurn && index === 1),
     );
 
-    // Dealer score: during player_turn show only visible card contribution so
-    // the UI can display "??" for the hidden card's value without spoiling it.
-    const dealerScore =
-      isPlayerTurn && raw.dealerHand.length >= 2
-        ? this.engine.getDealerScore() // engine computes correctly; adapter hides in UI
-        : this.engine.getDealerScore();
-
     const playerHands: GuiHand[] = raw.playerHands.map((hand, index) =>
       this.toGuiHand(hand, index, raw.activeHandIndex),
     );
+
+    // Shop offerings, pre-annotated with canAfford
+    const shopOfferings: GuiShopOffering[] = this.manager
+      .getShop()
+      .getOfferings()
+      .map((o, idx) => this.toGuiShopOffering(o, idx, raw.bankroll));
+
+    // Inventory
+    const inventory: import("./ViewTypes.js").GuiItem[] = this.manager
+      .getInventory()
+      .getItems()
+      .map((item) => this.toGuiItem(item));
+
+    // Hands until next stage check
+    const handsUntilStageCheck =
+      meta.handsPerStage - (meta.handsPlayed % meta.handsPerStage);
 
     return {
       phase: raw.phase as GuiGamePhase,
@@ -113,16 +223,25 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
       bankroll: raw.bankroll,
       targetScore: raw.targetScore,
       dealerCards,
-      dealerScore,
+      dealerScore: engine.getDealerScore(),
       playerHands,
       activeHandIndex: raw.activeHandIndex,
       currentWager: raw.currentWager,
       deckRemaining: raw.deckRemaining,
       availableActions,
-      minimumBet: this.engine.getMinimumBet(),
+      minimumBet: engine.getMinimumBet(),
       lastRoundSummary: raw.lastRoundSummary
         ? this.toGuiRoundSummary(raw.lastRoundSummary)
         : null,
+      // Meta
+      metaPhase: meta.metaPhase as GuiMetaPhase,
+      handsPlayed: meta.handsPlayed,
+      stage: meta.stage,
+      handsPerStage: meta.handsPerStage,
+      handsUntilStageCheck,
+      stageMoneyThreshold: meta.stageMoneyThreshold,
+      inventory,
+      shopOfferings,
     };
   }
 
@@ -140,7 +259,7 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
     index: number,
     activeHandIndex: number | null,
   ): GuiHand {
-    const score = this.engine.getPlayerHandScore(index);
+    const score = this.manager.getEngine().getPlayerHandScore(index);
     return {
       id: hand.id,
       cards: hand.cards.map((c) => this.toGuiCard(c, false)),
@@ -175,5 +294,51 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
       dealerBusted: summary.dealerBusted,
       handResults,
     };
+  }
+
+  private toGuiItem(item: Item): GuiItem {
+    const effects: GuiItemEffect[] = item.effects.map((e) => ({
+      trigger: e.trigger,
+      description: this.effectDescription(e.trigger, e.modifier),
+    }));
+    return {
+      itemName: item.itemName,
+      itemDescription: item.itemDescription,
+      itemRarity: item.itemRarity,
+      effects,
+    };
+  }
+
+  private toGuiShopOffering(
+    offering: ShopOffering,
+    index: number,
+    bankroll: number,
+  ): GuiShopOffering {
+    return {
+      index,
+      item: this.toGuiItem(offering.item),
+      price: offering.price,
+      canAfford: bankroll >= offering.price,
+    };
+  }
+
+  /**
+   * Generates a human-readable effect description.
+   * When items gain real effects, their apply/modifier implementations can
+   * expose a `description` field; until then this provides clear placeholders.
+   */
+  private effectDescription(
+    trigger: string,
+    modifier: unknown,
+  ): string {
+    const triggerLabel: Record<string, string> = {
+      passive: "Always active",
+      on_hand_start: "At the start of each hand",
+      on_hand_end: "At the end of each hand",
+      on_stage_end: "At the end of each stage",
+      on_purchase: "On purchase",
+    };
+    const base = triggerLabel[trigger] ?? trigger;
+    return modifier ? `${base} — modifies game rules` : `${base} — (effect pending)`;
   }
 }

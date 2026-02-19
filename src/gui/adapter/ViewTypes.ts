@@ -7,6 +7,59 @@
  * translation layer needs to be updated.
  */
 
+// ─── Rogue-like: items ────────────────────────────────────────────────────────
+
+export type GuiItemRarity = "common" | "uncommon" | "rare" | "legendary";
+
+/**
+ * When an item effect fires.
+ * - passive         — always applied as a BlackjackModifier while held
+ * - on_hand_start   — fires when a new hand is dealt
+ * - on_hand_end     — fires after a hand is fully settled
+ * - on_stage_end    — fires at each stage boundary (pass or fail)
+ * - on_purchase     — fires once at the moment of acquisition
+ */
+export type GuiItemEffectTrigger =
+  | "passive"
+  | "on_hand_start"
+  | "on_hand_end"
+  | "on_stage_end"
+  | "on_purchase";
+
+export interface GuiItemEffect {
+  trigger: GuiItemEffectTrigger;
+  /** Human-readable description of what the effect does (shown in UI tooltips). */
+  description: string;
+}
+
+export interface GuiItem {
+  itemName: string;
+  itemDescription: string;
+  itemRarity: GuiItemRarity;
+  effects: GuiItemEffect[];
+}
+
+// ─── Rogue-like: shop ─────────────────────────────────────────────────────────
+
+export interface GuiShopOffering {
+  /** Index used for purchaseShopItem(index). */
+  index: number;
+  item: GuiItem;
+  price: number;
+  /** Pre-computed: bankroll >= price. */
+  canAfford: boolean;
+}
+
+// ─── Rogue-like: meta progression ────────────────────────────────────────────
+
+/**
+ * The meta-game phase — layered on top of the blackjack phase.
+ * - playing   — normal game loop (betting / playing hands)
+ * - shop      — between-stage shop (no blackjack rounds possible)
+ * - game_over — run has ended (stage fail or bankroll depleted)
+ */
+export type GuiMetaPhase = "playing" | "shop" | "game_over";
+
 // ─── Card ────────────────────────────────────────────────────────────────────
 
 export interface GuiCard {
@@ -101,4 +154,23 @@ export interface GuiGameState {
   availableActions: GuiPlayerAction[];
   minimumBet: number;
   lastRoundSummary: GuiRoundSummary | null;
+
+  // ── Rogue-like meta ──────────────────────────────────────────────────────
+
+  /** The meta-game phase — determines which UI layer is active. */
+  metaPhase: GuiMetaPhase;
+  /** Total hands fully resolved across the entire run. */
+  handsPlayed: number;
+  /** Current stage number (starts at 0; increments every handsPerStage hands). */
+  stage: number;
+  /** How many hands per stage cycle (defaults to 5). */
+  handsPerStage: number;
+  /** Remaining hands until the next stage check (0 means a check just fired). */
+  handsUntilStageCheck: number;
+  /** Bankroll the player must hold to survive the NEXT stage check. */
+  stageMoneyThreshold: number;
+  /** All items currently held in the player's inventory. */
+  inventory: GuiItem[];
+  /** Shop offerings — only meaningful when metaPhase === "shop". */
+  shopOfferings: GuiShopOffering[];
 }
