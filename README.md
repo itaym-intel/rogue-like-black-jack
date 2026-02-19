@@ -15,8 +15,15 @@ This repository now includes a text-based blackjack prototype with:
 - Hit / Stand / Double / Split
 - Dealer stands on soft 17
 - Win returns `2x` wager total, blackjack returns `2.5x` wager total
-- Indefinite rounds until bankroll cannot cover the minimum bet
 - Modifier hook interfaces for deck, scoring, split/double rules, and payouts
+
+### Rogue-Like Systems
+
+- **Hands counter** — tracks total hands played across the run
+- **Stage system** — stage increments every 5 hands; player must have `bankroll >= stage × 500` to continue
+- **Item / Relic system** — extensible items with rarity, description, and effect triggers (passive, on_hand_start, on_hand_end, on_stage_end, on_purchase)
+- **Inventory** — stores collected items, viewable at any time with `i`
+- **Shop** — appears between stages offering 3 randomly priced items (90–110 money)
 
 ### Run
 
