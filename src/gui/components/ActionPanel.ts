@@ -41,7 +41,7 @@ const BUTTON_LABELS: Record<GuiPlayerAction, string> = {
 export class ActionPanel extends Phaser.GameObjects.Container {
   private readonly buttons: Map<
     GuiPlayerAction,
-    { bg: Phaser.GameObjects.Graphics; label: Phaser.GameObjects.Text }
+    { bg: Phaser.GameObjects.Graphics; zone: Phaser.GameObjects.Zone; label: Phaser.GameObjects.Text }
   > = new Map();
 
   private currentActions: GuiPlayerAction[] = [];
@@ -55,8 +55,8 @@ export class ActionPanel extends Phaser.GameObjects.Container {
     let offsetX = -totalWidth / 2 + BUTTON_WIDTH / 2;
 
     for (const action of actions) {
-      const { bg, label } = this.createButton(scene, offsetX, 0, action);
-      this.buttons.set(action, { bg, label });
+      const { bg, zone, label } = this.createButton(scene, offsetX, 0, action);
+      this.buttons.set(action, { bg, zone, label });
       offsetX += BUTTON_WIDTH + BUTTON_GAP;
     }
 
@@ -68,17 +68,27 @@ export class ActionPanel extends Phaser.GameObjects.Container {
     this.currentActions = actions;
     this.setVisible(actions.length > 0);
 
-    for (const [action, { bg, label }] of this.buttons) {
+    for (const [action, { bg, zone, label }] of this.buttons) {
       const available = actions.includes(action);
-      bg.setVisible(available).setInteractive(available);
+      bg.setVisible(available);
+      zone.setVisible(available);
+      if (available) {
+        zone.setInteractive();
+      } else {
+        zone.disableInteractive();
+      }
       label.setVisible(available);
     }
   }
 
   /** Temporarily disable all buttons (e.g. during dealer animation). */
   setEnabled(enabled: boolean): void {
-    for (const [, { bg }] of this.buttons) {
-      bg.setInteractive(enabled);
+    for (const [, { bg, zone }] of this.buttons) {
+      if (enabled) {
+        zone.setInteractive();
+      } else {
+        zone.disableInteractive();
+      }
       bg.setAlpha(enabled ? 1 : 0.5);
     }
   }
@@ -90,7 +100,7 @@ export class ActionPanel extends Phaser.GameObjects.Container {
     x: number,
     y: number,
     action: GuiPlayerAction,
-  ): { bg: Phaser.GameObjects.Graphics; label: Phaser.GameObjects.Text } {
+  ): { bg: Phaser.GameObjects.Graphics; zone: Phaser.GameObjects.Zone; label: Phaser.GameObjects.Text } {
     const color = BUTTON_COLORS[action];
 
     // Draw background as a RenderTexture via Graphics so we can tint on hover
@@ -121,7 +131,7 @@ export class ActionPanel extends Phaser.GameObjects.Container {
     }).setOrigin(0.5, 0.5);
 
     this.add([bg, zone, label]);
-    return { bg, label };
+    return { bg, zone, label };
   }
 
   private drawButtonBg(
