@@ -15,6 +15,40 @@ player can wager up to their entire sum of "money", if the player is out of "mon
 if the player wins, by scoring a hand closer to 21 than the dealer, the player earns 200% the money wagered
 if the player scores a black jack (any face card + an ace) then the player wins 250% of their wager
 
+## Hands System
+
+Every time a hand is played (dealt and resolved), the global "Hands" counter increments.
+The counter is displayed to the player throughout the game.
+
+## Stage System
+
+The game begins at Stage 0. Every 5 hands played, the Stage increments.
+At the end of each stage the player must have `total_money >= stage * 500` to pass.
+If the player fails the threshold, the game ends.
+
+## Item / Relic System
+
+Items (relics) can be collected and stored in the player's inventory.
+Each item has: `ItemName`, `ItemDescription`, `ItemRarity` (common / uncommon / rare / legendary).
+Items support an extensible effect system with triggers:
+- `passive` — always active as a BlackjackModifier while held
+- `on_hand_start` / `on_hand_end` — fires per hand
+- `on_stage_end` — fires at stage boundaries
+- `on_purchase` — fires once on acquisition
+
+Current placeholder items (no effects): Itay, John, Noah.
+
+## Inventory System
+
+The player has an inventory that starts empty and accumulates items over the run.
+The inventory is viewable at any prompt by typing `i`.
+
+## Shop System
+
+Between each stage (after the stage threshold is met), a shop appears offering 3 items.
+Each item is priced randomly between 90–110 money.
+The player can purchase items (deducted from bankroll, added to inventory) or leave the shop.
+
 ## Modifiable interactions
 
 modifying the deck (?)

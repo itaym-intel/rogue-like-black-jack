@@ -6,11 +6,18 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx src/index.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "dev:gui": "vite",
+    "build:gui": "vite build",
+    "preview:gui": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.87.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0"
   }
 }

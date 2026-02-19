@@ -103,6 +103,10 @@ export class BlackjackEngine {
     return this.rules.minBet;
   }
 
+  public adjustBankroll(amount: number): void {
+    this.state.bankroll = roundMoney(this.state.bankroll + amount);
+  }
+
   public getAvailableActions(): PlayerAction[] {
     if (this.state.phase !== "player_turn") {
       return [];
