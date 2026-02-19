@@ -107,6 +107,26 @@ export class BlackjackEngine {
     this.state.bankroll = roundMoney(this.state.bankroll + amount);
   }
 
+  /** Dynamically add a modifier (e.g. from a purchased item). */
+  public addModifier(modifier: BlackjackModifier): void {
+    this.modifiers.push(modifier);
+  }
+
+  /** Remove a previously added modifier by reference equality. */
+  public removeModifier(modifier: BlackjackModifier): void {
+    const index = this.modifiers.indexOf(modifier);
+    if (index !== -1) {
+      this.modifiers.splice(index, 1);
+    }
+  }
+
+  /** Returns a snapshot of the cards in the currently active player hand. */
+  public getActiveHandCards(): Card[] {
+    const hand = this.getActiveHand();
+    if (!hand) return [];
+    return this.cloneCards(hand.cards);
+  }
+
   public getAvailableActions(): PlayerAction[] {
     if (this.state.phase !== "player_turn") {
       return [];
@@ -159,7 +179,8 @@ export class BlackjackEngine {
     const firstHand = this.createHand([], this.state.currentWager, false);
     this.state.playerHands = [firstHand];
 
-    this.ensureDeck(16);
+    this.rebuildDeck();
+    this.syncDeckRemaining();
     firstHand.cards.push(this.drawCard());
     this.state.dealerHand.push(this.drawCard());
     firstHand.cards.push(this.drawCard());

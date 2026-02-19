@@ -1,4 +1,4 @@
-import type { GuiGameState, GuiItem, GuiPlayerAction, GuiRoundSummary, GuiShopOffering } from "./ViewTypes.ts";
+import type { GuiCard, GuiGameState, GuiItem, GuiPlayerAction, GuiRoundSummary, GuiShopOffering } from "./ViewTypes.ts";
 
 /**
  * All events the GameAdapter can emit.
@@ -57,4 +57,10 @@ export interface GameEventMap {
    * a stage check fails.  Always fired on any game-ending condition.
    */
   gameOver: { finalBankroll: number; reason: "bankroll" | "stage_fail" };
+
+  /**
+   * Fired when VR Goggles are ready for the player to pick a target card.
+   * The scene should enter card-selection mode and show the targets list.
+   */
+  vrGogglesReady: { targets: GuiCard[]; state: GuiGameState };
 }

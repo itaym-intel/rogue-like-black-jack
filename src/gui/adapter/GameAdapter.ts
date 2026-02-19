@@ -157,6 +157,18 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
     this.emit("stateChanged", { state });
   }
 
+  /**
+   * Activate VR Goggles: boost the value of the chosen card by 1.
+   * Pass permanent=false to have the boost automatically revert after this hand.
+   * Emits: stateChanged.
+   * Throws if VR Goggles are unavailable.
+   */
+  useVrGoggles(cardId: string, permanent: boolean): void {
+    this.manager.useVrGoggles(cardId, permanent);
+    const state = this.getState();
+    this.emit("stateChanged", { state });
+  }
+
   // ── Private: meta-event fan-out ───────────────────────────────────────────
 
   /**
@@ -228,6 +240,15 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
     const handsUntilStageCheck =
       meta.handsPerStage - (meta.handsPlayed % meta.handsPerStage);
 
+    // VR Goggles availability
+    const vrGogglesActions = this.manager.getAvailableItemActions();
+    const vrGogglesAvailable = vrGogglesActions.some(
+      (a) => a.actionId === "vr_goggles_boost",
+    );
+    const vrGogglesTargets: GuiCard[] = vrGogglesAvailable
+      ? this.manager.getVrGogglesTargets().map((c) => this.toGuiCard(c, false))
+      : [];
+
     return {
       phase: raw.phase as GuiGamePhase,
       roundNumber: raw.roundNumber,
@@ -253,6 +274,8 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
       stageMoneyThreshold: meta.stageMoneyThreshold,
       inventory,
       shopOfferings,
+      vrGogglesAvailable,
+      vrGogglesTargets,
     };
   }
 

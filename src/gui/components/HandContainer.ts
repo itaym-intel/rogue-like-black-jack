@@ -33,6 +33,8 @@ export class HandContainer extends Phaser.GameObjects.Container {
   private readonly highlightRect: Phaser.GameObjects.Rectangle;
   private readonly scoreLabel: Phaser.GameObjects.Text;
   private readonly wagerLabel: Phaser.GameObjects.Text;
+  /** Tracks the last-synced card data array so interactive mode can read card IDs. */
+  private currentCards: GuiCard[] = [];
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y);
@@ -91,6 +93,7 @@ export class HandContainer extends Phaser.GameObjects.Container {
    * no GuiHand wrapper).
    */
   syncCards(cards: GuiCard[], animate = true): void {
+    this.currentCards = [...cards];
     // Add or sync existing sprites
     for (let index = 0; index < cards.length; index += 1) {
       if (index < this.cardSprites.length) {
@@ -116,6 +119,8 @@ export class HandContainer extends Phaser.GameObjects.Container {
 
   /** Remove all card sprites and labels. */
   clearHand(): void {
+    this.setCardsInteractive(false);
+    this.currentCards = [];
     for (const sprite of this.cardSprites) {
       this.remove(sprite, true);
     }
@@ -135,6 +140,43 @@ export class HandContainer extends Phaser.GameObjects.Container {
   }
 
   // ── Private helpers ───────────────────────────────────────────────────────
+
+  /**
+   * Enable or disable click interaction on each card sprite.
+   * When enabled, hovering dims the card slightly and clicking calls
+   * `onCardClicked(cardId)`.  Used by the VR Goggles card-selection flow.
+   */
+  setCardsInteractive(
+    enabled: boolean,
+    onCardClicked?: (cardId: string) => void,
+  ): void {
+    for (let i = 0; i < this.cardSprites.length; i += 1) {
+      const sprite = this.cardSprites[i];
+      sprite.removeAllListeners();
+      sprite.setAlpha(1);
+
+      if (enabled && onCardClicked) {
+        sprite.setInteractive(
+          new Phaser.Geom.Rectangle(
+            -CARD_DISPLAY_WIDTH / 2,
+            -CARD_DISPLAY_HEIGHT / 2,
+            CARD_DISPLAY_WIDTH,
+            CARD_DISPLAY_HEIGHT,
+          ),
+          Phaser.Geom.Rectangle.Contains,
+        );
+        const cardId = this.currentCards[i]?.id;
+        if (!cardId) continue;
+        sprite.on(Phaser.Input.Events.POINTER_OVER, () => sprite.setAlpha(0.65));
+        sprite.on(Phaser.Input.Events.POINTER_OUT,  () => sprite.setAlpha(1));
+        sprite.on(Phaser.Input.Events.POINTER_DOWN, () => {
+          onCardClicked(cardId);
+        });
+      } else {
+        sprite.disableInteractive();
+      }
+    }
+  }
 
   private addCard(card: GuiCard, animate: boolean): void {
     const startX = this.cardSprites.length * CARD_STEP;

@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { GameAdapter } from "../adapter/GameAdapter.js";
 import type { GuiGameState, GuiPlayerAction, GuiRoundSummary } from "../adapter/index.js";
 import { HandContainer } from "../components/HandContainer.js";
-import { ActionPanel, ACTION_PANEL_EVENT } from "../components/ActionPanel.js";
+import { ActionPanel, ACTION_PANEL_EVENT, VR_GOGGLES_EVENT } from "../components/ActionPanel.js";
 import { BetPanel, BET_CONFIRMED_EVENT } from "../components/BetPanel.js";
 import { HudPanel } from "../components/HudPanel.js";
 
@@ -62,6 +62,12 @@ export class GameScene extends Phaser.Scene {
 
   // State
   private isAnimating = false;
+
+  // VR Goggles card-selection flow
+  private vrGogglesMode: "selecting_card" | "choosing_duration" | null = null;
+  private vrGogglesSelectedCardId: string | null = null;
+  private vrGogglesDialog: Phaser.GameObjects.Container | null = null;
+  private vrGogglesBanner: Phaser.GameObjects.Text | null = null;
 
   constructor() {
     super({ key: "GameScene" });
@@ -193,6 +199,11 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
+    // VR Goggles button → enter card-select mode
+    this.events.on(VR_GOGGLES_EVENT, () => {
+      this.enterVrGogglesSelectMode();
+    });
+
     // Named adapter handlers — removed on SHUTDOWN to prevent stale calls into
     // destroyed GL objects if another scene holds the adapter after our shutdown.
     const onStateChanged = ({ state }: { state: GuiGameState }): void => {
@@ -296,6 +307,11 @@ export class GameScene extends Phaser.Scene {
     this.hud.sync(state);
     this.seedLabel.setText(`seed: ${String(state.phase === "awaiting_bet" ? this.adapter.getState().bankroll : state.bankroll) !== "0" ? "●●●●" : "—"}`);
 
+    // If the round ended while in VR Goggles mode, clean up silently
+    if (this.vrGogglesMode !== null && state.phase !== "player_turn") {
+      this.destroyVrGogglesUi();
+    }
+
     // Dealer hand
     this.dealerHandContainer.syncCards(state.dealerCards, true);
 
@@ -329,8 +345,13 @@ export class GameScene extends Phaser.Scene {
 
     if (acting) {
       this.actionPanel.setAvailableActions(state.availableActions);
+      // Only show VR Goggles button when not mid-selection flow
+      this.actionPanel.setVrGogglesVisible(
+        state.vrGogglesAvailable && this.vrGogglesMode === null,
+      );
     } else {
       this.actionPanel.setAvailableActions([]);
+      this.actionPanel.setVrGogglesVisible(false);
     }
   }
 
@@ -383,6 +404,158 @@ export class GameScene extends Phaser.Scene {
       this.isAnimating = false;
       this.showTemporaryMessage(errorMessage(err), 2000);
     }
+  }
+
+  // ── VR Goggles flow ───────────────────────────────────────────────────────
+
+  /**
+   * Step 1 — Player clicks the VR Goggles button.
+   * Hides standard action buttons, makes each card in the active hand clickable,
+   * and shows an instruction banner.
+   */
+  private enterVrGogglesSelectMode(): void {
+    const state = this.adapter.getState();
+    if (!state.vrGogglesAvailable || this.vrGogglesMode !== null) return;
+
+    this.vrGogglesMode = "selecting_card";
+
+    // Disable standard actions while selecting
+    this.actionPanel.setAvailableActions([]);
+    this.actionPanel.setVrGogglesVisible(false);
+
+    // Show instruction banner
+    this.vrGogglesBanner = this.add.text(
+      this.CX,
+      this.PLAYER_Y - 130,
+      "🥽 Click a card to boost its value by 1   [ESC to cancel]",
+      { fontSize: "15px", color: "#f0e68c", stroke: "#000", strokeThickness: 3 },
+    ).setOrigin(0.5, 0.5).setDepth(10);
+
+    // Make each card in the active hand clickable
+    const activeIndex = state.activeHandIndex;
+    if (activeIndex !== null) {
+      const container = this.playerHandContainers[activeIndex];
+      container?.setCardsInteractive(true, (cardId) => {
+        this.onVrGogglesCardSelected(cardId);
+      });
+    }
+
+    // ESC cancels
+    this.input.keyboard?.once("keydown-ESC", () => this.cancelVrGoggles());
+  }
+
+  /**
+   * Step 2 — Player clicked a card.
+   * Disable card hover, show the permanent/this-hand dialog.
+   */
+  private onVrGogglesCardSelected(cardId: string): void {
+    if (this.vrGogglesMode !== "selecting_card") return;
+
+    this.vrGogglesMode = "choosing_duration";
+    this.vrGogglesSelectedCardId = cardId;
+
+    // Clear card interactivity
+    for (const container of this.playerHandContainers) {
+      container.setCardsInteractive(false);
+    }
+
+    this.vrGogglesBanner?.destroy();
+    this.vrGogglesBanner = null;
+
+    this.showVrGogglesDurationDialog(cardId);
+  }
+
+  /**
+   * Step 3 — Show a small dialog: "This Hand Only" | "Permanent" | Cancel.
+   */
+  private showVrGogglesDurationDialog(cardId: string): void {
+    const dialogX = this.CX;
+    const dialogY = this.CY;
+
+    const dialog = this.add.container(dialogX, dialogY).setDepth(20);
+
+    // Background
+    const bg = this.add.graphics();
+    bg.fillStyle(0x1a1a2e, 0.92);
+    bg.fillRoundedRect(-160, -70, 320, 140, 12);
+    bg.lineStyle(2, 0xffd700, 1);
+    bg.strokeRoundedRect(-160, -70, 320, 140, 12);
+
+    const title = this.add.text(0, -42, "How long should the boost last?", {
+      fontSize: "14px", color: "#f0e68c", stroke: "#000", strokeThickness: 2,
+    }).setOrigin(0.5, 0.5);
+
+    const makeDialogBtn = (
+      label: string,
+      x: number,
+      color: number,
+      onClick: () => void,
+    ): Phaser.GameObjects.Container => {
+      const btn = this.add.container(x, 18);
+      const btnBg = this.add.graphics();
+      btnBg.fillStyle(color, 1);
+      btnBg.fillRoundedRect(-100, -18, 200, 36, 8);
+      const btnLabel = this.add.text(0, 0, label, {
+        fontSize: "13px", color: "#fff", stroke: "#000", strokeThickness: 2,
+      }).setOrigin(0.5, 0.5);
+      const zone = this.add.zone(0, 0, 200, 36).setInteractive();
+      zone.on("pointerover", () => { btnBg.setAlpha(0.75); });
+      zone.on("pointerout",  () => { btnBg.setAlpha(1); });
+      zone.on("pointerdown", onClick);
+      btn.add([btnBg, zone, btnLabel]);
+      return btn;
+    };
+
+    const thisHandBtn = makeDialogBtn("This Hand Only", -110, 0x2980b9, () => {
+      this.confirmVrGoggles(cardId, false);
+    });
+    const permBtn = makeDialogBtn("Permanent", 110, 0x8e44ad, () => {
+      this.confirmVrGoggles(cardId, true);
+    });
+
+    const cancelTxt = this.add.text(0, 55, "Cancel (ESC)", {
+      fontSize: "12px", color: "#aaa",
+    }).setOrigin(0.5, 0.5).setInteractive();
+    cancelTxt.on("pointerdown", () => this.cancelVrGoggles());
+
+    dialog.add([bg, title, thisHandBtn, permBtn, cancelTxt]);
+    this.vrGogglesDialog = dialog;
+
+    this.input.keyboard?.once("keydown-ESC", () => this.cancelVrGoggles());
+  }
+
+  /** Confirm with the chosen permanence and call the adapter. */
+  private confirmVrGoggles(cardId: string, permanent: boolean): void {
+    this.destroyVrGogglesUi();
+    try {
+      this.adapter.useVrGoggles(cardId, permanent);
+    } catch (err) {
+      this.showTemporaryMessage(errorMessage(err), 2000);
+    }
+    // syncUi will restore action buttons via stateChanged
+  }
+
+  /** Cancel: restore action buttons without making any engine call. */
+  private cancelVrGoggles(): void {
+    this.destroyVrGogglesUi();
+    // Restore action panel from current state
+    const state = this.adapter.getState();
+    if (state.phase === "player_turn") {
+      this.actionPanel.setAvailableActions(state.availableActions);
+      this.actionPanel.setVrGogglesVisible(state.vrGogglesAvailable);
+    }
+  }
+
+  private destroyVrGogglesUi(): void {
+    this.vrGogglesMode = null;
+    this.vrGogglesSelectedCardId = null;
+    for (const container of this.playerHandContainers) {
+      container.setCardsInteractive(false);
+    }
+    this.vrGogglesBanner?.destroy();
+    this.vrGogglesBanner = null;
+    this.vrGogglesDialog?.destroy();
+    this.vrGogglesDialog = null;
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

@@ -106,7 +106,12 @@ export async function runCliGame(options: CliGameOptions = {}): Promise<void> {
       if (state.phase === "player_turn") {
         printActiveRound(engine, state, meta);
         const availableActions = engine.getAvailableActions();
-        const prompt = `Action [${availableActions.join("/")}] (h/s/d/p) or q: `;
+        const itemActions = manager.getAvailableItemActions();
+        const hasVrGoggles = itemActions.some((a) => a.actionId === "vr_goggles_boost");
+
+        const actionHints = availableActions.join("/");
+        const itemHints = hasVrGoggles ? "/vg" : "";
+        const prompt = `Action [${actionHints}${itemHints}] (h/s/d/p${hasVrGoggles ? "/vg" : ""}) or q: `;
         const answer = (await rl.question(prompt)).trim().toLowerCase();
 
         if (isQuit(answer)) {
@@ -114,6 +119,49 @@ export async function runCliGame(options: CliGameOptions = {}): Promise<void> {
         }
         if (answer === "i") {
           printInventory(manager);
+          continue;
+        }
+
+        // VR Goggles on-demand action
+        if (answer === "vg" || answer === "vrgoggles") {
+          if (!hasVrGoggles) {
+            console.log("VR Goggles are not available right now.");
+            continue;
+          }
+          const targets = manager.getVrGogglesTargets();
+          if (targets.length === 0) {
+            console.log("No cards available to boost.");
+            continue;
+          }
+
+          console.log("Select a card to boost by 1:");
+          targets.forEach((card, idx) => {
+            console.log(`  ${idx + 1}. ${formatCard(card)}`);
+          });
+
+          const cardAnswer = (await rl.question("Card number: ")).trim();
+          const cardIndex = Number(cardAnswer) - 1;
+          if (!Number.isFinite(cardIndex) || cardIndex < 0 || cardIndex >= targets.length) {
+            console.log("Invalid selection.");
+            continue;
+          }
+          const selectedCard = targets[cardIndex];
+
+          const permAnswer = (
+            await rl.question("Make permanent? (y = yes, n = this hand only): ")
+          )
+            .trim()
+            .toLowerCase();
+          const permanent = permAnswer === "y" || permAnswer === "yes";
+
+          try {
+            manager.useVrGoggles(selectedCard.id, permanent);
+            console.log(
+              `Boosted ${formatCard(selectedCard)} by 1.${permanent ? " (permanent)" : " (this hand only)"}`,
+            );
+          } catch (error) {
+            console.log(formatError(error));
+          }
           continue;
         }
 
@@ -226,9 +274,8 @@ function printInventory(manager: GameManager): void {
 function printMetaStatus(meta: MetaGameState, bankroll: number): void {
   const handsInStage = meta.handsPlayed % meta.handsPerStage;
   const handsRemaining = meta.handsPerStage - handsInStage;
-  const nextThreshold = (meta.stage + 1) * 500;
   console.log(
-    `Hands: ${meta.handsPlayed} | Stage: ${meta.stage} | Hands until next stage: ${handsRemaining} | Need ${formatMoney(nextThreshold)} to clear next stage`,
+    `Hands: ${meta.handsPlayed} | Stage: ${meta.stage} | Hands until next stage: ${handsRemaining} | Need ${formatMoney(meta.stageMoneyThreshold)} to clear Stage ${meta.stage}`,
   );
 }
 

@@ -173,4 +173,18 @@ export interface GuiGameState {
   inventory: GuiItem[];
   /** Shop offerings — only meaningful when metaPhase === "shop". */
   shopOfferings: GuiShopOffering[];
+
+  // ── In-hand item actions ─────────────────────────────────────────────────
+
+  /**
+   * True when the player holds VR Goggles, is in player_turn, and hasn't
+   * used them yet this hand.  The VR Goggles button is shown only when this
+   * is true.
+   */
+  vrGogglesAvailable: boolean;
+  /**
+   * Cards in the active player hand that can be targeted by VR Goggles.
+   * Empty when vrGogglesAvailable is false.
+   */
+  vrGogglesTargets: GuiCard[];
 }
