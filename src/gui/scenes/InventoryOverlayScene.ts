@@ -101,7 +101,8 @@ export class InventoryOverlayScene extends Phaser.Scene {
   }
 
   private closeOverlay(): void {
+    // Per scene-lifecycle contract: overlay just stops itself.
+    // GameScene's onInventoryShutdown listener handles the resume.
     this.scene.stop();
-    this.scene.resume("GameScene");
   }
 }

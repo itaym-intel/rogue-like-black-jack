@@ -72,6 +72,7 @@ export class GameScene extends Phaser.Scene {
   init(data: { adapter: GameAdapter }): void {
     this.adapter = data.adapter;
     this.playerHandContainers = [];
+    this.isAnimating = false; // reset in case scene.start() reuses this instance
   }
 
   create(): void {
@@ -192,34 +193,89 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    // Adapter events → UI
-    this.adapter.on("stateChanged", ({ state }) => {
+    // Named adapter handlers — removed on SHUTDOWN to prevent stale calls into
+    // destroyed GL objects if another scene holds the adapter after our shutdown.
+    const onStateChanged = ({ state }: { state: GuiGameState }): void => {
       this.syncUi(state);
-    });
-
-    this.adapter.on("roundSettled", ({ summary, state }) => {
-      // Launch the summary overlay on top of this scene
+    };
+    const onRoundSettled = ({ summary, state }: { summary: GuiRoundSummary; state: GuiGameState }): void => {
       this.scene.launch(SUMMARY_OVERLAY_KEY, { summary, adapter: this.adapter, state });
       this.scene.pause();
-    });
-
-    this.adapter.on("gameOver", ({ finalBankroll, reason }) => {
+    };
+    const onGameOver = ({ finalBankroll, reason }: { finalBankroll: number; reason: string }): void => {
+      // Show the outcome on the table surface. Navigation is handled by
+      // onSummaryShutdown so that SummaryOverlayScene always controls the
+      // transition — no competing timer-based navigation paths.
       const msg = reason === "stage_fail"
         ? `STAGE FAILED  $${finalBankroll.toFixed(2)}`
         : `GAME OVER  $${finalBankroll.toFixed(2)}`;
       this.showMessage(msg);
-    });
-
-    this.adapter.on("stageFailed", ({ stage, threshold, bankroll }) => {
+    };
+    const onStageFailed = ({ stage, threshold, bankroll }: { stage: number; threshold: number; bankroll: number }): void => {
       this.showTemporaryMessage(`Stage ${stage} failed — needed $${threshold.toFixed(0)}, had $${bankroll.toFixed(2)}`, 2500);
+    };
+
+    this.adapter.on("stateChanged", onStateChanged);
+    this.adapter.on("roundSettled", onRoundSettled);
+    this.adapter.on("gameOver",     onGameOver);
+    this.adapter.on("stageFailed",  onStageFailed);
+
+    // ── Overlay routing ────────────────────────────────────────────────────
+    // Per docs/product-specs/game-flow.md scene-lifecycle contract:
+    // Every overlay closes itself with scene.stop() only.
+    // GameScene is the sole routing authority — it inspects metaPhase in each
+    // overlay's shutdown listener to decide what to do next.
+
+    // SummaryOverlayScene closes → resume, then route by metaPhase.
+    const onSummaryShutdown = (): void => {
+      if (this.scene.isPaused()) {
+        this.scene.resume();
+      }
+      const meta = this.adapter.getState().metaPhase;
+      if (meta === "shop") {
+        // Stage cleared — launch ShopScene as an overlay on top of GameScene.
+        const state = this.adapter.getState();
+        this.scene.launch("ShopScene", { adapter: this.adapter, state });
+        this.scene.pause();
+      } else if (meta === "game_over") {
+        // Run ended — stop this scene and return to the main menu.
+        // The brief game-over message set by onGameOver is visible for one frame;
+        // that's fine. We stop immediately so no stale adapter state lingers.
+        this.scene.stop();
+        this.scene.start("MenuScene");
+      }
+      // meta === "playing" → betting panel shows, nothing else to do.
+    };
+
+    // ShopScene closes (after adapter.leaveShop()) → just resume GameScene.
+    const onShopShutdown = (): void => {
+      if (this.scene.isPaused()) {
+        this.scene.resume();
+      }
+    };
+
+    // InventoryOverlayScene closes → resume GameScene.
+    const onInventoryShutdown = (): void => {
+      if (this.scene.isPaused()) {
+        this.scene.resume();
+      }
+    };
+
+    this.scene.get(SUMMARY_OVERLAY_KEY)?.events.on("shutdown", onSummaryShutdown);
+    this.scene.get("ShopScene")?.events.on("shutdown", onShopShutdown);
+    this.scene.get("InventoryOverlayScene")?.events.on("shutdown", onInventoryShutdown);
+
+    // Remove all external listeners when this scene shuts down.
+    // Call removeAllListeners() on the adapter as belt-and-suspenders so the
+    // old adapter is completely neutered even if a reference escapes.
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.adapter.removeAllListeners();
+      this.scene.get(SUMMARY_OVERLAY_KEY)?.events.off("shutdown", onSummaryShutdown);
+      this.scene.get("ShopScene")?.events.off("shutdown", onShopShutdown);
+      this.scene.get("InventoryOverlayScene")?.events.off("shutdown", onInventoryShutdown);
     });
 
-    // Resume from summary overlay
-    this.scene.get(SUMMARY_OVERLAY_KEY)?.events.on("shutdown", () => {
-      this.scene.resume();
-    });
-
-    // Inventory button: click or press I
+    // Inventory overlay: keyboard shortcut (I key).
     this.input.keyboard?.on("keydown-I", () => {
       if (!this.scene.isPaused()) {
         this.scene.launch("InventoryOverlayScene", { adapter: this.adapter });

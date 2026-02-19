@@ -1,0 +1,4 @@
+Bugs:
+ - should start at stage 1 (currently says stage 0, requires 500 but doesn't say that)
+
+Features

@@ -281,19 +281,10 @@ export class SummaryOverlayScene extends Phaser.Scene {
     zone.on(Phaser.Input.Events.POINTER_OVER, () => draw(true));
     zone.on(Phaser.Input.Events.POINTER_OUT, () => draw(false));
     zone.on(Phaser.Input.Events.POINTER_DOWN, () => {
-      if (goToShop) {
-        // Stop overlay + GameScene, launch ShopScene fresh
-        this.scene.stop();
-        this.scene.stop("GameScene");
-        this.scene.start("ShopScene", { adapter, state });
-      } else if (gameOver) {
-        this.scene.stop("GameScene");
-        this.scene.stop();
-        this.scene.start("MenuScene");
-      } else {
-        this.scene.stop();
-        this.scene.resume("GameScene");
-      }
+      // Per scene-lifecycle contract: this overlay ALWAYS only stops itself.
+      // GameScene's onSummaryShutdown listener handles all routing
+      // (normal continue, shop transition, and game-over navigation).
+      this.scene.stop();
     });
   }
 }

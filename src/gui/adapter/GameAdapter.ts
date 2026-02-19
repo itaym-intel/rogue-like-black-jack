@@ -80,13 +80,24 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
     // startRound() without any player action. The GameManager only increments
     // handsPlayed in performAction/acknowledgeRoundSettled, so we must call
     // acknowledgeRoundSettled here if the round already settled.
-    const enginePhase = this.manager.getGameState().phase;
-    if (enginePhase === "round_settled" || enginePhase === "game_over") {
+    const enginePhaseAfterDeal = this.manager.getGameState().phase;
+    const isImmediateSettle =
+      enginePhaseAfterDeal === "round_settled" || enginePhaseAfterDeal === "game_over";
+    if (isImmediateSettle) {
       this.manager.acknowledgeRoundSettled();
     }
 
     const state = this.getState();
     this.emit("roundStarted", { wager, state });
+
+    // If the round settled immediately (natural blackjack), emit roundSettled so
+    // SummaryOverlayScene opens and the player sees the outcome before any
+    // meta-transition (shop / game-over) takes effect.  Without this the shop
+    // phase can be entered silently, making every subsequent startRound throw.
+    if (isImmediateSettle && state.lastRoundSummary) {
+      this.emit("roundSettled", { summary: state.lastRoundSummary, state });
+    }
+
     this.emitMetaTransitions(state);
     this.emit("stateChanged", { state });
   }

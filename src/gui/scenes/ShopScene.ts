@@ -302,8 +302,8 @@ export class ShopScene extends Phaser.Scene {
     zone.on(Phaser.Input.Events.POINTER_OUT, () => draw(false));
     zone.on(Phaser.Input.Events.POINTER_DOWN, () => {
       this.adapter.leaveShop();
+      // Just close this overlay. GameScene's onShopShutdown listener resumes it.
       this.scene.stop();
-      this.scene.resume("GameScene");
     });
   }
 }
