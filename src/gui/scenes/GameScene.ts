@@ -188,21 +188,26 @@ export class GameScene extends Phaser.Scene {
 
   private wireEvents(): void {
     // BetPanel → adapter
-    this.events.on(BET_CONFIRMED_EVENT, ({ wager }: { wager: number }) => {
+    // Named so they can be explicitly removed on SHUTDOWN.
+    // Phaser 3's Systems.shutdown() only removes transition-specific listeners
+    // from scene.events — it does NOT call removeAllListeners(). Without explicit
+    // cleanup these handlers accumulate across game-restarts (same scene instance
+    // is reused), causing double-calls on the second game's first bet.
+    const onBetConfirmed = ({ wager }: { wager: number }): void => {
       this.safeStartRound(wager);
-    });
-
-    // ActionPanel → adapter
-    this.events.on(ACTION_PANEL_EVENT, (action: GuiPlayerAction) => {
+    };
+    const onActionSelected = (action: GuiPlayerAction): void => {
       if (!this.isAnimating) {
         this.safePerformAction(action);
       }
-    });
-
-    // VR Goggles button → enter card-select mode
-    this.events.on(VR_GOGGLES_EVENT, () => {
+    };
+    const onVrGogglesActivated = (): void => {
       this.enterVrGogglesSelectMode();
-    });
+    };
+
+    this.events.on(BET_CONFIRMED_EVENT, onBetConfirmed);
+    this.events.on(ACTION_PANEL_EVENT,  onActionSelected);
+    this.events.on(VR_GOGGLES_EVENT,    onVrGogglesActivated);
 
     // Named adapter handlers — removed on SHUTDOWN to prevent stale calls into
     // destroyed GL objects if another scene holds the adapter after our shutdown.
@@ -281,6 +286,12 @@ export class GameScene extends Phaser.Scene {
     // old adapter is completely neutered even if a reference escapes.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.adapter.removeAllListeners();
+      // Remove scene-level handlers added above. Phaser does NOT call
+      // removeAllListeners() on scene.events during shutdown (only on destroy),
+      // so without this they accumulate and double-fire on the next game run.
+      this.events.off(BET_CONFIRMED_EVENT, onBetConfirmed);
+      this.events.off(ACTION_PANEL_EVENT,  onActionSelected);
+      this.events.off(VR_GOGGLES_EVENT,    onVrGogglesActivated);
       this.scene.get(SUMMARY_OVERLAY_KEY)?.events.off("shutdown", onSummaryShutdown);
       this.scene.get("ShopScene")?.events.off("shutdown", onShopShutdown);
       this.scene.get("InventoryOverlayScene")?.events.off("shutdown", onInventoryShutdown);
