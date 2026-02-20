@@ -3,7 +3,6 @@ import { BootScene } from "../scenes/BootScene.js";
 import { MenuScene } from "../scenes/MenuScene.js";
 import { GameScene } from "../scenes/GameScene.js";
 import { SummaryOverlayScene } from "../scenes/SummaryOverlayScene.js";
-import { ShopScene } from "../scenes/ShopScene.js";
 import { InventoryOverlayScene } from "../scenes/InventoryOverlayScene.js";
 
 /**
@@ -35,7 +34,6 @@ export const PHASER_CONFIG: Phaser.Types.Core.GameConfig = {
     MenuScene,
     GameScene,
     SummaryOverlayScene,
-    ShopScene,
     InventoryOverlayScene,
   ],
 };

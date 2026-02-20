@@ -12,8 +12,8 @@ export type {
   GuiItemEffect,
   GuiItemEffectTrigger,
   GuiItemRarity,
+  GuiItemReward,
   GuiMetaPhase,
   GuiPlayerAction,
   GuiRoundSummary,
-  GuiShopOffering,
 } from "./ViewTypes.js";

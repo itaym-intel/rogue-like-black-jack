@@ -23,7 +23,7 @@
  */
 
 import type { BlackjackModifier } from "../modifiers.js";
-import type { Item } from "../item.js";
+import type { Item, ItemRarity } from "../item.js";
 
 // ─── 1. Common ────────────────────────────────────────────────────────────────
 
@@ -181,12 +181,16 @@ const LEGENDARY_ITEMS: Item[] = [
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const ITEM_CATALOG: Item[] = [
-  // Common
+const COMMON_ITEMS: Item[] = [
   tinCoin,
   luckyCharm,
   coalRing,
   createVrGoggles(), // stateful — factory call gives each instance its own closure
+];
+
+export const ITEM_CATALOG: Item[] = [
+  // Common
+  ...COMMON_ITEMS,
   // Uncommon
   ...UNCOMMON_ITEMS,
   // Rare
@@ -194,3 +198,11 @@ export const ITEM_CATALOG: Item[] = [
   // Legendary
   ...LEGENDARY_ITEMS,
 ];
+
+/** Items grouped by rarity — used by the item-reward system to pick drops. */
+export const ITEMS_BY_RARITY: Record<ItemRarity, Item[]> = {
+  common: COMMON_ITEMS,
+  uncommon: UNCOMMON_ITEMS,
+  rare: RARE_ITEMS,
+  legendary: LEGENDARY_ITEMS,
+};

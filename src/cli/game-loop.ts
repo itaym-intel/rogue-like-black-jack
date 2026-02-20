@@ -9,7 +9,6 @@ import type {
 } from "../engine/types.js";
 import type { MetaGameState } from "../engine/game-manager.js";
 import type { Item } from "../engine/item.js";
-import type { ShopOffering } from "../engine/shop.js";
 
 export interface CliGameOptions {
   seed?: number | string;
@@ -56,12 +55,15 @@ export async function runCliGame(options: CliGameOptions = {}): Promise<void> {
         break;
       }
 
-      if (meta.metaPhase === "shop") {
-        await runShopPhase(rl, manager);
-        continue;
-      }
-
       if (state.phase === "awaiting_bet" || state.phase === "round_settled") {
+        // Show item reward if one was earned
+        const reward = manager.getLastRewardedItem();
+        if (reward) {
+          console.log("");
+          console.log(`  ★ Item Found! [${reward.rarity.toUpperCase()}] ${reward.item.itemName}`);
+          console.log(`    ${reward.item.itemDescription}`);
+          console.log("");
+        }
         if (state.phase === "round_settled" && state.lastRoundSummary) {
           printRoundSummary(state.lastRoundSummary);
         }
@@ -182,77 +184,6 @@ export async function runCliGame(options: CliGameOptions = {}): Promise<void> {
   } finally {
     rl.close();
   }
-}
-
-async function runShopPhase(
-  rl: ReturnType<typeof createInterface>,
-  manager: GameManager,
-): Promise<void> {
-  const meta = manager.getMetaState();
-  const state = manager.getGameState();
-  console.log("");
-  console.log("=".repeat(40));
-  console.log(`  STAGE ${meta.stage} COMPLETE — SHOP`);
-  console.log("=".repeat(40));
-  console.log(`Bankroll: ${formatMoney(state.bankroll)}`);
-  console.log("");
-
-  while (true) {
-    const offerings = manager.getShop().getOfferings();
-    if (offerings.length === 0) {
-      console.log("Shop is empty.");
-      manager.leaveShop();
-      return;
-    }
-
-    printShopOfferings(offerings, manager.getGameState().bankroll);
-
-    const answer = (
-      await rl.question("Enter item number to buy, (i)nventory, or (l)eave shop: ")
-    )
-      .trim()
-      .toLowerCase();
-
-    if (isQuit(answer)) {
-      manager.leaveShop();
-      return;
-    }
-    if (answer === "l" || answer === "leave") {
-      manager.leaveShop();
-      console.log("Leaving shop...");
-      return;
-    }
-    if (answer === "i") {
-      printInventory(manager);
-      continue;
-    }
-
-    const index = Number(answer) - 1;
-    if (!Number.isFinite(index) || index < 0 || index >= offerings.length) {
-      console.log("Invalid selection.");
-      continue;
-    }
-
-    const item = manager.purchaseShopItem(index);
-    if (item) {
-      console.log(`Purchased "${item.itemName}"!`);
-      console.log(`Bankroll: ${formatMoney(manager.getGameState().bankroll)}`);
-    } else {
-      console.log("Cannot afford that item.");
-    }
-  }
-}
-
-function printShopOfferings(offerings: ReadonlyArray<ShopOffering>, bankroll: number): void {
-  console.log("Items for sale:");
-  offerings.forEach((offering, index) => {
-    const affordable = bankroll >= offering.price ? "" : " (can't afford)";
-    console.log(
-      `  ${index + 1}. [${offering.item.itemRarity.toUpperCase()}] ${offering.item.itemName} — ${formatMoney(offering.price)}${affordable}`,
-    );
-    console.log(`     ${offering.item.itemDescription}`);
-  });
-  console.log("");
 }
 
 function printInventory(manager: GameManager): void {

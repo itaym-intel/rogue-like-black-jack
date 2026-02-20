@@ -1,4 +1,4 @@
-import type { GuiCard, GuiGameState, GuiItem, GuiPlayerAction, GuiRoundSummary, GuiShopOffering } from "./ViewTypes.ts";
+import type { GuiCard, GuiGameState, GuiItem, GuiItemReward, GuiPlayerAction, GuiRoundSummary } from "./ViewTypes.ts";
 
 /**
  * All events the GameAdapter can emit.
@@ -30,20 +30,9 @@ export interface GameEventMap {
   roundSettled: { summary: GuiRoundSummary; state: GuiGameState };
 
   /**
-   * Fired when the stage counter increments and the player passes the
-   * bankroll threshold — the shop is now open.
+   * Fired when a stage is cleared and an item is rewarded to the player.
    */
-  shopOpened: { stage: number; offerings: GuiShopOffering[]; state: GuiGameState };
-
-  /**
-   * Fired after a successful shop purchase.
-   */
-  itemPurchased: { item: GuiItem; cost: number; state: GuiGameState };
-
-  /**
-   * Fired after the player leaves the shop (also fires if shop was skipped).
-   */
-  shopClosed: { state: GuiGameState };
+  itemRewarded: { item: GuiItem; state: GuiGameState };
 
   /**
    * Fired when the run ends because the player failed a stage bankroll check.

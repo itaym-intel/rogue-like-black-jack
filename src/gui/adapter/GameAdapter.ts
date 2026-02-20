@@ -15,7 +15,6 @@ import type { EngineOptions } from "../../engine/engine.js";
 import type { Card, GameState, HandState, RoundSummary } from "../../engine/types.js";
 import type { PlayerAction } from "../../engine/types.js";
 import type { Item } from "../../engine/item.js";
-import type { ShopOffering } from "../../engine/shop.js";
 
 import { TypedEmitter } from "./TypedEmitter.js";
 import type { GameEventMap } from "./GameEvents.js";
@@ -27,10 +26,10 @@ import type {
   GuiHandResult,
   GuiItem,
   GuiItemEffect,
+  GuiItemReward,
   GuiMetaPhase,
   GuiPlayerAction,
   GuiRoundSummary,
-  GuiShopOffering,
 } from "./ViewTypes.js";
 
 export type {
@@ -41,10 +40,10 @@ export type {
   GuiHandResult,
   GuiItem,
   GuiItemEffect,
+  GuiItemReward,
   GuiMetaPhase,
   GuiPlayerAction,
   GuiRoundSummary,
-  GuiShopOffering,
 };
 
 // ─── Public API ───────────────────────────────────────────────────────────────
@@ -70,7 +69,7 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
 
   /**
    * Place a wager and start a new round.
-   * Emits: roundStarted, then conditionally shopOpened/gameOver, then stateChanged.
+   * Emits: roundStarted, then conditionally itemRewarded/gameOver, then stateChanged.
    * Throws on invalid wager or wrong phase.
    */
   startRound(wager: number): void {
@@ -104,7 +103,7 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
 
   /**
    * Execute a player action (hit / stand / double / split).
-   * Emits: actionApplied, then conditionally roundSettled/shopOpened/gameOver,
+   * Emits: actionApplied, then conditionally roundSettled/itemRewarded/gameOver,
    * then stateChanged.
    * Throws if the action is unavailable.
    */
@@ -124,36 +123,6 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
     }
 
     this.emitMetaTransitions(state);
-    this.emit("stateChanged", { state });
-  }
-
-  // ── Shop commands ─────────────────────────────────────────────────────────
-
-  /**
-   * Purchase the shop item at the given index.
-   * Emits: itemPurchased, stateChanged.
-   * Returns the purchased GuiItem, or null if the purchase failed.
-   */
-  purchaseShopItem(index: number): GuiItem | null {
-    const item = this.manager.purchaseShopItem(index);
-    if (!item) {
-      return null;
-    }
-    const guiItem = this.toGuiItem(item);
-    const state = this.getState();
-    this.emit("itemPurchased", { item: guiItem, cost: 0, state });
-    this.emit("stateChanged", { state });
-    return guiItem;
-  }
-
-  /**
-   * Leave the shop and return to the playing phase.
-   * Emits: shopClosed, stateChanged.
-   */
-  leaveShop(): void {
-    this.manager.leaveShop();
-    const state = this.getState();
-    this.emit("shopClosed", { state });
     this.emit("stateChanged", { state });
   }
 
@@ -178,13 +147,12 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
   private emitMetaTransitions(state: GuiGameState): void {
     const meta = this.manager.getMetaState();
 
-    if (meta.metaPhase === "shop") {
-      this.emit("shopOpened", {
-        stage: meta.stage,
-        offerings: state.shopOfferings,
+    // Emit itemRewarded if a stage was just cleared and an item was dropped.
+    if (state.lastRewardedItem) {
+      this.emit("itemRewarded", {
+        item: state.lastRewardedItem.item,
         state,
       });
-      return;
     }
 
     if (meta.metaPhase === "game_over") {
@@ -224,11 +192,15 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
       this.toGuiHand(hand, index, raw.activeHandIndex),
     );
 
-    // Shop offerings, pre-annotated with canAfford
-    const shopOfferings: GuiShopOffering[] = this.manager
-      .getShop()
-      .getOfferings()
-      .map((o, idx) => this.toGuiShopOffering(o, idx, raw.bankroll));
+    // Item reward from most recent stage clear
+    const rewardResult = this.manager.getLastRewardedItem();
+    const lastRewardedItem: GuiItemReward | null = rewardResult
+      ? {
+          item: this.toGuiItem(rewardResult.item),
+          rarity: rewardResult.rarity,
+          wagerPercent: rewardResult.wagerPercent,
+        }
+      : null;
 
     // Inventory
     const inventory: import("./ViewTypes.js").GuiItem[] = this.manager
@@ -273,7 +245,7 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
       handsUntilStageCheck,
       stageMoneyThreshold: meta.stageMoneyThreshold,
       inventory,
-      shopOfferings,
+      lastRewardedItem,
       vrGogglesAvailable,
       vrGogglesTargets,
     };
@@ -340,19 +312,6 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
       itemDescription: item.itemDescription,
       itemRarity: item.itemRarity,
       effects,
-    };
-  }
-
-  private toGuiShopOffering(
-    offering: ShopOffering,
-    index: number,
-    bankroll: number,
-  ): GuiShopOffering {
-    return {
-      index,
-      item: this.toGuiItem(offering.item),
-      price: offering.price,
-      canAfford: bankroll >= offering.price,
     };
   }
 

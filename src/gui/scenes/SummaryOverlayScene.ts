@@ -10,6 +10,13 @@ export interface SummarySceneData {
   adapter: GameAdapter;
 }
 
+const RARITY_COLORS: Record<string, string> = {
+  common: "#aaaaaa",
+  uncommon: "#2ecc71",
+  rare: "#3498db",
+  legendary: "#f1c40f",
+};
+
 const OUTCOME_COLORS: Record<string, string> = {
   win: "#27ae60",
   blackjack: "#f1c40f",
@@ -88,8 +95,7 @@ export class SummaryOverlayScene extends Phaser.Scene {
     // ── Stage / hand progress line ────────────────────────────────────────────
     const handsLeft = state.handsPerStage - state.handsPlayed % state.handsPerStage;
     const stageColor =
-      state.metaPhase === "game_over" && state.phase !== "game_over" ? "#e74c3c" :
-      state.metaPhase === "shop" ? "#f1c40f" : "#88bb88";
+      state.metaPhase === "game_over" && state.phase !== "game_over" ? "#e74c3c" : "#88bb88";
     this.add.text(cx, currentY, `Stage ${state.stage}  ·  Hand ${state.handsPlayed % state.handsPerStage === 0 ? state.handsPerStage : state.handsPlayed % state.handsPerStage} / ${state.handsPerStage}  ·  Need $${state.stageMoneyThreshold.toFixed(0)}`, {
       fontSize: "13px",
       color: stageColor,
@@ -145,7 +151,48 @@ export class SummaryOverlayScene extends Phaser.Scene {
       stroke: "#000",
       strokeThickness: 2,
     }).setOrigin(0.5, 0);
-    currentY += 34;
+    currentY += 28;
+
+    // ── Item reward ──────────────────────────────────────────────────────────
+    if (state.lastRewardedItem) {
+      const reward = state.lastRewardedItem;
+      const rarityColor = RARITY_COLORS[reward.rarity] ?? "#ffffff";
+
+      // Divider
+      this.add.graphics().lineStyle(1, 0x446644, 0.6)
+        .lineBetween(panelX + 20, currentY, panelX + panelW - 20, currentY);
+      currentY += 10;
+
+      // Header
+      this.add.text(cx, currentY, "Item Found!", {
+        fontSize: "18px",
+        fontStyle: "bold",
+        color: rarityColor,
+        stroke: "#000",
+        strokeThickness: 3,
+      }).setOrigin(0.5, 0);
+      currentY += 24;
+
+      // Rarity badge + item name
+      const rarityLabel = reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1);
+      this.add.text(cx, currentY, `[${rarityLabel}]  ${reward.item.itemName}`, {
+        fontSize: "15px",
+        fontStyle: "bold",
+        color: rarityColor,
+        stroke: "#000",
+        strokeThickness: 2,
+      }).setOrigin(0.5, 0);
+      currentY += 22;
+
+      // Description
+      this.add.text(cx, currentY, reward.item.itemDescription, {
+        fontSize: "12px",
+        color: "#cccccc",
+        wordWrap: { width: panelW - 60 },
+        align: "center",
+      }).setOrigin(0.5, 0);
+      currentY += 28;
+    }
 
     // ── Continue / New Game button ────────────────────────────────────────────
     this.createContinueButton(cx, panelY + panelH - 44, data);
@@ -221,16 +268,12 @@ export class SummaryOverlayScene extends Phaser.Scene {
     const { adapter, state } = data;
 
     // Determine destination based on meta phase
-    const goToShop     = state.metaPhase === "shop";
     const gameOver     = state.metaPhase === "game_over";
     const stageFail    = gameOver && state.phase !== "game_over"; // engine still in round_settled
 
     let label: string;
     let color: number;
-    if (goToShop) {
-      label = "TO SHOP  →";
-      color = 0xf39c12;
-    } else if (stageFail) {
+    if (stageFail) {
       label = "END RUN";
       color = 0xe74c3c;
     } else if (gameOver) {
@@ -246,13 +289,6 @@ export class SummaryOverlayScene extends Phaser.Scene {
       this.add.text(x, y - 28, `✗  Stage ${state.stage} failed — needed $${state.stageMoneyThreshold.toFixed(0)}`, {
         fontSize: "13px",
         color: "#e74c3c",
-        stroke: "#000",
-        strokeThickness: 2,
-      }).setOrigin(0.5, 0.5);
-    } else if (goToShop) {
-      this.add.text(x, y - 28, `✓  Stage ${state.stage} cleared — visit the shop!`, {
-        fontSize: "13px",
-        color: "#f1c40f",
         stroke: "#000",
         strokeThickness: 2,
       }).setOrigin(0.5, 0.5);

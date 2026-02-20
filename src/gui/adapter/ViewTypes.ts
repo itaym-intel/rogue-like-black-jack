@@ -39,15 +39,12 @@ export interface GuiItem {
   effects: GuiItemEffect[];
 }
 
-// ─── Rogue-like: shop ─────────────────────────────────────────────────────────
+// ─── Rogue-like: item reward ──────────────────────────────────────────────────
 
-export interface GuiShopOffering {
-  /** Index used for purchaseShopItem(index). */
-  index: number;
+export interface GuiItemReward {
   item: GuiItem;
-  price: number;
-  /** Pre-computed: bankroll >= price. */
-  canAfford: boolean;
+  rarity: GuiItemRarity;
+  wagerPercent: number;
 }
 
 // ─── Rogue-like: meta progression ────────────────────────────────────────────
@@ -55,10 +52,9 @@ export interface GuiShopOffering {
 /**
  * The meta-game phase — layered on top of the blackjack phase.
  * - playing   — normal game loop (betting / playing hands)
- * - shop      — between-stage shop (no blackjack rounds possible)
  * - game_over — run has ended (stage fail or bankroll depleted)
  */
-export type GuiMetaPhase = "playing" | "shop" | "game_over";
+export type GuiMetaPhase = "playing" | "game_over";
 
 // ─── Card ────────────────────────────────────────────────────────────────────
 
@@ -171,8 +167,8 @@ export interface GuiGameState {
   stageMoneyThreshold: number;
   /** All items currently held in the player's inventory. */
   inventory: GuiItem[];
-  /** Shop offerings — only meaningful when metaPhase === "shop". */
-  shopOfferings: GuiShopOffering[];
+  /** Item rewarded after the most recent stage clear, or null. */
+  lastRewardedItem: GuiItemReward | null;
 
   // ── In-hand item actions ─────────────────────────────────────────────────
 

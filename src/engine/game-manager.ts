@@ -1,12 +1,13 @@
 import { BlackjackEngine } from "./engine.js";
 import type { EngineOptions } from "./engine.js";
 import { Inventory } from "./inventory.js";
-import { Shop } from "./shop.js";
 import { SeededRng } from "./rng.js";
 import type { Card, GameState, PlayerAction } from "./types.js";
 import type { Item, ItemEffectContext, ItemEffectTrigger } from "./item.js";
+import { rollItemReward } from "./item-reward.js";
+import type { ItemRewardResult } from "./item-reward.js";
 
-export type MetaPhase = "playing" | "shop" | "game_over";
+export type MetaPhase = "playing" | "game_over";
 
 export interface MetaGameState {
   handsPlayed: number;
@@ -28,17 +29,20 @@ const STAGE_MONEY_MULTIPLIER = 0;
 export class GameManager {
   private readonly engine: BlackjackEngine;
   private readonly inventory: Inventory;
-  private readonly shop: Shop;
   private readonly metaRng: SeededRng;
 
   private handsPlayed: number = 0;
   private stage: number = 1;
   private metaPhase: MetaPhase = "playing";
 
+  /** The wager % of the most recent hand (0–100). */
+  private lastWagerPercent: number = 0;
+  /** The item rewarded after the most recent stage clear, if any. */
+  private lastRewardedItem: ItemRewardResult | null = null;
+
   constructor(options: EngineOptions = {}) {
     this.engine = new BlackjackEngine(options);
     this.inventory = new Inventory();
-    this.shop = new Shop();
     const metaSeed = options.seed !== undefined ? `${options.seed}-meta` : `${Date.now()}-meta`;
     this.metaRng = new SeededRng(metaSeed);
   }
@@ -49,10 +53,6 @@ export class GameManager {
 
   public getInventory(): Inventory {
     return this.inventory;
-  }
-
-  public getShop(): Shop {
-    return this.shop;
   }
 
   public getMetaState(): MetaGameState {
@@ -73,9 +73,20 @@ export class GameManager {
     if (this.metaPhase !== "playing") {
       throw new Error("Cannot start a round outside of the playing phase.");
     }
+    // Compute and store wager % before the engine deducts it from bankroll.
+    // bankroll at this point still includes the wager amount.
+    const totalBankroll = this.engine.getState().bankroll;
+    this.lastWagerPercent = totalBankroll > 0 ? (wager / totalBankroll) * 100 : 0;
+    this.lastRewardedItem = null;
+
     this.engine.startRound(wager);
     // Fire on_hand_start after cards are dealt so items can inspect the initial state.
     this.fireItemEffects("on_hand_start");
+  }
+
+  /** Returns the item rewarded after the most recent stage clear, or null. */
+  public getLastRewardedItem(): ItemRewardResult | null {
+    return this.lastRewardedItem;
   }
 
   public performAction(action: PlayerAction): void {
@@ -99,36 +110,22 @@ export class GameManager {
     }
   }
 
-  public purchaseShopItem(index: number): Item | null {
-    if (this.metaPhase !== "shop") {
-      return null;
-    }
-    const state = this.engine.getState();
-    const result = this.shop.purchase(index, state.bankroll);
-    if (!result) {
-      return null;
-    }
-    this.engine.adjustBankroll(-result.cost);
-    this.inventory.addItem(result.item);
+  /**
+   * Adds a rewarded item to inventory, applies passive modifiers,
+   * and fires on_purchase effects.
+   */
+  private addRewardedItem(item: Item): void {
+    this.inventory.addItem(item);
 
     // Apply passive modifiers immediately so they take effect from the next round onward.
-    for (const effect of result.item.effects) {
+    for (const effect of item.effects) {
       if (effect.trigger === "passive" && effect.modifier) {
         this.engine.addModifier(effect.modifier);
       }
     }
 
     // Fire the on_purchase effect (e.g. an item that grants a one-time bonus on buy).
-    this.fireItemEffectsForItem(result.item, "on_purchase");
-
-    return result.item;
-  }
-
-  public leaveShop(): void {
-    if (this.metaPhase !== "shop") {
-      return;
-    }
-    this.metaPhase = "playing";
+    this.fireItemEffectsForItem(item, "on_purchase");
   }
 
   // ── In-hand item actions ────────────────────────────────────────────────────
@@ -227,8 +224,14 @@ export class GameManager {
 
       this.fireItemEffects("on_stage_end");
       this.stage += 1;
-      this.shop.generateOfferings(this.metaRng);
-      this.metaPhase = "shop";
+
+      // Roll an item reward based on the wager % of the hand that completed the stage.
+      const reward = rollItemReward(this.lastWagerPercent, this.metaRng);
+      if (reward) {
+        this.lastRewardedItem = reward;
+        this.addRewardedItem(reward.item);
+      }
+      // Meta phase stays "playing" — no shop transition.
     }
   }
 }

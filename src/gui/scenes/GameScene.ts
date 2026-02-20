@@ -248,26 +248,12 @@ export class GameScene extends Phaser.Scene {
         this.scene.resume();
       }
       const meta = this.adapter.getState().metaPhase;
-      if (meta === "shop") {
-        // Stage cleared — launch ShopScene as an overlay on top of GameScene.
-        const state = this.adapter.getState();
-        this.scene.launch("ShopScene", { adapter: this.adapter, state });
-        this.scene.pause();
-      } else if (meta === "game_over") {
+      if (meta === "game_over") {
         // Run ended — stop this scene and return to the main menu.
-        // The brief game-over message set by onGameOver is visible for one frame;
-        // that's fine. We stop immediately so no stale adapter state lingers.
         this.scene.stop();
         this.scene.start("MenuScene");
       }
       // meta === "playing" → betting panel shows, nothing else to do.
-    };
-
-    // ShopScene closes (after adapter.leaveShop()) → just resume GameScene.
-    const onShopShutdown = (): void => {
-      if (this.scene.isPaused()) {
-        this.scene.resume();
-      }
     };
 
     // InventoryOverlayScene closes → resume GameScene.
@@ -278,7 +264,6 @@ export class GameScene extends Phaser.Scene {
     };
 
     this.scene.get(SUMMARY_OVERLAY_KEY)?.events.on("shutdown", onSummaryShutdown);
-    this.scene.get("ShopScene")?.events.on("shutdown", onShopShutdown);
     this.scene.get("InventoryOverlayScene")?.events.on("shutdown", onInventoryShutdown);
 
     // Remove all external listeners when this scene shuts down.
@@ -293,7 +278,6 @@ export class GameScene extends Phaser.Scene {
       this.events.off(ACTION_PANEL_EVENT,  onActionSelected);
       this.events.off(VR_GOGGLES_EVENT,    onVrGogglesActivated);
       this.scene.get(SUMMARY_OVERLAY_KEY)?.events.off("shutdown", onSummaryShutdown);
-      this.scene.get("ShopScene")?.events.off("shutdown", onShopShutdown);
       this.scene.get("InventoryOverlayScene")?.events.off("shutdown", onInventoryShutdown);
     });
 
