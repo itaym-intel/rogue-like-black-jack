@@ -10,23 +10,10 @@ import type { GuiCard } from "../adapter/index.js";
 /**
  * CardSprite
  * ──────────────────────────────────────────────────────────────────────────────
- * A Phaser Container representing a single playing card.
- *
- * It owns two Image children:
- *  - `faceImage`  – the card's face texture
- *  - `backImage`  – the card back texture (always the same)
- *
- * The flip animation tweens scaleX 1→0, swaps visibility, then 0→1, giving a
- * convincing card-turn effect without requiring a 3D renderer.
- *
- * Responsibilities:
- *  - Displaying the correct card face or back
- *  - Animating face/back flips
- *  - Scaling consistently with CARD_DISPLAY_SCALE
- *
- * NOT responsible for: layout, interaction, game state.
+ * A Phaser Container representing a single playing card with drop shadow.
  */
 export class CardSprite extends Phaser.GameObjects.Container {
+  private readonly shadow: Phaser.GameObjects.Graphics;
   private readonly faceImage: Phaser.GameObjects.Image;
   private readonly backImage: Phaser.GameObjects.Image;
 
@@ -41,6 +28,17 @@ export class CardSprite extends Phaser.GameObjects.Container {
     this.suit = card.suit;
     this.isFaceUp = !card.faceDown;
 
+    // Drop shadow
+    this.shadow = scene.add.graphics();
+    this.shadow.fillStyle(0x000000, 0.35);
+    this.shadow.fillRoundedRect(
+      -CARD_DISPLAY_WIDTH / 2 + 3,
+      -CARD_DISPLAY_HEIGHT / 2 + 3,
+      CARD_DISPLAY_WIDTH,
+      CARD_DISPLAY_HEIGHT,
+      4,
+    );
+
     // Card back
     this.backImage = scene.add.image(0, 0, CARD_BACK_KEY).setOrigin(0.5, 0.5);
     this.backImage.setDisplaySize(CARD_DISPLAY_WIDTH, CARD_DISPLAY_HEIGHT);
@@ -50,10 +48,9 @@ export class CardSprite extends Phaser.GameObjects.Container {
     this.faceImage = scene.add.image(0, 0, faceKey).setOrigin(0.5, 0.5);
     this.faceImage.setDisplaySize(CARD_DISPLAY_WIDTH, CARD_DISPLAY_HEIGHT);
 
-    this.add([this.backImage, this.faceImage]);
+    this.add([this.shadow, this.backImage, this.faceImage]);
     this.applyVisibility();
 
-    // Register with scene so it can be managed/destroyed properly
     scene.add.existing(this);
   }
 
@@ -82,7 +79,7 @@ export class CardSprite extends Phaser.GameObjects.Container {
       return this;
     }
 
-    const flipDuration = 100;
+    const flipDuration = 120;
 
     this.scene.tweens.add({
       targets: this,

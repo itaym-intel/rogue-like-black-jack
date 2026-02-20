@@ -73,7 +73,7 @@ export class InventoryOverlayScene extends Phaser.Scene {
     }).setOrigin(0.5, 0.5);
 
     // ── Inventory panel ────────────────────────────────────────────────────
-    const invPanel = new InventoryPanel(this, panelX + 20, panelY + 70);
+    const invPanel = new InventoryPanel(this, cx, panelY + 70);
     invPanel.populate(state.inventory);
 
     // ── Close button ───────────────────────────────────────────────────────

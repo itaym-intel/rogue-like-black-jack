@@ -138,6 +138,17 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
     this.emit("stateChanged", { state });
   }
 
+  /**
+   * Activate Sleight of Hand: discard the chosen card (value → 0) for this hand.
+   * Emits: stateChanged.
+   * Throws if Sleight of Hand is unavailable.
+   */
+  useSleightOfHand(cardId: string): void {
+    this.manager.useSleightOfHand(cardId);
+    const state = this.getState();
+    this.emit("stateChanged", { state });
+  }
+
   // ── Private: meta-event fan-out ───────────────────────────────────────────
 
   /**
@@ -212,12 +223,20 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
     const handsUntilStageCheck =
       meta.handsPerStage - (meta.handsPlayed % meta.handsPerStage);
 
-    // VR Goggles availability
-    const vrGogglesActions = this.manager.getAvailableItemActions();
-    const vrGogglesAvailable = vrGogglesActions.some(
+    // On-demand item availability
+    const itemActions = this.manager.getAvailableItemActions();
+
+    const vrGogglesAvailable = itemActions.some(
       (a) => a.actionId === "vr_goggles_boost",
     );
     const vrGogglesTargets: GuiCard[] = vrGogglesAvailable
+      ? this.manager.getVrGogglesTargets().map((c) => this.toGuiCard(c, false))
+      : [];
+
+    const sleightOfHandAvailable = itemActions.some(
+      (a) => a.actionId === "sleight_of_hand_discard",
+    );
+    const sleightOfHandTargets: GuiCard[] = sleightOfHandAvailable
       ? this.manager.getVrGogglesTargets().map((c) => this.toGuiCard(c, false))
       : [];
 
@@ -248,6 +267,8 @@ export class GameAdapter extends TypedEmitter<GameEventMap> {
       lastRewardedItem,
       vrGogglesAvailable,
       vrGogglesTargets,
+      sleightOfHandAvailable,
+      sleightOfHandTargets,
     };
   }
 

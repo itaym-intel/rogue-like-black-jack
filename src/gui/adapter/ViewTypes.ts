@@ -183,4 +183,15 @@ export interface GuiGameState {
    * Empty when vrGogglesAvailable is false.
    */
   vrGogglesTargets: GuiCard[];
+
+  /**
+   * True when the player holds Sleight of Hand, is in player_turn, and
+   * hasn't used it yet this hand.
+   */
+  sleightOfHandAvailable: boolean;
+  /**
+   * Cards in the active player hand that can be targeted by Sleight of Hand.
+   * Empty when sleightOfHandAvailable is false.
+   */
+  sleightOfHandTargets: GuiCard[];
 }

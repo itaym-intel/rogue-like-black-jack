@@ -16,21 +16,10 @@ const CARD_STEP = Math.round(CARD_DISPLAY_WIDTH * (1 - CARD_OVERLAP));
  * snapshot — adding, removing, or syncing cards as needed — so the scene can
  * simply call `syncHand(hand)` after every state change without managing
  * individual card sprites.
- *
- * Layout origin is the CENTER of the leftmost card, expanding rightward.
- * The container itself is positioned by the scene.
- *
- * Responsibilities:
- *  - Owning and recycling CardSprite instances
- *  - Laying out cards in a row with configurable overlap
- *  - Showing an active-hand highlight border
- *  - Displaying wager / score labels if requested
- *
- * NOT responsible for: game state, adapter interaction, scene transitions.
  */
 export class HandContainer extends Phaser.GameObjects.Container {
   private readonly cardSprites: CardSprite[] = [];
-  private readonly highlightRect: Phaser.GameObjects.Rectangle;
+  private readonly highlightGlow: Phaser.GameObjects.Graphics;
   private readonly scoreLabel: Phaser.GameObjects.Text;
   private readonly wagerLabel: Phaser.GameObjects.Text;
   /** Tracks the last-synced card data array so interactive mode can read card IDs. */
@@ -39,35 +28,32 @@ export class HandContainer extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y);
 
-    // Active-hand highlight
-    this.highlightRect = scene.add.rectangle(0, 0, 10, 10, 0xffd700, 0)
-      .setStrokeStyle(2, 0xffd700, 0)
-      .setOrigin(0.5, 0.5)
-      .setVisible(false);
+    // Active-hand glow highlight
+    this.highlightGlow = scene.add.graphics();
+    this.highlightGlow.setVisible(false);
 
-    // Score / wager labels below the hand
-    this.scoreLabel = scene.add.text(0, CARD_DISPLAY_HEIGHT / 2 + 8, "", {
-      fontSize: "14px",
+    // Score label — pill-shaped badge
+    this.scoreLabel = scene.add.text(0, CARD_DISPLAY_HEIGHT / 2 + 14, "", {
+      fontSize: "15px",
+      fontStyle: "bold",
       color: "#ffffff",
       stroke: "#000",
       strokeThickness: 3,
     }).setOrigin(0.5, 0);
 
-    this.wagerLabel = scene.add.text(0, CARD_DISPLAY_HEIGHT / 2 + 26, "", {
+    this.wagerLabel = scene.add.text(0, CARD_DISPLAY_HEIGHT / 2 + 34, "", {
       fontSize: "12px",
-      color: "#f0e68c",
+      color: "#c9a84c",
       stroke: "#000",
       strokeThickness: 2,
     }).setOrigin(0.5, 0);
 
-    this.add([this.highlightRect, this.scoreLabel, this.wagerLabel]);
+    this.add([this.highlightGlow, this.scoreLabel, this.wagerLabel]);
     scene.add.existing(this);
   }
 
   /**
    * Synchronise this container's sprites with a player GuiHand snapshot.
-   * New cards are deal-animated in from off-screen; removed cards are
-   * destroyed; existing cards are synced for face-up/down changes.
    */
   syncHand(hand: GuiHand, animate = true): void {
     this.syncCards(hand.cards, animate);
@@ -76,12 +62,20 @@ export class HandContainer extends Phaser.GameObjects.Container {
     const scoreText = hand.isBusted
       ? `BUST`
       : hand.isStanding
-      ? `${hand.score} ✓`
+      ? `${hand.score}`
       : `${hand.score}`;
-    this.scoreLabel.setText(scoreText).setColor(hand.isBusted ? "#ff4444" : "#ffffff");
+    this.scoreLabel.setText(scoreText);
+
+    if (hand.isBusted) {
+      this.scoreLabel.setColor("#ff4444");
+    } else if (hand.isStanding) {
+      this.scoreLabel.setColor("#aaaaaa");
+    } else {
+      this.scoreLabel.setColor("#ffffff");
+    }
 
     // Wager label
-    const doubledMark = hand.isDoubled ? " ×2" : "";
+    const doubledMark = hand.isDoubled ? " x2" : "";
     this.wagerLabel.setText(`$${hand.wager.toFixed(2)}${doubledMark}`);
 
     // Active-hand highlight
@@ -97,15 +91,13 @@ export class HandContainer extends Phaser.GameObjects.Container {
     // Add or sync existing sprites
     for (let index = 0; index < cards.length; index += 1) {
       if (index < this.cardSprites.length) {
-        // Existing sprite — sync face/rank
         this.cardSprites[index].syncCard(cards[index], animate);
       } else {
-        // New card — create and deal in
         this.addCard(cards[index], animate);
       }
     }
 
-    // Remove trailing sprites if hand shrank (shouldn't happen in normal play)
+    // Remove trailing sprites if hand shrank
     while (this.cardSprites.length > cards.length) {
       const sprite = this.cardSprites.pop();
       if (sprite) {
@@ -127,7 +119,7 @@ export class HandContainer extends Phaser.GameObjects.Container {
     this.cardSprites.length = 0;
     this.scoreLabel.setText("");
     this.wagerLabel.setText("");
-    this.highlightRect.setVisible(false);
+    this.highlightGlow.setVisible(false);
   }
 
   /** Total pixel width of all displayed cards (accounting for overlap). */
@@ -143,8 +135,6 @@ export class HandContainer extends Phaser.GameObjects.Container {
 
   /**
    * Enable or disable click interaction on each card sprite.
-   * When enabled, hovering dims the card slightly and clicking calls
-   * `onCardClicked(cardId)`.  Used by the VR Goggles card-selection flow.
    */
   setCardsInteractive(
     enabled: boolean,
@@ -167,8 +157,14 @@ export class HandContainer extends Phaser.GameObjects.Container {
         );
         const cardId = this.currentCards[i]?.id;
         if (!cardId) continue;
-        sprite.on(Phaser.Input.Events.POINTER_OVER, () => sprite.setAlpha(0.65));
-        sprite.on(Phaser.Input.Events.POINTER_OUT,  () => sprite.setAlpha(1));
+        sprite.on(Phaser.Input.Events.POINTER_OVER, () => {
+          sprite.setAlpha(0.7);
+          sprite.setY(-6);
+        });
+        sprite.on(Phaser.Input.Events.POINTER_OUT, () => {
+          sprite.setAlpha(1);
+          sprite.setY(0);
+        });
         sprite.on(Phaser.Input.Events.POINTER_DOWN, () => {
           onCardClicked(cardId);
         });
@@ -183,14 +179,15 @@ export class HandContainer extends Phaser.GameObjects.Container {
     const sprite = new CardSprite(this.scene, startX, 0, card);
 
     if (animate) {
-      // Deal-in: start above current position
       const finalY = 0;
-      sprite.setY(finalY - 80).setAlpha(0);
+      sprite.setY(finalY - 60).setAlpha(0).setScale(0.8);
       this.scene.tweens.add({
         targets: sprite,
         y: finalY,
         alpha: 1,
-        duration: 200,
+        scaleX: 1,
+        scaleY: 1,
+        duration: 250,
         ease: "Back.easeOut",
       });
     }
@@ -209,19 +206,32 @@ export class HandContainer extends Phaser.GameObjects.Container {
       sprite.setX(startX + index * CARD_STEP);
     }
 
-    // Re-center labels
     this.scoreLabel.setX(0);
     this.wagerLabel.setX(0);
   }
 
   private setActiveHighlight(active: boolean): void {
-    this.highlightRect.setVisible(active);
+    this.highlightGlow.setVisible(active);
+    if (active) {
+      this.updateHighlightBounds();
+    }
   }
 
   private updateHighlightBounds(): void {
     const n = this.cardSprites.length;
-    const w = CARD_STEP * (n - 1) + CARD_DISPLAY_WIDTH + 12;
-    const h = CARD_DISPLAY_HEIGHT + 12;
-    this.highlightRect.setSize(w, h);
+    const w = CARD_STEP * (n - 1) + CARD_DISPLAY_WIDTH + 16;
+    const h = CARD_DISPLAY_HEIGHT + 16;
+
+    this.highlightGlow.clear();
+
+    // Soft glow effect — multiple expanding, fading rectangles
+    this.highlightGlow.lineStyle(2, 0xffd700, 0.5);
+    this.highlightGlow.strokeRoundedRect(-w / 2, -h / 2, w, h, 6);
+
+    this.highlightGlow.lineStyle(4, 0xffd700, 0.15);
+    this.highlightGlow.strokeRoundedRect(-w / 2 - 2, -h / 2 - 2, w + 4, h + 4, 8);
+
+    this.highlightGlow.lineStyle(6, 0xffd700, 0.06);
+    this.highlightGlow.strokeRoundedRect(-w / 2 - 5, -h / 2 - 5, w + 10, h + 10, 10);
   }
 }

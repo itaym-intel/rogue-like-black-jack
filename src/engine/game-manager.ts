@@ -157,14 +157,29 @@ export class GameManager {
    * If `permanent` is false, the boost is removed automatically at the end of the hand.
    */
   public useVrGoggles(cardId: string, permanent: boolean): void {
+    this.useOnDemandItem("vr_goggles_boost", cardId, permanent);
+  }
+
+  /**
+   * Activate Sleight of Hand: discard `cardId` (set its value to 0) for this hand.
+   */
+  public useSleightOfHand(cardId: string): void {
+    this.useOnDemandItem("sleight_of_hand_discard", cardId, false);
+  }
+
+  /**
+   * Generic on-demand item activation. Finds the item by `actionId`, validates
+   * it is usable, and executes its action with the given target card.
+   */
+  private useOnDemandItem(actionId: string, cardId: string, permanent: boolean): void {
     if (this.engine.getState().phase !== "player_turn") {
-      throw new Error("VR Goggles can only be used during the player's turn.");
+      throw new Error("Item can only be used during the player's turn.");
     }
     const item = [...this.inventory.getItems()].find(
-      (i) => i.onDemandActionId === "vr_goggles_boost",
+      (i) => i.onDemandActionId === actionId,
     );
     if (!item || !item.isActionAvailable?.() || !item.executeAction) {
-      throw new Error("VR Goggles are not available.");
+      throw new Error(`Item (${actionId}) is not available.`);
     }
     item.executeAction({
       targetCardId: cardId,

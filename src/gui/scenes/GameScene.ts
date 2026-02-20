@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { GameAdapter } from "../adapter/GameAdapter.js";
 import type { GuiGameState, GuiPlayerAction, GuiRoundSummary } from "../adapter/index.js";
 import { HandContainer } from "../components/HandContainer.js";
-import { ActionPanel, ACTION_PANEL_EVENT, VR_GOGGLES_EVENT } from "../components/ActionPanel.js";
+import { ActionPanel, ACTION_PANEL_EVENT, VR_GOGGLES_EVENT, SLEIGHT_OF_HAND_EVENT } from "../components/ActionPanel.js";
 import { BetPanel, BET_CONFIRMED_EVENT } from "../components/BetPanel.js";
 import { HudPanel } from "../components/HudPanel.js";
 
@@ -51,6 +51,7 @@ export class GameScene extends Phaser.Scene {
   private hud!: HudPanel;
   private actionPanel!: ActionPanel;
   private betPanel!: BetPanel;
+  private betInput!: Phaser.GameObjects.DOMElement;
   private dealerHandContainer!: HandContainer;
   private playerHandContainers: HandContainer[] = [];
 
@@ -63,11 +64,14 @@ export class GameScene extends Phaser.Scene {
   // State
   private isAnimating = false;
 
-  // VR Goggles card-selection flow
-  private vrGogglesMode: "selecting_card" | "choosing_duration" | null = null;
-  private vrGogglesSelectedCardId: string | null = null;
-  private vrGogglesDialog: Phaser.GameObjects.Container | null = null;
-  private vrGogglesBanner: Phaser.GameObjects.Text | null = null;
+  // Unified item card-selection flow (VR Goggles, Sleight of Hand, …)
+  private itemSelectState: {
+    itemKey: string; // "vr_goggles" | "sleight_of_hand"
+    phase: "selecting_card" | "post_select";
+    selectedCardId: string | null;
+  } | null = null;
+  private itemSelectBanner: Phaser.GameObjects.Text | null = null;
+  private itemSelectDialog: Phaser.GameObjects.Container | null = null;
 
   constructor() {
     super({ key: "GameScene" });
@@ -96,28 +100,71 @@ export class GameScene extends Phaser.Scene {
   private buildTable(): void {
     const { width, height } = this.scale;
 
-    // Felt
-    this.add.rectangle(this.CX, this.CY, width, height, 0x1a5e1a);
+    // Felt base — rich green gradient effect using layered rectangles
+    this.add.rectangle(this.CX, this.CY, width, height, 0x0d3d1a);
 
-    // Edge trim
-    const trim = this.add.graphics();
-    trim.lineStyle(6, 0x0e3e0e, 1);
-    trim.strokeRect(8, 8, width - 16, height - 16);
+    // Lighter center for depth
+    const feltCenter = this.add.graphics();
+    feltCenter.fillStyle(0x1a6b2a, 0.35);
+    feltCenter.fillEllipse(this.CX, this.CY, width * 0.85, height * 0.75);
 
-    // Dealer arc zone
+    // Subtle radial highlight
+    const feltHighlight = this.add.graphics();
+    feltHighlight.fillStyle(0x2a8a3a, 0.12);
+    feltHighlight.fillEllipse(this.CX, this.CY - 40, width * 0.55, height * 0.45);
+
+    // Vignette — dark corners
+    const vignette = this.add.graphics();
+    vignette.fillStyle(0x000000, 0.3);
+    vignette.fillRect(0, 0, width, height);
+    vignette.fillStyle(0x000000, 0);
+    vignette.fillEllipse(this.CX, this.CY, width * 0.95, height * 0.9);
+    // Simulate vignette with corner fills
+    const cornerSize = 200;
+    vignette.fillStyle(0x040e06, 0.5);
+    vignette.fillTriangle(0, 0, cornerSize, 0, 0, cornerSize);
+    vignette.fillTriangle(width, 0, width - cornerSize, 0, width, cornerSize);
+    vignette.fillTriangle(0, height, cornerSize, height, 0, height - cornerSize);
+    vignette.fillTriangle(width, height, width - cornerSize, height, width, height - cornerSize);
+
+    // Outer rail — dark wood-like border
+    const rail = this.add.graphics();
+    rail.lineStyle(10, 0x1a0e06, 1);
+    rail.strokeRoundedRect(4, 4, width - 8, height - 8, 12);
+    rail.lineStyle(2, 0x3a2a1a, 0.6);
+    rail.strokeRoundedRect(10, 10, width - 20, height - 20, 10);
+    rail.lineStyle(1, 0x5a4a2a, 0.3);
+    rail.strokeRoundedRect(14, 14, width - 28, height - 28, 8);
+
+    // Felt edge — inner gold trim line
+    const feltEdge = this.add.graphics();
+    feltEdge.lineStyle(1.5, 0xc9a84c, 0.2);
+    feltEdge.strokeRoundedRect(20, 20, width - 40, height - 40, 6);
+
+    // Dealer arc zone — elegant dashed-look arc
     const dealerArc = this.add.graphics();
-    dealerArc.lineStyle(2, 0x2a7a2a, 1);
-    dealerArc.strokeEllipse(this.CX, this.DEALER_Y, 520, 110);
+    dealerArc.lineStyle(1.5, 0x3a9a4a, 0.4);
+    dealerArc.strokeEllipse(this.CX, this.DEALER_Y + 10, 480, 120);
+    dealerArc.lineStyle(0.5, 0x4aba5a, 0.15);
+    dealerArc.strokeEllipse(this.CX, this.DEALER_Y + 10, 500, 130);
 
-    // Player zone
+    // Player zone arc
     const playerZone = this.add.graphics();
-    playerZone.lineStyle(2, 0x2a7a2a, 1);
-    playerZone.strokeEllipse(this.CX, this.PLAYER_Y + 40, 700, 130);
+    playerZone.lineStyle(1.5, 0x3a9a4a, 0.35);
+    playerZone.strokeEllipse(this.CX, this.PLAYER_Y + 30, 650, 140);
+    playerZone.lineStyle(0.5, 0x4aba5a, 0.12);
+    playerZone.strokeEllipse(this.CX, this.PLAYER_Y + 30, 670, 150);
 
-    // Divider line
-    this.add.graphics()
-      .lineStyle(1, 0x0e3e0e, 0.6)
-      .lineBetween(80, this.CY - 20, width - 80, this.CY - 20);
+    // Center divider — subtle gold line
+    const divider = this.add.graphics();
+    divider.lineStyle(1, 0xc9a84c, 0.15);
+    divider.lineBetween(100, this.CY - 20, width - 100, this.CY - 20);
+    // Small diamond at center
+    const dmX = this.CX;
+    const dmY = this.CY - 20;
+    divider.fillStyle(0xc9a84c, 0.2);
+    divider.fillTriangle(dmX - 6, dmY, dmX, dmY - 4, dmX + 6, dmY);
+    divider.fillTriangle(dmX - 6, dmY, dmX, dmY + 4, dmX + 6, dmY);
   }
 
   // ── Components ────────────────────────────────────────────────────────────
@@ -128,6 +175,33 @@ export class GameScene extends Phaser.Scene {
     this.actionPanel = new ActionPanel(this, this.CX, this.PANEL_Y);
     this.betPanel = new BetPanel(this, this.CX, this.PANEL_Y);
 
+    // Wager text input (DOM element positioned above the bet panel)
+    this.betInput = this.add.dom(this.CX, this.PANEL_Y - 50).createFromHTML(
+      `<input type="number" id="bet-value-input" placeholder="Enter wager..."
+        min="1" step="1"
+        style="width:160px;padding:8px 12px;border-radius:6px;text-align:center;
+               border:1px solid #2a4a2a;background:#0d1a0e;color:#f0e68c;font-size:16px;
+               font-weight:bold;font-family:monospace;outline:none;
+               transition:border-color 0.2s;"
+        onfocus="this.style.borderColor='#4a8a4a'"
+        onblur="this.style.borderColor='#2a4a2a'" />`,
+    ).setVisible(false);
+
+    // Wire input changes to betPanel
+    const inputEl = this.betInput.getChildByID("bet-value-input") as HTMLInputElement | null;
+    inputEl?.addEventListener("input", () => {
+      const val = parseInt(inputEl.value, 10);
+      if (Number.isFinite(val) && val > 0) {
+        this.betPanel.setWager(val);
+      }
+    });
+    inputEl?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        this.betPanel.deal();
+      }
+    });
+
     this.dealerHandContainer = new HandContainer(this, this.CX, this.DEALER_Y);
   }
 
@@ -135,16 +209,19 @@ export class GameScene extends Phaser.Scene {
     const { width } = this.scale;
 
     this.add.text(this.CX, this.DEALER_Y - 120, "DEALER", {
-      fontSize: "14px",
-      color: "#8da88d",
-      letterSpacing: 4,
+      fontSize: "13px",
+      color: "#6a9a6a",
+      letterSpacing: 6,
+      stroke: "#0a1a0a",
+      strokeThickness: 2,
     }).setOrigin(0.5, 0.5);
 
     this.dealerScoreLabel = this.add.text(this.CX, this.DEALER_Y + 80, "", {
-      fontSize: "18px",
+      fontSize: "20px",
+      fontStyle: "bold",
       color: "#e8e8e8",
       stroke: "#000",
-      strokeThickness: 3,
+      strokeThickness: 4,
     }).setOrigin(0.5, 0.5);
 
     this.seedLabel = this.add.text(width - 16, 16, "", {
@@ -153,14 +230,20 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(1, 0);
 
     // Inventory button (bottom-right)
-    const invBtn = this.add.text(width - 16, this.scale.height - 16, "[I] Inventory", {
-      fontSize: "13px",
-      color: "#88aa88",
+    const invBtnBg = this.add.graphics();
+    invBtnBg.fillStyle(0x000000, 0.4);
+    invBtnBg.fillRoundedRect(width - 140, this.scale.height - 38, 124, 28, 6);
+    invBtnBg.lineStyle(1, 0x4a6a4a, 0.5);
+    invBtnBg.strokeRoundedRect(width - 140, this.scale.height - 38, 124, 28, 6);
+    const invBtn = this.add.text(width - 78, this.scale.height - 24, "INVENTORY  [I]", {
+      fontSize: "11px",
+      color: "#7a9a7a",
       stroke: "#000",
       strokeThickness: 2,
-    }).setOrigin(1, 1).setInteractive({ useHandCursor: true });
-    invBtn.on("pointerover", () => invBtn.setColor("#c0e8c0"));
-    invBtn.on("pointerout",  () => invBtn.setColor("#88aa88"));
+      letterSpacing: 1,
+    }).setOrigin(0.5, 0.5).setInteractive({ useHandCursor: true });
+    invBtn.on("pointerover", () => invBtn.setColor("#b0d8b0"));
+    invBtn.on("pointerout",  () => invBtn.setColor("#7a9a7a"));
     invBtn.on("pointerdown", () => {
       if (!this.scene.isPaused()) {
         this.scene.launch("InventoryOverlayScene", { adapter: this.adapter });
@@ -169,18 +252,19 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.phaseLabel = this.add.text(this.CX, this.PLAYER_Y - 100, "", {
-      fontSize: "13px",
-      color: "#f0e68c",
+      fontSize: "12px",
+      color: "#c9a84c",
       stroke: "#000",
       strokeThickness: 2,
+      letterSpacing: 2,
     }).setOrigin(0.5, 0.5);
 
     this.messageText = this.add.text(this.CX, this.CY - 60, "", {
-      fontSize: "28px",
+      fontSize: "32px",
       fontStyle: "bold",
       color: "#FFD700",
       stroke: "#000",
-      strokeThickness: 5,
+      strokeThickness: 6,
     }).setOrigin(0.5, 0.5).setVisible(false);
   }
 
@@ -202,12 +286,18 @@ export class GameScene extends Phaser.Scene {
       }
     };
     const onVrGogglesActivated = (): void => {
-      this.enterVrGogglesSelectMode();
+      this.enterItemCardSelectMode("vr_goggles",
+        "🥽 Click a card to boost its value by 1   [ESC to cancel]");
+    };
+    const onSleightOfHandActivated = (): void => {
+      this.enterItemCardSelectMode("sleight_of_hand",
+        "🃏 Click a card to discard   [ESC to cancel]");
     };
 
-    this.events.on(BET_CONFIRMED_EVENT, onBetConfirmed);
-    this.events.on(ACTION_PANEL_EVENT,  onActionSelected);
-    this.events.on(VR_GOGGLES_EVENT,    onVrGogglesActivated);
+    this.events.on(BET_CONFIRMED_EVENT,   onBetConfirmed);
+    this.events.on(ACTION_PANEL_EVENT,     onActionSelected);
+    this.events.on(VR_GOGGLES_EVENT,       onVrGogglesActivated);
+    this.events.on(SLEIGHT_OF_HAND_EVENT,  onSleightOfHandActivated);
 
     // Named adapter handlers — removed on SHUTDOWN to prevent stale calls into
     // destroyed GL objects if another scene holds the adapter after our shutdown.
@@ -215,8 +305,7 @@ export class GameScene extends Phaser.Scene {
       this.syncUi(state);
     };
     const onRoundSettled = ({ summary, state }: { summary: GuiRoundSummary; state: GuiGameState }): void => {
-      this.scene.launch(SUMMARY_OVERLAY_KEY, { summary, adapter: this.adapter, state });
-      this.scene.pause();
+      this.showOutcomeInterstitial(summary, state);
     };
     const onGameOver = ({ finalBankroll, reason }: { finalBankroll: number; reason: string }): void => {
       // Show the outcome on the table surface. Navigation is handled by
@@ -274,9 +363,10 @@ export class GameScene extends Phaser.Scene {
       // Remove scene-level handlers added above. Phaser does NOT call
       // removeAllListeners() on scene.events during shutdown (only on destroy),
       // so without this they accumulate and double-fire on the next game run.
-      this.events.off(BET_CONFIRMED_EVENT, onBetConfirmed);
-      this.events.off(ACTION_PANEL_EVENT,  onActionSelected);
-      this.events.off(VR_GOGGLES_EVENT,    onVrGogglesActivated);
+      this.events.off(BET_CONFIRMED_EVENT,   onBetConfirmed);
+      this.events.off(ACTION_PANEL_EVENT,    onActionSelected);
+      this.events.off(VR_GOGGLES_EVENT,      onVrGogglesActivated);
+      this.events.off(SLEIGHT_OF_HAND_EVENT, onSleightOfHandActivated);
       this.scene.get(SUMMARY_OVERLAY_KEY)?.events.off("shutdown", onSummaryShutdown);
       this.scene.get("InventoryOverlayScene")?.events.off("shutdown", onInventoryShutdown);
     });
@@ -286,6 +376,40 @@ export class GameScene extends Phaser.Scene {
       if (!this.scene.isPaused()) {
         this.scene.launch("InventoryOverlayScene", { adapter: this.adapter });
         this.scene.pause();
+      }
+    });
+
+    // Gameplay keyboard shortcuts: H = Hit, S = Stand, D = Double, P = Split
+    this.input.keyboard?.on("keydown-H", () => {
+      if (!this.scene.isPaused() && !this.isAnimating) {
+        const state = this.adapter.getState();
+        if (state.phase === "player_turn" && state.availableActions.includes("hit")) {
+          this.safePerformAction("hit");
+        }
+      }
+    });
+    this.input.keyboard?.on("keydown-S", () => {
+      if (!this.scene.isPaused() && !this.isAnimating) {
+        const state = this.adapter.getState();
+        if (state.phase === "player_turn" && state.availableActions.includes("stand")) {
+          this.safePerformAction("stand");
+        }
+      }
+    });
+    this.input.keyboard?.on("keydown-D", () => {
+      if (!this.scene.isPaused() && !this.isAnimating) {
+        const state = this.adapter.getState();
+        if (state.phase === "player_turn" && state.availableActions.includes("double")) {
+          this.safePerformAction("double");
+        }
+      }
+    });
+    this.input.keyboard?.on("keydown-P", () => {
+      if (!this.scene.isPaused() && !this.isAnimating) {
+        const state = this.adapter.getState();
+        if (state.phase === "player_turn" && state.availableActions.includes("split")) {
+          this.safePerformAction("split");
+        }
       }
     });
   }
@@ -302,9 +426,9 @@ export class GameScene extends Phaser.Scene {
     this.hud.sync(state);
     this.seedLabel.setText(`seed: ${String(state.phase === "awaiting_bet" ? this.adapter.getState().bankroll : state.bankroll) !== "0" ? "●●●●" : "—"}`);
 
-    // If the round ended while in VR Goggles mode, clean up silently
-    if (this.vrGogglesMode !== null && state.phase !== "player_turn") {
-      this.destroyVrGogglesUi();
+    // If the round ended while in item card-select mode, clean up silently
+    if (this.itemSelectState !== null && state.phase !== "player_turn") {
+      this.destroyItemSelectUi();
     }
 
     // Dealer hand
@@ -332,21 +456,30 @@ export class GameScene extends Phaser.Scene {
     const acting = state.phase === "player_turn";
 
     this.betPanel.setVisible(betting);
+    this.betInput.setVisible(betting);
     this.actionPanel.setVisible(acting);
 
     if (betting) {
       this.betPanel.setBetLimits(state.minimumBet, state.bankroll);
+      // Clear the text input for the new bet
+      const inputEl = this.betInput.getChildByID("bet-value-input") as HTMLInputElement | null;
+      if (inputEl) inputEl.value = "";
     }
 
     if (acting) {
       this.actionPanel.setAvailableActions(state.availableActions);
-      // Only show VR Goggles button when not mid-selection flow
+      // Only show item buttons when not mid-selection flow
+      const notSelecting = this.itemSelectState === null;
       this.actionPanel.setVrGogglesVisible(
-        state.vrGogglesAvailable && this.vrGogglesMode === null,
+        state.vrGogglesAvailable && notSelecting,
+      );
+      this.actionPanel.setSleightOfHandVisible(
+        state.sleightOfHandAvailable && notSelecting,
       );
     } else {
       this.actionPanel.setAvailableActions([]);
       this.actionPanel.setVrGogglesVisible(false);
+      this.actionPanel.setSleightOfHandVisible(false);
     }
   }
 
@@ -401,73 +534,104 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  // ── VR Goggles flow ───────────────────────────────────────────────────────
+  // ── Item card-selection flow (shared by VR Goggles, Sleight of Hand, …) ──
 
   /**
-   * Step 1 — Player clicks the VR Goggles button.
-   * Hides standard action buttons, makes each card in the active hand clickable,
-   * and shows an instruction banner.
+   * Enter card-selection mode for an item.
+   * Hides standard action buttons, makes each card in the active hand
+   * clickable, and shows an instruction banner.
    */
-  private enterVrGogglesSelectMode(): void {
-    const state = this.adapter.getState();
-    if (!state.vrGogglesAvailable || this.vrGogglesMode !== null) return;
+  private enterItemCardSelectMode(itemKey: string, bannerText: string): void {
+    if (this.itemSelectState !== null) return;
 
-    this.vrGogglesMode = "selecting_card";
+    this.itemSelectState = { itemKey, phase: "selecting_card", selectedCardId: null };
 
-    // Disable standard actions while selecting
+    // Disable standard actions and all item buttons while selecting
     this.actionPanel.setAvailableActions([]);
     this.actionPanel.setVrGogglesVisible(false);
+    this.actionPanel.setSleightOfHandVisible(false);
 
     // Show instruction banner
-    this.vrGogglesBanner = this.add.text(
+    this.itemSelectBanner = this.add.text(
       this.CX,
       this.PLAYER_Y - 130,
-      "🥽 Click a card to boost its value by 1   [ESC to cancel]",
+      bannerText,
       { fontSize: "15px", color: "#f0e68c", stroke: "#000", strokeThickness: 3 },
     ).setOrigin(0.5, 0.5).setDepth(10);
 
     // Make each card in the active hand clickable
+    const state = this.adapter.getState();
     const activeIndex = state.activeHandIndex;
     if (activeIndex !== null) {
       const container = this.playerHandContainers[activeIndex];
       container?.setCardsInteractive(true, (cardId) => {
-        this.onVrGogglesCardSelected(cardId);
+        this.onItemCardSelected(cardId);
       });
     }
 
     // ESC cancels
-    this.input.keyboard?.once("keydown-ESC", () => this.cancelVrGoggles());
+    this.input.keyboard?.once("keydown-ESC", () => this.cancelItemSelect());
   }
 
   /**
-   * Step 2 — Player clicked a card.
-   * Disable card hover, show the permanent/this-hand dialog.
+   * A card was clicked during item card-selection.
+   * Routes to item-specific post-selection logic.
    */
-  private onVrGogglesCardSelected(cardId: string): void {
-    if (this.vrGogglesMode !== "selecting_card") return;
+  private onItemCardSelected(cardId: string): void {
+    if (!this.itemSelectState || this.itemSelectState.phase !== "selecting_card") return;
 
-    this.vrGogglesMode = "choosing_duration";
-    this.vrGogglesSelectedCardId = cardId;
+    this.itemSelectState.selectedCardId = cardId;
 
     // Clear card interactivity
     for (const container of this.playerHandContainers) {
       container.setCardsInteractive(false);
     }
+    this.itemSelectBanner?.destroy();
+    this.itemSelectBanner = null;
 
-    this.vrGogglesBanner?.destroy();
-    this.vrGogglesBanner = null;
-
-    this.showVrGogglesDurationDialog(cardId);
+    switch (this.itemSelectState.itemKey) {
+      case "vr_goggles":
+        this.itemSelectState.phase = "post_select";
+        this.showVrGogglesDurationDialog(cardId);
+        break;
+      case "sleight_of_hand":
+        this.confirmSleightOfHand(cardId);
+        break;
+      default:
+        this.cancelItemSelect();
+    }
   }
 
+  /** Cancel: restore action buttons without making any engine call. */
+  private cancelItemSelect(): void {
+    this.destroyItemSelectUi();
+    const state = this.adapter.getState();
+    if (state.phase === "player_turn") {
+      this.actionPanel.setAvailableActions(state.availableActions);
+      this.actionPanel.setVrGogglesVisible(state.vrGogglesAvailable);
+      this.actionPanel.setSleightOfHandVisible(state.sleightOfHandAvailable);
+    }
+  }
+
+  private destroyItemSelectUi(): void {
+    this.itemSelectState = null;
+    for (const container of this.playerHandContainers) {
+      container.setCardsInteractive(false);
+    }
+    this.itemSelectBanner?.destroy();
+    this.itemSelectBanner = null;
+    this.itemSelectDialog?.destroy();
+    this.itemSelectDialog = null;
+  }
+
+  // ── VR Goggles: duration dialog ────────────────────────────────────────────
+
   /**
-   * Step 3 — Show a small dialog: "This Hand Only" | "Permanent" | Cancel.
+   * Show a small dialog: "This Hand Only" | "Permanent" | Cancel.
+   * Called after the player picks a card for VR Goggles.
    */
   private showVrGogglesDurationDialog(cardId: string): void {
-    const dialogX = this.CX;
-    const dialogY = this.CY;
-
-    const dialog = this.add.container(dialogX, dialogY).setDepth(20);
+    const dialog = this.add.container(this.CX, this.CY).setDepth(20);
 
     // Background
     const bg = this.add.graphics();
@@ -511,46 +675,180 @@ export class GameScene extends Phaser.Scene {
     const cancelTxt = this.add.text(0, 55, "Cancel (ESC)", {
       fontSize: "12px", color: "#aaa",
     }).setOrigin(0.5, 0.5).setInteractive();
-    cancelTxt.on("pointerdown", () => this.cancelVrGoggles());
+    cancelTxt.on("pointerdown", () => this.cancelItemSelect());
 
     dialog.add([bg, title, thisHandBtn, permBtn, cancelTxt]);
-    this.vrGogglesDialog = dialog;
+    this.itemSelectDialog = dialog;
 
-    this.input.keyboard?.once("keydown-ESC", () => this.cancelVrGoggles());
+    this.input.keyboard?.once("keydown-ESC", () => this.cancelItemSelect());
   }
 
-  /** Confirm with the chosen permanence and call the adapter. */
   private confirmVrGoggles(cardId: string, permanent: boolean): void {
-    this.destroyVrGogglesUi();
+    this.destroyItemSelectUi();
     try {
       this.adapter.useVrGoggles(cardId, permanent);
     } catch (err) {
       this.showTemporaryMessage(errorMessage(err), 2000);
     }
-    // syncUi will restore action buttons via stateChanged
   }
 
-  /** Cancel: restore action buttons without making any engine call. */
-  private cancelVrGoggles(): void {
-    this.destroyVrGogglesUi();
-    // Restore action panel from current state
-    const state = this.adapter.getState();
-    if (state.phase === "player_turn") {
-      this.actionPanel.setAvailableActions(state.availableActions);
-      this.actionPanel.setVrGogglesVisible(state.vrGogglesAvailable);
+  // ── Sleight of Hand: immediate confirm ─────────────────────────────────────
+
+  private confirmSleightOfHand(cardId: string): void {
+    this.destroyItemSelectUi();
+    try {
+      this.adapter.useSleightOfHand(cardId);
+    } catch (err) {
+      this.showTemporaryMessage(errorMessage(err), 2000);
     }
   }
 
-  private destroyVrGogglesUi(): void {
-    this.vrGogglesMode = null;
-    this.vrGogglesSelectedCardId = null;
-    for (const container of this.playerHandContainers) {
-      container.setCardsInteractive(false);
+  // ── Outcome interstitial ─────────────────────────────────────────────────
+
+  /**
+   * Show a dramatic centered outcome banner (YOU WIN / YOU LOSE / PUSH / BLACKJACK!)
+   * after the round settles. Waits for click or Enter, then opens SummaryOverlayScene.
+   */
+  private showOutcomeInterstitial(summary: GuiRoundSummary, state: GuiGameState): void {
+    // Hide panels so cards stay clearly visible during the interstitial
+    this.betPanel.setVisible(false);
+    this.actionPanel.setVisible(false);
+
+    // Determine aggregate outcome from hand results
+    const totalDelta = summary.bankrollDelta;
+    const hasBlackjack = summary.handResults.some((r) => r.outcome === "blackjack");
+    const allPush = summary.handResults.every((r) => r.outcome === "push");
+
+    let outcomeText: string;
+    let outcomeColor: string;
+    let glowColor: number;
+
+    if (hasBlackjack) {
+      outcomeText = "BLACKJACK!";
+      outcomeColor = "#fbbf24";
+      glowColor = 0xd97706;
+    } else if (allPush) {
+      outcomeText = "PUSH";
+      outcomeColor = "#94a3b8";
+      glowColor = 0x475569;
+    } else if (totalDelta > 0) {
+      outcomeText = "YOU WIN";
+      outcomeColor = "#4ade80";
+      glowColor = 0x16a34a;
+    } else {
+      outcomeText = "YOU LOSE";
+      outcomeColor = "#f87171";
+      glowColor = 0xdc2626;
     }
-    this.vrGogglesBanner?.destroy();
-    this.vrGogglesBanner = null;
-    this.vrGogglesDialog?.destroy();
-    this.vrGogglesDialog = null;
+
+    // Light dim so cards stay visible underneath
+    const backdrop = this.add.rectangle(this.CX, this.CY, this.scale.width, this.scale.height, 0x000000, 0)
+      .setDepth(50);
+    this.tweens.add({ targets: backdrop, fillAlpha: 0.25, duration: 300 });
+
+    // Glow effect behind text
+    const glow = this.add.graphics().setDepth(51).setAlpha(0);
+    glow.fillStyle(glowColor, 0.3);
+    glow.fillEllipse(this.CX, this.CY - 30, 400, 120);
+
+    // Main outcome text
+    const outcomeLabel = this.add.text(this.CX, this.CY - 30, outcomeText, {
+      fontSize: "52px",
+      fontStyle: "bold",
+      color: outcomeColor,
+      stroke: "#000",
+      strokeThickness: 8,
+      letterSpacing: 6,
+    }).setOrigin(0.5, 0.5).setDepth(52).setAlpha(0).setScale(0.5);
+
+    // Delta text
+    const deltaStr = totalDelta >= 0 ? `+$${totalDelta.toFixed(2)}` : `-$${Math.abs(totalDelta).toFixed(2)}`;
+    const deltaLabel = this.add.text(this.CX, this.CY + 24, deltaStr, {
+      fontSize: "24px",
+      fontStyle: "bold",
+      color: totalDelta >= 0 ? "#4ade80" : "#f87171",
+      stroke: "#000",
+      strokeThickness: 4,
+    }).setOrigin(0.5, 0.5).setDepth(52).setAlpha(0);
+
+    // "Click or press Enter to continue" hint
+    const hint = this.add.text(this.CX, this.CY + 70, "Click or press Enter to continue", {
+      fontSize: "13px",
+      color: "#6a8a6a",
+      stroke: "#000",
+      strokeThickness: 2,
+    }).setOrigin(0.5, 0.5).setDepth(52).setAlpha(0);
+
+    // Animate in
+    this.tweens.add({
+      targets: glow,
+      alpha: 1,
+      duration: 400,
+      ease: "Quad.easeOut",
+    });
+    this.tweens.add({
+      targets: outcomeLabel,
+      alpha: 1,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 500,
+      ease: "Back.easeOut",
+    });
+    this.tweens.add({
+      targets: deltaLabel,
+      alpha: 1,
+      duration: 400,
+      delay: 200,
+      ease: "Quad.easeOut",
+    });
+    this.tweens.add({
+      targets: hint,
+      alpha: 0.7,
+      duration: 400,
+      delay: 600,
+      ease: "Quad.easeOut",
+    });
+
+    // Pulse the hint
+    this.tweens.add({
+      targets: hint,
+      alpha: { from: 0.7, to: 0.3 },
+      duration: 1200,
+      delay: 1000,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
+
+    // Cleanup & proceed
+    const interstitialObjects = [backdrop, glow, outcomeLabel, deltaLabel, hint];
+    const proceed = (): void => {
+      // Remove listeners
+      backdrop.removeAllListeners();
+      this.input.keyboard?.off("keydown-ENTER", proceed);
+      this.input.keyboard?.off("keydown-SPACE", proceed);
+
+      // Fade out then launch summary
+      this.tweens.add({
+        targets: interstitialObjects,
+        alpha: 0,
+        duration: 250,
+        ease: "Quad.easeIn",
+        onComplete: () => {
+          for (const obj of interstitialObjects) obj.destroy();
+          this.scene.launch(SUMMARY_OVERLAY_KEY, { summary, adapter: this.adapter, state });
+          this.scene.pause();
+        },
+      });
+    };
+
+    // Wait for user input (with a short delay to avoid accidental skips)
+    this.time.delayedCall(400, () => {
+      backdrop.setInteractive();
+      backdrop.on(Phaser.Input.Events.POINTER_DOWN, proceed);
+      this.input.keyboard?.on("keydown-ENTER", proceed);
+      this.input.keyboard?.on("keydown-SPACE", proceed);
+    });
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
