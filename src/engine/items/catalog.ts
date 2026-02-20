@@ -22,6 +22,7 @@
  * (isActionAvailable / executeAction) pointing at the original closure.
  */
 
+import { baseCardValue } from "../deck.js";
 import type { BlackjackModifier } from "../modifiers.js";
 import type { Item, ItemRarity } from "../item.js";
 
@@ -163,21 +164,278 @@ function createVrGoggles(): Item {
 
 // ─── 2. Uncommon ─────────────────────────────────────────────────────────────
 
-const UNCOMMON_ITEMS: Item[] = [
-  // TODO: add uncommon items
-];
+/**
+ * Aorta (factory)
+ * If the card that would have busted you is a ♥ heart, its value is nullified
+ * and you may continue drawing. Triggers once per hand.
+ *
+ * Uses modifyHandScore to detect the bust-causing heart card on the first
+ * evaluation, then modifyCardValue zeroes it out on all subsequent evaluations.
+ */
+function createAorta(): Item {
+  let nullifiedCardId: string | null = null;
+
+  return {
+    itemName: "Aorta",
+    itemDescription:
+      "Beating strong. If the card that would have busted you is a ♥ heart, you may draw a new card.",
+    itemRarity: "uncommon",
+    effects: [
+      {
+        trigger: "on_hand_start",
+        apply: () => {
+          nullifiedCardId = null;
+        },
+      },
+      {
+        trigger: "passive",
+        modifier: {
+          modifyCardValue: (base, ctx) => {
+            if (ctx.owner === "player" && ctx.card.id === nullifiedCardId) {
+              return 0;
+            }
+            return base;
+          },
+          modifyHandScore: (score, ctx) => {
+            if (ctx.owner !== "player") return score;
+            if (nullifiedCardId !== null) return score;
+            if (score <= ctx.targetScore) return score;
+
+            const lastCard = ctx.hand[ctx.hand.length - 1];
+            if (!lastCard || lastCard.suit !== "H") return score;
+
+            nullifiedCardId = lastCard.id;
+            const contribution =
+              lastCard.rank === "A" ? 1 : baseCardValue(lastCard.rank);
+            return score - contribution;
+          },
+        } satisfies BlackjackModifier,
+      },
+    ],
+  };
+}
+
+/**
+ * Loamy Soil
+ * Each ♠ spade card with rank under 5 (2, 3, 4) in a winning hand increases
+ * payout earnings by 100%. Stacks per qualifying card.
+ */
+const loamySoil: Item = {
+  itemName: "Loamy Soil",
+  itemDescription:
+    "Rich and dark. ♠ Spades under 5 in your hand provide 100% increased wager earnings.",
+  itemRarity: "uncommon",
+  effects: [
+    {
+      trigger: "passive",
+      modifier: {
+        modifyWinPayoutMultiplier: (base, ctx) => {
+          const count = ctx.hand.cards.filter(
+            (c) =>
+              c.suit === "S" &&
+              (c.rank === "2" || c.rank === "3" || c.rank === "4"),
+          ).length;
+          return base + count;
+        },
+        modifyBlackjackPayoutMultiplier: (base, ctx) => {
+          const count = ctx.hand.cards.filter(
+            (c) =>
+              c.suit === "S" &&
+              (c.rank === "2" || c.rank === "3" || c.rank === "4"),
+          ).length;
+          return base + count;
+        },
+      } satisfies BlackjackModifier,
+    },
+  ],
+};
 
 // ─── 3. Rare ─────────────────────────────────────────────────────────────────
 
-const RARE_ITEMS: Item[] = [
-  // TODO: add rare items
-];
+/**
+ * Four Leaf Clover
+ * The dealer's hand score is capped at one below the target score, preventing
+ * the dealer from ever reaching 21 (or whatever the current target is).
+ */
+const fourLeafClover: Item = {
+  itemName: "Four Leaf Clover",
+  itemDescription:
+    "Impossibly lucky. The dealer cannot get 21.",
+  itemRarity: "rare",
+  effects: [
+    {
+      trigger: "passive",
+      modifier: {
+        modifyHandScore: (score, ctx) => {
+          if (ctx.owner === "dealer" && score >= ctx.targetScore) {
+            return ctx.targetScore - 1;
+          }
+          return score;
+        },
+      } satisfies BlackjackModifier,
+    },
+  ],
+};
 
 // ─── 4. Legendary ────────────────────────────────────────────────────────────
 
-const LEGENDARY_ITEMS: Item[] = [
-  // TODO: add legendary items
-];
+/**
+ * Double Standards
+ * Face cards (J, Q, K) behave like soft values — they count as 10 by default
+ * but can be reduced to 1 (subtract 9) to avoid busting, mirroring how Aces
+ * flex between 11 and 1. Applies to both player and dealer hands.
+ */
+const doubleStandards: Item = {
+  itemName: "Double Standards",
+  itemDescription:
+    "Rules are flexible. All face cards are worth 1 or 10.",
+  itemRarity: "legendary",
+  effects: [
+    {
+      trigger: "passive",
+      modifier: {
+        modifyHandScore: (score, ctx) => {
+          const faceCards = ctx.hand.filter(
+            (c) => c.rank === "J" || c.rank === "Q" || c.rank === "K",
+          );
+          let adjusted = score;
+          let remaining = faceCards.length;
+          while (adjusted > ctx.targetScore && remaining > 0) {
+            adjusted -= 9;
+            remaining -= 1;
+          }
+          return adjusted;
+        },
+      } satisfies BlackjackModifier,
+    },
+  ],
+};
+
+/**
+ * Tank
+ * When the player busts, the last card drawn contributes only 50% of its
+ * face value. This can prevent or soften a bust.
+ */
+const tank: Item = {
+  itemName: "Tank",
+  itemDescription:
+    "Built to endure. If you bust, the last card is worth 50% of its value.",
+  itemRarity: "legendary",
+  effects: [
+    {
+      trigger: "passive",
+      modifier: {
+        modifyHandScore: (score, ctx) => {
+          if (ctx.owner !== "player" || score <= ctx.targetScore) return score;
+          const lastCard = ctx.hand[ctx.hand.length - 1];
+          if (!lastCard) return score;
+          const effectiveValue =
+            lastCard.rank === "A" ? 1 : baseCardValue(lastCard.rank);
+          return score - Math.floor(effectiveValue / 2);
+        },
+      } satisfies BlackjackModifier,
+    },
+  ],
+};
+
+/**
+ * Overkill
+ * If the player busts with a hand value above 25, the round counts as a push
+ * (wager is refunded) instead of a loss. Implemented as an on_hand_end effect
+ * that retroactively refunds the wager.
+ */
+const overkill: Item = {
+  itemName: "Overkill",
+  itemDescription:
+    "Go big or go home. Hand value over 25 counts as a push.",
+  itemRarity: "legendary",
+  effects: [
+    {
+      trigger: "on_hand_end",
+      apply: (ctx) => {
+        if (!ctx.lastRoundSummary) return;
+        for (const result of ctx.lastRoundSummary.handResults) {
+          if (result.outcome === "lose" && result.score > 25) {
+            ctx.adjustBankroll(result.wager);
+          }
+        }
+      },
+    },
+  ],
+};
+
+/**
+ * Sleight of Hand (factory)
+ * Once per hand, the player may discard one card from their hand, setting its
+ * value to 0. Uses the same on-demand action pattern as VR Goggles — the
+ * player selects a target card during their turn.
+ */
+function createSleightOfHand(): Item {
+  let usedThisHand = false;
+  const pendingRemovals: BlackjackModifier[] = [];
+
+  return {
+    itemName: "Sleight of Hand",
+    itemDescription:
+      "Now you see it… Once per hand, you may discard a card.",
+    itemRarity: "legendary",
+    effects: [
+      {
+        trigger: "on_hand_start",
+        apply: () => {
+          usedThisHand = false;
+        },
+      },
+      {
+        trigger: "on_hand_end",
+        apply: (ctx) => {
+          for (const mod of pendingRemovals) {
+            ctx.removeModifier(mod);
+          }
+          pendingRemovals.length = 0;
+        },
+      },
+    ],
+    onDemandActionId: "sleight_of_hand_discard",
+    isActionAvailable: () => !usedThisHand,
+    executeAction: (ctx) => {
+      if (usedThisHand) return;
+      usedThisHand = true;
+
+      const modifier: BlackjackModifier = {
+        modifyCardValue: (base, context) => {
+          if (context.owner === "player" && context.card.id === ctx.targetCardId) {
+            return 0;
+          }
+          return base;
+        },
+      };
+
+      ctx.addModifier(modifier);
+      pendingRemovals.push(modifier);
+    },
+  };
+}
+
+/**
+ * Gold Coin
+ * Doubles all payout multipliers, effectively doubling all earnings.
+ */
+const goldCoin: Item = {
+  itemName: "Gold Coin",
+  itemDescription:
+    "Pure and gleaming. All earnings are increased by 100%.",
+  itemRarity: "legendary",
+  effects: [
+    {
+      trigger: "passive",
+      modifier: {
+        modifyWinPayoutMultiplier: (base) => base * 2,
+        modifyBlackjackPayoutMultiplier: (base) => base * 2,
+      },
+    },
+  ],
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -186,6 +444,23 @@ const COMMON_ITEMS: Item[] = [
   luckyCharm,
   coalRing,
   createVrGoggles(), // stateful — factory call gives each instance its own closure
+];
+
+const UNCOMMON_ITEMS: Item[] = [
+  createAorta(), // stateful — factory call gives each instance its own closure
+  loamySoil,
+];
+
+const RARE_ITEMS: Item[] = [
+  fourLeafClover,
+];
+
+const LEGENDARY_ITEMS: Item[] = [
+  doubleStandards,
+  tank,
+  overkill,
+  createSleightOfHand(), // stateful — factory call gives each instance its own closure
+  goldCoin,
 ];
 
 export const ITEM_CATALOG: Item[] = [
