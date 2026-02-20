@@ -22,8 +22,8 @@ export interface AvailableItemAction {
   actionId: string;
 }
 
-const HANDS_PER_STAGE = 5;
-const STAGE_MONEY_MULTIPLIER = 500;
+const HANDS_PER_STAGE = 1;
+const STAGE_MONEY_MULTIPLIER = 0;
 
 export class GameManager {
   private readonly engine: BlackjackEngine;
