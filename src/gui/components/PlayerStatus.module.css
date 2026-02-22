@@ -3,11 +3,11 @@
   border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 8px;
   box-shadow: var(--shadow-panel);
-  padding: 16px;
+  padding: 14px;
   backdrop-filter: blur(4px);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   flex: 1;
   overflow-y: auto;
 }
@@ -17,7 +17,7 @@
   color: var(--color-text-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.9rem;
+  font-size: 1rem;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
 }
@@ -31,7 +31,7 @@
 .label {
   font-family: var(--font-heading);
   color: var(--color-text-gold);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   opacity: 0.85;
@@ -39,7 +39,7 @@
 
 .gold {
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .goldIcon {
@@ -48,7 +48,7 @@
 
 .list {
   list-style: none;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -62,8 +62,8 @@
 }
 
 .slotIcon {
-  font-size: 1rem;
-  width: 22px;
+  font-size: 1.15rem;
+  width: 26px;
   text-align: center;
 }
 

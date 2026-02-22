@@ -26,10 +26,11 @@ export function ShopScreen({ view, onAction }: ScreenProps) {
         <main className={styles.main}>
           <h2 className={styles.shopTitle}>Shop Inventory</h2>
           <div className={styles.grid}>
-            {items.map((item) => (
+            {items.map((item, i) => (
               <ShopItemCard
                 key={item.index}
                 shopItem={item}
+                displayNumber={i + 1}
                 onBuy={(idx) => onAction({ type: 'buy_item', itemIndex: idx })}
               />
             ))}

@@ -21,9 +21,9 @@ export function useKeyboardShortcuts(
     const tag = (e.target as HTMLElement).tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 
-    // Start screen: Enter or N starts game
+    // Start screen: Enter, N, or Space starts game
     if (!view) {
-      if (e.key === 'Enter' || e.key === 'n' || e.key === 'N') {
+      if (e.key === 'Enter' || e.key === 'n' || e.key === 'N' || e.key === ' ') {
         e.preventDefault();
         onStartGame();
       }
@@ -50,7 +50,7 @@ export function useKeyboardShortcuts(
     }
 
     // Combat actions
-    if ((e.key === 'h' || e.key === 'H' || e.key === '1') && hasAction('hit')) {
+    if ((e.key === 'h' || e.key === 'H' || e.key === '1' || e.key === ' ') && hasAction('hit')) {
       e.preventDefault();
       onAction({ type: 'hit' });
       return;

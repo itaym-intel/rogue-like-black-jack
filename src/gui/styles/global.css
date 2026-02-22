@@ -33,14 +33,14 @@ body {
 button {
   cursor: pointer;
   font-family: var(--font-heading);
-  font-size: 0.875rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-btn-text);
   background: var(--color-btn-bg);
   border: 1.5px solid var(--color-border-gold);
   border-radius: 4px;
-  padding: 10px 24px;
+  padding: 12px 28px;
   transition: background-color 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
 }
 

@@ -24,9 +24,9 @@
 .content {
   flex: 1;
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 16px;
-  padding: 16px;
+  grid-template-columns: 260px 1fr;
+  gap: 12px;
+  padding: 12px;
   position: relative;
   z-index: 1;
   overflow-y: auto;
@@ -56,7 +56,7 @@
 }
 
 .goldAmount {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--color-text-primary);
 }
@@ -74,7 +74,7 @@
 
 .shopTitle {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: var(--color-text-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -84,15 +84,15 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  max-width: 700px;
+  gap: 14px;
+  max-width: 800px;
   width: 100%;
 }
 
 .skipBtn {
   margin-top: 8px;
-  font-size: 1rem;
-  padding: 12px 36px;
+  font-size: 1.1rem;
+  padding: 14px 40px;
 }
 
 @media (max-width: 768px) {

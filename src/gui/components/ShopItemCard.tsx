@@ -11,6 +11,7 @@ const SLOT_ICONS: Record<string, string> = {
 
 interface ShopItemCardProps {
   shopItem: ShopItem;
+  displayNumber: number;
   onBuy: (index: number) => void;
 }
 
@@ -18,12 +19,13 @@ function isEquipment(item: Equipment | Consumable): item is Equipment {
   return 'slot' in item;
 }
 
-export function ShopItemCard({ shopItem, onBuy }: ShopItemCardProps) {
+export function ShopItemCard({ shopItem, displayNumber, onBuy }: ShopItemCardProps) {
   const { item, affordable } = shopItem;
   const icon = isEquipment(item) ? SLOT_ICONS[item.slot] ?? '?' : '\uD83E\uDDEA';
 
   return (
     <div className={`${styles.card} ${affordable ? styles.affordable : styles.unaffordable}`}>
+      <kbd className={styles.keyHint}>{displayNumber}</kbd>
       <div className={styles.icon}>{icon}</div>
       <div className={styles.info}>
         <span className={styles.name}>{item.name}</span>

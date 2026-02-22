@@ -1,6 +1,6 @@
 .card {
-  width: 110px;
-  height: 154px;
+  width: 134px;
+  height: 188px;
   border-radius: 8px;
   position: relative;
   flex-shrink: 0;
@@ -33,20 +33,20 @@
 
 .corner {
   position: absolute;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.1;
   text-align: center;
 }
 
 .topLeft {
-  top: 7px;
-  left: 9px;
+  top: 8px;
+  left: 10px;
 }
 
 .bottomRight {
-  bottom: 7px;
-  right: 9px;
+  bottom: 8px;
+  right: 10px;
   transform: rotate(180deg);
 }
 
@@ -55,7 +55,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2.5rem;
+  font-size: 3rem;
 }
 
 .red {

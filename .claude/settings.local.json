@@ -25,7 +25,8 @@
       "Bash(pkill:*)",
       "mcp__plugin_playwright_playwright__browser_console_messages",
       "Bash(git log:*)",
-      "Bash(cd /d/rogue-like-black-jack && npm test 2>&1)"
+      "Bash(cd /d/rogue-like-black-jack && npm test 2>&1)",
+      "Bash(head:*)"
     ]
   }
 }

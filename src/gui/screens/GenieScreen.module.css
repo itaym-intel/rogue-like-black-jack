@@ -10,9 +10,9 @@
 .content {
   flex: 1;
   display: grid;
-  grid-template-columns: 280px 1fr 280px;
-  gap: 16px;
-  padding: 16px;
+  grid-template-columns: 340px 1fr 340px;
+  gap: 12px;
+  padding: 12px;
   overflow-y: auto;
 }
 
@@ -37,7 +37,7 @@
   color: var(--color-text-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 1rem;
+  font-size: 1.1rem;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
 }
@@ -51,7 +51,7 @@
 .label {
   font-family: var(--font-heading);
   color: var(--color-text-gold);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -64,7 +64,7 @@
 
 .curse {
   color: #c0392b;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .curseList {

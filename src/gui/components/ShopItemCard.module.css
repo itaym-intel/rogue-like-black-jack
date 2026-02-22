@@ -2,10 +2,10 @@
   background: var(--color-bg-panel);
   border: 1.5px solid var(--color-border-gold);
   border-radius: 8px;
-  padding: 12px;
+  padding: 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   transition: box-shadow 200ms ease;
 }
 
@@ -17,10 +17,26 @@
   opacity: 0.5;
 }
 
+.keyHint {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
 .icon {
-  font-size: 1.5rem;
-  width: 40px;
-  height: 40px;
+  font-size: 1.8rem;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,16 +56,16 @@
 .name {
   font-weight: 700;
   color: var(--color-text-gold);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .desc {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--color-text-muted);
 }
 
 .cost {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--color-gold-icon);
 }
