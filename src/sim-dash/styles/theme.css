@@ -1,0 +1,16 @@
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-panel: #0f3460;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0b0;
+  --text-muted: #606080;
+  --accent-teal: #16a085;
+  --accent-coral: #e74c3c;
+  --accent-gold: #f39c12;
+  --accent-blue: #3498db;
+  --accent-purple: #9b59b6;
+  --accent-green: #2ecc71;
+  --accent-orange: #e67e22;
+  --accent-pink: #e84393;
+}

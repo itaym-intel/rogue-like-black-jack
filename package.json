@@ -7,7 +7,9 @@
     "dev": "tsx src/cli/index.ts",
     "dev:gui": "vite",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sim": "tsx src/sim/cli.ts",
+    "sim:dash": "vite --config vite.sim.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
   },
   "dependencies": {
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "recharts": "^3.7.0"
   }
 }
