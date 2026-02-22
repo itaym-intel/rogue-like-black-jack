@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: 12px 24px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
   background: var(--color-bg-panel-translucent);
   backdrop-filter: blur(4px);
@@ -11,7 +11,7 @@
 
 .title {
   font-family: var(--font-heading);
-  font-size: 1.6rem;
+  font-size: 2.2rem;
   color: var(--color-text-gold);
   letter-spacing: 0.15em;
 }
@@ -19,9 +19,9 @@
 .info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 1.4rem;
   color: var(--color-text-primary);
 }
 
@@ -33,15 +33,15 @@
 .boss {
   background: var(--color-boss-accent);
   color: #fff;
-  padding: 2px 8px;
+  padding: 3px 11px;
   border-radius: 3px;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
 
 .seed {
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   color: var(--color-text-muted);
   opacity: 0.7;
 }

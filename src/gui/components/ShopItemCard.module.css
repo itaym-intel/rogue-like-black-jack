@@ -2,10 +2,10 @@
   background: var(--color-bg-panel);
   border: 1.5px solid var(--color-border-gold);
   border-radius: 8px;
-  padding: 14px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 20px;
   transition: box-shadow 200ms ease;
 }
 
@@ -19,10 +19,11 @@
 
 .keyHint {
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  min-width: 24px;
-  height: 24px;
+  min-width: 34px;
+  height: 34px;
+  margin-right: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,9 +35,9 @@
 }
 
 .icon {
-  font-size: 1.8rem;
-  width: 48px;
-  height: 48px;
+  font-size: 2.5rem;
+  width: 68px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,23 +50,23 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
 .name {
   font-weight: 700;
   color: var(--color-text-gold);
-  font-size: 0.95rem;
+  font-size: 1.35rem;
 }
 
 .desc {
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   color: var(--color-text-muted);
 }
 
 .cost {
-  font-size: 0.9rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-gold-icon);
 }

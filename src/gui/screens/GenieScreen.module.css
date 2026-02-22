@@ -10,9 +10,9 @@
 .content {
   flex: 1;
   display: grid;
-  grid-template-columns: 340px 1fr 340px;
-  gap: 12px;
-  padding: 12px;
+  grid-template-columns: 480px 1fr 480px;
+  gap: 16px;
+  padding: 16px;
   overflow-y: auto;
 }
 
@@ -25,11 +25,11 @@
   background: var(--color-bg-panel-translucent);
   border: var(--border-ornate);
   border-radius: 8px;
-  padding: 16px;
+  padding: 22px;
   backdrop-filter: blur(4px);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .panelHeader {
@@ -37,41 +37,41 @@
   color: var(--color-text-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 1.1rem;
-  padding-bottom: 8px;
+  font-size: 1.55rem;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .label {
   font-family: var(--font-heading);
   color: var(--color-text-gold);
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .bossName {
-  font-size: 1rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--color-boss-accent);
 }
 
 .curse {
   color: #c0392b;
-  font-size: 0.95rem;
+  font-size: 1.35rem;
 }
 
 .curseList {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .center {
@@ -88,8 +88,8 @@
 }
 
 .genieBody {
-  width: 100px;
-  height: 200px;
+  width: 140px;
+  height: 280px;
   background: linear-gradient(to top, rgba(64, 224, 208, 0.1) 0%, rgba(64, 224, 208, 0.5) 40%, rgba(0, 128, 128, 0.8) 100%);
   clip-path: polygon(30% 100%, 10% 60%, 20% 30%, 35% 10%, 50% 0%, 65% 10%, 80% 30%, 90% 60%, 70% 100%);
   filter: drop-shadow(0 0 20px rgba(64, 224, 208, 0.4));
@@ -97,8 +97,8 @@
 }
 
 .lamp {
-  width: 50px;
-  height: 25px;
+  width: 70px;
+  height: 35px;
   background: linear-gradient(to right, #b8860b, #d4af37, #b8860b);
   border-radius: 50% 50% 40% 40%;
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
@@ -107,7 +107,7 @@
 .wishInput {
   width: 100%;
   resize: vertical;
-  min-height: 80px;
+  min-height: 112px;
 }
 
 .confirmed {

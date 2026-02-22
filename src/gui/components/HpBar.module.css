@@ -1,12 +1,12 @@
 .container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .bar {
   flex: 1;
-  height: 16px;
+  height: 22px;
   background: #111;
   border: 1px solid var(--color-border-gold);
   border-radius: 2px;
@@ -20,8 +20,8 @@
 
 .text {
   font-weight: 700;
-  font-size: 1rem;
-  min-width: 70px;
+  font-size: 1.4rem;
+  min-width: 100px;
 }
 
 @media (max-width: 768px) {

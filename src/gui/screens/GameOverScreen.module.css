@@ -10,41 +10,42 @@
 
 .overlay {
   text-align: center;
-  padding: 48px 64px;
+  padding: 68px 90px;
   background: rgba(10, 10, 10, 0.85);
-  border: 2px solid #8b0000;
-  border-radius: 16px;
+  border: 3px solid #8b0000;
+  border-radius: 22px;
   box-shadow: 0 0 40px rgba(139, 0, 0, 0.3);
   animation: fadeIn 600ms ease;
 }
 
 .title {
   font-family: var(--font-heading);
-  font-size: 3rem;
+  font-size: 4.2rem;
   color: #c0392b;
   letter-spacing: 0.1em;
-  margin-bottom: 24px;
+  margin-bottom: 34px;
   text-shadow: 0 0 30px rgba(192, 57, 43, 0.5);
 }
 
 .stats {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 32px;
-  font-size: 1rem;
+  gap: 12px;
+  margin-bottom: 44px;
+  font-size: 1.4rem;
   color: var(--color-text-primary);
 }
 
 .seed {
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   color: var(--color-text-muted);
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .btn {
-  font-size: 1.1rem;
-  padding: 14px 48px;
+  margin-top: 12px;
+  font-size: 1.55rem;
+  padding: 20px 68px;
 }
 
 @keyframes fadeIn {

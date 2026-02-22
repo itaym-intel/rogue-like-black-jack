@@ -12,7 +12,7 @@
 .content {
   flex: 1;
   display: grid;
-  grid-template-columns: 340px 1fr 340px;
+  grid-template-columns: 480px 1fr 480px;
   gap: 0;
   overflow: hidden;
   position: relative;
@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 8px;
+  padding: 12px;
   border-right: 1px solid rgba(201, 168, 76, 0.15);
   background: rgba(10, 22, 40, 0.3);
 }
@@ -32,15 +32,16 @@
 .center {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   min-height: 0;
 }
 
 .right {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   overflow: hidden;
-  padding: 8px;
+  padding: 12px;
   border-left: 1px solid rgba(201, 168, 76, 0.15);
   background: rgba(10, 22, 40, 0.3);
   min-height: 0;
@@ -82,6 +83,6 @@
 /* Tablet: narrower sidebars */
 @media (min-width: 769px) and (max-width: 1024px) {
   .content {
-    grid-template-columns: 260px 1fr 260px;
+    grid-template-columns: 360px 1fr 360px;
   }
 }

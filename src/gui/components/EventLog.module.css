@@ -3,11 +3,11 @@
   border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 8px;
   box-shadow: var(--shadow-panel);
-  padding: 14px;
+  padding: 20px;
   backdrop-filter: blur(4px);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   flex: 1;
   overflow-y: auto;
   min-height: 0;
@@ -18,8 +18,8 @@
   color: var(--color-text-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 1rem;
-  padding-bottom: 8px;
+  font-size: 1.4rem;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
 }
 
@@ -27,18 +27,18 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .entry {
-  font-size: 0.9rem;
+  font-size: 1.25rem;
   color: var(--color-text-muted);
-  padding: 3px 0;
+  padding: 4px 0;
   border-bottom: 1px solid rgba(184, 176, 160, 0.1);
 }
 
 .empty {
-  font-size: 0.9rem;
+  font-size: 1.25rem;
   color: var(--color-text-muted);
   font-style: italic;
 }

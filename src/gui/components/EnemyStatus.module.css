@@ -3,11 +3,11 @@
   border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 8px;
   box-shadow: var(--shadow-panel);
-  padding: 14px;
+  padding: 20px;
   backdrop-filter: blur(4px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .panelHeader {
@@ -15,29 +15,29 @@
   color: var(--color-text-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 1rem;
-  padding-bottom: 8px;
+  font-size: 1.4rem;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
 }
 
 .nameRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .name {
   font-family: var(--font-heading);
   color: var(--color-text-gold);
-  font-size: 1.25rem;
+  font-size: 1.75rem;
 }
 
 .boss {
   background: var(--color-boss-accent);
   color: #fff;
-  padding: 2px 8px;
+  padding: 3px 11px;
   border-radius: 3px;
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
@@ -45,20 +45,20 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .label {
   font-family: var(--font-heading);
   color: var(--color-text-gold);
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   opacity: 0.85;
 }
 
 .description {
-  font-size: 0.95rem;
+  font-size: 1.35rem;
   color: var(--color-text-muted);
   font-style: italic;
   line-height: 1.4;
@@ -66,10 +66,10 @@
 
 .list {
   list-style: none;
-  font-size: 0.95rem;
+  font-size: 1.35rem;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   color: var(--color-text-muted);
 }
 

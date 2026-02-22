@@ -11,9 +11,9 @@
 
 .frame {
   text-align: center;
-  padding: 48px 64px;
-  border: 3px solid var(--color-border-gold);
-  border-radius: 16px;
+  padding: 68px 90px;
+  border: 4px solid var(--color-border-gold);
+  border-radius: 22px;
   background: var(--color-bg-panel-translucent);
   box-shadow: var(--shadow-panel), var(--shadow-glow-gold);
   backdrop-filter: blur(6px);
@@ -21,36 +21,36 @@
 
 .title {
   font-family: var(--font-heading);
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   color: var(--color-text-gold);
   letter-spacing: 0.15em;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
 }
 
 .subtitle {
-  font-size: 1rem;
+  font-size: 1.4rem;
   color: var(--color-text-muted);
-  margin-bottom: 32px;
+  margin-bottom: 44px;
   letter-spacing: 0.05em;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
   align-items: center;
 }
 
 .seedInput {
-  width: 280px;
+  width: 390px;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 1.25rem;
 }
 
 .startBtn {
-  font-size: 1.1rem;
-  padding: 14px 48px;
+  font-size: 1.55rem;
+  padding: 20px 68px;
 }
 
 @media (max-width: 768px) {
