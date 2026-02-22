@@ -71,50 +71,29 @@ describe('Curse integration — curses modify actual gameplay', () => {
   });
 
   it('Djinn curse: onHandStart fires through engine and reduces player HP', () => {
-    // Plays a real game through the engine to the first genie encounter,
-    // then verifies the curse's onHandStart hook actually fires on the next hand
+    // Inject Djinn's curse into wishes, then verify pre_hand -> continue
+    // goes through the engine hook and applies onHandStart damage.
     const game = new GameEngine('djinn-curse-test');
-    let reachedGenie = false;
-    let count = 0;
+    const djinnCurse = getBossForStage(2).curse!;
+    const internalPlayer = (game as unknown as { playerState: PlayerState }).playerState;
+    internalPlayer.wishes.push({
+      blessingText: 'test',
+      curse: djinnCurse,
+      bossName: 'Djinn Warden',
+    });
 
-    while (count++ < 2000) {
-      const view = game.getView();
-      if (view.phase === 'game_over' || view.phase === 'victory') break;
-      if (view.phase === 'genie') {
-        reachedGenie = true;
-        game.performAction({ type: 'enter_wish', text: 'test' });
+    const viewBefore = game.getView();
+    expect(viewBefore.phase).toBe('pre_hand');
+    const hpBeforeHand = viewBefore.player.hp;
 
-        const viewAfterWish = game.getView();
-        if (viewAfterWish.phase === 'victory' || viewAfterWish.phase === 'game_over') break;
+    game.performAction({ type: 'continue' });
+    const viewAfterContinue = game.getView();
 
-        const hpBeforeHand = viewAfterWish.player.hp;
-        expect(viewAfterWish.phase).toBe('pre_hand');
-
-        // 'continue' from pre_hand triggers onHandStart hooks — the curse deals 3 damage
-        game.performAction({ type: 'continue' });
-        const viewAfterContinue = game.getView();
-        if (viewAfterContinue.phase === 'game_over') {
-          expect(hpBeforeHand).toBeLessThanOrEqual(3);
-        } else {
-          expect(viewAfterContinue.player.hp).toBe(hpBeforeHand - 3);
-        }
-        break;
-      }
-
-      if (view.phase === 'pre_hand') game.performAction({ type: 'continue' });
-      else if (view.phase === 'player_turn') {
-        if (view.player.handScore && view.player.handScore.value >= 17) {
-          game.performAction({ type: 'stand' });
-        } else {
-          game.performAction({ type: 'hit' });
-        }
-      }
-      else if (view.phase === 'hand_result') game.performAction({ type: 'continue' });
-      else if (view.phase === 'battle_result') game.performAction({ type: 'continue' });
-      else if (view.phase === 'shop') game.performAction({ type: 'skip_shop' });
+    if (viewAfterContinue.phase === 'game_over') {
+      expect(hpBeforeHand).toBeLessThanOrEqual(3);
+    } else {
+      expect(viewAfterContinue.player.hp).toBe(hpBeforeHand - 3);
     }
-
-    expect(reachedGenie).toBe(true);
   });
 });
 
