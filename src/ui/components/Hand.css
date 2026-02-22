@@ -1,0 +1,40 @@
+.hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  transition: box-shadow 0.2s;
+}
+
+.hand--active {
+  box-shadow: 0 0 0 2px var(--accent, #ffd54f), 0 0 16px rgba(255, 213, 79, 0.3);
+}
+
+.hand__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.hand__cards {
+  display: flex;
+  gap: 6px;
+}
+
+.hand__score {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 2px 12px;
+  border-radius: 12px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.hand__score--bust {
+  background: var(--color-lose, #c62828);
+}

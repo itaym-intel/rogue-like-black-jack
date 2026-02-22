@@ -1,0 +1,95 @@
+.card {
+  width: 80px;
+  height: 112px;
+  perspective: 600px;
+  flex-shrink: 0;
+  animation: card-deal-in 0.35s ease-out both;
+}
+
+@keyframes card-deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-60px) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+  transform-style: preserve-3d;
+}
+
+.card--flipped .card__inner {
+  transform: rotateY(180deg);
+}
+
+.card__front,
+.card__back {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  backface-visibility: hidden;
+}
+
+.card__front {
+  background: #fff;
+  border: 2px solid #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.card__front--red {
+  color: var(--card-red, #d32f2f);
+}
+
+.card__front--black {
+  color: var(--card-black, #212121);
+}
+
+.card__corner {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.card__corner--top {
+  top: 4px;
+  left: 5px;
+}
+
+.card__corner--bottom {
+  bottom: 4px;
+  right: 5px;
+  transform: rotate(180deg);
+}
+
+.card__center {
+  font-size: 32px;
+}
+
+.card__back {
+  background: linear-gradient(135deg, #1a237e 25%, #283593 25%, #283593 50%, #1a237e 50%, #1a237e 75%, #283593 75%);
+  background-size: 12px 12px;
+  border: 3px solid #fff;
+  border-radius: 8px;
+  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.25);
+  transform: rotateY(180deg);
+}
+
+.card__back::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}

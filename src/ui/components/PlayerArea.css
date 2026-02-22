@@ -1,0 +1,6 @@
+.player-area {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
