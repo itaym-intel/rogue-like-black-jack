@@ -23,3 +23,14 @@
   font-size: 0.875rem;
   min-width: 60px;
 }
+
+@media (max-width: 768px) {
+  .bar {
+    height: 8px;
+  }
+
+  .text {
+    font-size: 0.7rem;
+    min-width: 45px;
+  }
+}

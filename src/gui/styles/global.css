@@ -23,6 +23,13 @@ body {
   height: 100%;
 }
 
+@media (max-width: 768px) {
+  button {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
+}
+
 button {
   cursor: pointer;
   font-family: var(--font-heading);

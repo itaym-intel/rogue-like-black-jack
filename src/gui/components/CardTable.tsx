@@ -27,7 +27,7 @@ export function CardTable({ playerCards, playerScore, dealerCards, dealerScore, 
         </span>
       </div>
 
-      {showResult && (
+      {showResult ? (
         <div className={styles.resultOverlay}>
           <span className={`${styles.resultWinner} ${handResult.winner === 'player' ? styles.win : handResult.winner === 'dealer' ? styles.loss : styles.push}`}>
             {handResult.winner === 'player' ? 'WIN!' : handResult.winner === 'dealer' ? 'LOSS!' : 'PUSH'}
@@ -39,6 +39,8 @@ export function CardTable({ playerCards, playerScore, dealerCards, dealerScore, 
           )}
           <span className={styles.resultBreakdown}>{handResult.damageBreakdown}</span>
         </div>
+      ) : (
+        <div className={styles.divider} />
       )}
 
       <div className={styles.playerSection}>

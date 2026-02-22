@@ -30,13 +30,31 @@ export function ActionButtons({ view, onAction }: ActionButtonsProps) {
         />
       )}
       <div className={styles.buttons}>
-        {hasHit && <button onClick={() => onAction({ type: 'hit' })}>Hit</button>}
-        {hasStand && <button onClick={() => onAction({ type: 'stand' })}>Stand</button>}
-        {hasDoubleDown && <button onClick={() => onAction({ type: 'double_down' })}>Double Down</button>}
-        {hasConsumables && view.phase === 'pre_hand' && (
-          <button onClick={() => setShowConsumables(!showConsumables)}>Use Item</button>
+        {hasHit && (
+          <button onClick={() => onAction({ type: 'hit' })}>
+            <span className={styles.hint}>H</span> Hit
+          </button>
         )}
-        {hasContinue && <button onClick={() => onAction({ type: 'continue' })}>Continue</button>}
+        {hasStand && (
+          <button onClick={() => onAction({ type: 'stand' })}>
+            <span className={styles.hint}>S</span> Stand
+          </button>
+        )}
+        {hasDoubleDown && (
+          <button onClick={() => onAction({ type: 'double_down' })}>
+            <span className={styles.hint}>D</span> Double Down
+          </button>
+        )}
+        {hasConsumables && view.phase === 'pre_hand' && (
+          <button onClick={() => setShowConsumables(!showConsumables)}>
+            <span className={styles.hint}>I</span> Use Item
+          </button>
+        )}
+        {hasContinue && (
+          <button onClick={() => onAction({ type: 'continue' })}>
+            <span className={styles.hint}>&#9251;</span> Continue
+          </button>
+        )}
       </div>
     </div>
   );

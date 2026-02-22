@@ -1,13 +1,14 @@
 .panel {
   background: var(--color-bg-panel-translucent);
-  border: var(--border-ornate);
+  border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 8px;
   box-shadow: var(--shadow-panel);
   padding: 16px;
   backdrop-filter: blur(4px);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  flex: 1;
   overflow-y: auto;
 }
 
@@ -16,7 +17,7 @@
   color: var(--color-text-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 1rem;
+  font-size: 0.9rem;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
 }
@@ -24,20 +25,21 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .label {
   font-family: var(--font-heading);
   color: var(--color-text-gold);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  opacity: 0.85;
 }
 
 .gold {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 .goldIcon {
@@ -46,21 +48,22 @@
 
 .list {
   list-style: none;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .equipSlot {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  padding: 4px 0;
 }
 
 .slotIcon {
-  font-size: 0.9rem;
-  width: 20px;
+  font-size: 1rem;
+  width: 22px;
   text-align: center;
 }
 
@@ -70,4 +73,50 @@
 
 .curse {
   color: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .panel {
+    gap: 4px;
+    padding: 6px 10px;
+    flex: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .panelHeader {
+    display: none;
+  }
+
+  .section {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .label {
+    font-size: 0.65rem;
+  }
+
+  .gold {
+    font-size: 0.9rem;
+  }
+
+  .list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.7rem;
+  }
+
+  .equipSlot {
+    gap: 2px;
+    padding: 0;
+  }
+
+  .slotIcon {
+    font-size: 0.8rem;
+    width: 16px;
+  }
 }
