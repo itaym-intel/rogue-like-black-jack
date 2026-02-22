@@ -1,0 +1,54 @@
+.container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(212, 175, 55, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 15%, rgba(200, 210, 240, 0.08) 0%, transparent 50%),
+    linear-gradient(to bottom, #0a1628 0%, #1a2744 100%);
+}
+
+.frame {
+  text-align: center;
+  padding: 48px 64px;
+  border: 3px solid var(--color-border-gold);
+  border-radius: 16px;
+  background: var(--color-bg-panel-translucent);
+  box-shadow: var(--shadow-panel), var(--shadow-glow-gold);
+  backdrop-filter: blur(6px);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  color: var(--color-text-gold);
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin-bottom: 32px;
+  letter-spacing: 0.05em;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.seedInput {
+  width: 280px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.startBtn {
+  font-size: 1.1rem;
+  padding: 14px 48px;
+}

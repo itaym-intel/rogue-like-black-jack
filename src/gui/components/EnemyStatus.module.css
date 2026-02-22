@@ -1,0 +1,72 @@
+.panel {
+  background: var(--color-bg-panel-translucent);
+  border: var(--border-ornate);
+  border-radius: 8px;
+  box-shadow: var(--shadow-panel);
+  padding: 16px;
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panelHeader {
+  font-family: var(--font-heading);
+  color: var(--color-text-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 1rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.name {
+  font-family: var(--font-heading);
+  color: var(--color-text-gold);
+  font-size: 1.1rem;
+}
+
+.boss {
+  background: var(--color-boss-accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-family: var(--font-heading);
+  color: var(--color-text-gold);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.description {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.list {
+  list-style: none;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--color-text-muted);
+}

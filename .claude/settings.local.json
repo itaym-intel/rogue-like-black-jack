@@ -6,7 +6,17 @@
       "Bash(timeout 5 npx tsx:*)",
       "Bash(done)",
       "Bash(ls:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(cd:*)",
+      "Bash(cd /d/rouguelike-blackjack/rogue-like-black-jack && npm test 2>&1)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_type",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "Bash(cd /d/rouguelike-blackjack/rogue-like-black-jack && npm install --save-dev @testing-library/react @testing-library/jest-dom jsdom 2>&1)",
+      "mcp__plugin_playwright_playwright__browser_run_code",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "mcp__plugin_playwright_playwright__browser_evaluate"
     ]
   }
 }

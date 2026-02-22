@@ -1,0 +1,73 @@
+.panel {
+  background: var(--color-bg-panel-translucent);
+  border: var(--border-ornate);
+  border-radius: 8px;
+  box-shadow: var(--shadow-panel);
+  padding: 16px;
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.panelHeader {
+  font-family: var(--font-heading);
+  color: var(--color-text-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 1rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-family: var(--font-heading);
+  color: var(--color-text-gold);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.gold {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.goldIcon {
+  color: var(--color-gold-icon);
+}
+
+.list {
+  list-style: none;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.equipSlot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slotIcon {
+  font-size: 0.9rem;
+  width: 20px;
+  text-align: center;
+}
+
+.empty {
+  color: var(--color-text-muted);
+}
+
+.curse {
+  color: #c0392b;
+}

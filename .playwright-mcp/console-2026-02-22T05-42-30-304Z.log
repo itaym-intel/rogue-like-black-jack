@@ -1,0 +1,27 @@
+[  111861ms] [ERROR] React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ App 1. useRef                     useRef
+2. useState                   useState
+3. useCallback                useCallback
+4. useCallback                useCallback
+5. undefined                  useCallback
+ @ http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:5591
+[  111863ms] Error: Rendered more hooks than during the previous render.
+    at updateWorkInProgressHook (http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:5790:19)
+    at updateCallback (http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:6514:20)
+    at Object.useCallback (http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:18934:18)
+    at exports.useCallback (http://localhost:3000/node_modules/.vite/deps/chunk-BSNCPAQV.js?v=16e16450:905:36)
+    at useGameEngine (http://localhost:3000/src/gui/hooks/useGameEngine.ts?t=1771739062133:17:21)
+    at App (http://localhost:3000/src/gui/App.tsx?t=1771739062133:16:46)
+    at Object.react_stack_bottom_frame (http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:18507:20)
+    at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:5652:24)
+    at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:7473:21)
+    at beginWork (http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:8523:20)
+[  111863ms] [WARNING] %s
+
+%s
+ An error occurred in the <App> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=2837494b:6963
