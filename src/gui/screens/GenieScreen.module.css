@@ -1,5 +1,5 @@
 .layout {
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background:
@@ -129,6 +129,7 @@
     grid-template-columns: 1fr;
     gap: 6px;
     padding: 6px;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
