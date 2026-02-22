@@ -17,6 +17,9 @@ export function ActionButtons({ view, onAction }: ActionButtonsProps) {
   const hasContinue = actions.some(a => a.type === 'continue');
   const hasConsumables = actions.some(a => a.type === 'use_consumable');
 
+  const showPrimaryRow = hasHit || hasStand;
+  const showSecondaryRow = hasDoubleDown || (hasConsumables && view.phase === 'pre_hand');
+
   return (
     <div className={styles.container}>
       {showConsumables && (
@@ -29,33 +32,47 @@ export function ActionButtons({ view, onAction }: ActionButtonsProps) {
           onClose={() => setShowConsumables(false)}
         />
       )}
-      <div className={styles.buttons}>
-        {hasHit && (
-          <button onClick={() => onAction({ type: 'hit' })}>
+      {showPrimaryRow && (
+        <div className={styles.primaryRow}>
+          <button
+            className={styles.primaryBtn}
+            onClick={() => onAction({ type: 'hit' })}
+            disabled={!hasHit}
+            style={!hasHit ? { visibility: 'hidden' } : undefined}
+          >
             <span className={styles.hint}>H</span> Hit
           </button>
-        )}
-        {hasStand && (
-          <button onClick={() => onAction({ type: 'stand' })}>
+          <button
+            className={styles.primaryBtn}
+            onClick={() => onAction({ type: 'stand' })}
+            disabled={!hasStand}
+            style={!hasStand ? { visibility: 'hidden' } : undefined}
+          >
             <span className={styles.hint}>S</span> Stand
           </button>
-        )}
-        {hasDoubleDown && (
-          <button onClick={() => onAction({ type: 'double_down' })}>
-            <span className={styles.hint}>D</span> Double Down
-          </button>
-        )}
-        {hasConsumables && view.phase === 'pre_hand' && (
-          <button onClick={() => setShowConsumables(!showConsumables)}>
-            <span className={styles.hint}>I</span> Use Item
-          </button>
-        )}
-        {hasContinue && (
+        </div>
+      )}
+      {showSecondaryRow && (
+        <div className={styles.secondaryRow}>
+          {hasDoubleDown && (
+            <button onClick={() => onAction({ type: 'double_down' })}>
+              <span className={styles.hint}>D</span> Double Down
+            </button>
+          )}
+          {hasConsumables && view.phase === 'pre_hand' && (
+            <button onClick={() => setShowConsumables(!showConsumables)}>
+              <span className={styles.hint}>I</span> Use Item
+            </button>
+          )}
+        </div>
+      )}
+      {hasContinue && (
+        <div className={styles.primaryRow}>
           <button onClick={() => onAction({ type: 'continue' })}>
             <span className={styles.hint}>&#9251;</span> Continue
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

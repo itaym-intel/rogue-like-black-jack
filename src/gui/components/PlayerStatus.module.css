@@ -75,14 +75,27 @@
   color: #c0392b;
 }
 
+.inventoryBtn {
+  display: none;
+}
+
+.inventoryIcon {
+  font-size: 1rem;
+}
+
 @media (max-width: 768px) {
   .panel {
-    gap: 4px;
-    padding: 6px 10px;
+    gap: 6px;
+    padding: 4px 10px;
     flex: none;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    backdrop-filter: none;
+    overflow: visible;
   }
 
   .panelHeader {
@@ -95,12 +108,47 @@
     gap: 6px;
   }
 
+  /* HP takes most of the space */
+  .section:first-of-type {
+    flex: 1;
+    min-width: 0;
+  }
+
   .label {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
   }
 
   .gold {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .goldIcon {
+    font-size: 0.8rem;
+  }
+
+  .inventoryBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    min-width: 0;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+
+  .inventoryIcon {
     font-size: 0.9rem;
+    margin: 0;
+  }
+
+  /* Hide equipment, consumables, effects, curses on mobile */
+  .section:nth-of-type(n+3) {
+    display: none;
   }
 
   .list {

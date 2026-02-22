@@ -12,9 +12,10 @@ const SLOT_ICONS: Record<string, string> = {
 
 interface PlayerStatusProps {
   view: GameView;
+  onInventory?: () => void;
 }
 
-export function PlayerStatus({ view }: PlayerStatusProps) {
+export function PlayerStatus({ view, onInventory }: PlayerStatusProps) {
   const { player } = view;
 
   const consumableGroups = new Map<string, number>();
@@ -39,6 +40,12 @@ export function PlayerStatus({ view }: PlayerStatusProps) {
           <span className={styles.goldIcon}>●</span> {player.gold}
         </span>
       </div>
+
+      {onInventory && (
+        <button className={styles.inventoryBtn} onClick={onInventory} aria-label="Open inventory">
+          <span className={styles.inventoryIcon}>⚔</span>
+        </button>
+      )}
 
       <div className={styles.section}>
         <span className={styles.label}>Equipment</span>

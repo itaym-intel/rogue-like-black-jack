@@ -45,31 +45,6 @@
 
 @media (max-width: 768px) {
   .panel {
-    padding: 6px 10px;
-    flex: 1;
-    min-width: 0;
-    max-height: none;
-    gap: 4px;
-    overflow: hidden;
-  }
-
-  .panelHeader {
     display: none;
-  }
-
-  .list {
-    gap: 2px;
-  }
-
-  .entry {
-    font-size: 0.65rem;
-    padding: 1px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .empty {
-    font-size: 0.65rem;
   }
 }

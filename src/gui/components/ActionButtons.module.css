@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   padding: 16px 24px;
   margin: 0 8px 8px 8px;
   background: rgba(13, 33, 55, 0.6);
@@ -12,11 +12,20 @@
   flex-shrink: 0;
 }
 
-.buttons {
+.primaryRow {
   display: flex;
   gap: 14px;
   justify-content: center;
-  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  min-width: 120px;
+}
+
+.secondaryRow {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
 }
 
 .hint {
@@ -34,11 +43,24 @@
 
 @media (max-width: 768px) {
   .container {
-    margin: 0 6px 4px 6px;
-    padding: 8px 10px;
+    margin: 0 6px;
+    padding: 6px 8px;
+    border-radius: 0 0 10px 10px;
+    gap: 4px;
   }
 
-  .buttons {
+  .primaryRow {
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .primaryBtn {
+    min-width: 90px;
+    flex: none;
+  }
+
+  .secondaryRow {
     gap: 6px;
   }
 

@@ -121,14 +121,57 @@
 }
 
 @media (max-width: 768px) {
+  .layout {
+    overflow: hidden;
+  }
+
   .content {
     grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 6px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .panel {
+    padding: 10px;
     gap: 8px;
-    padding: 8px;
+  }
+
+  .panelHeader {
+    font-size: 1rem;
+    padding-bottom: 6px;
+  }
+
+  .label {
+    font-size: 0.8rem;
+  }
+
+  .bossName {
+    font-size: 0.9rem;
+  }
+
+  .curse {
+    font-size: 0.85rem;
+  }
+
+  .center {
+    order: -1;
+    padding: 8px 0;
   }
 
   .genieBody {
-    width: 60px;
-    height: 120px;
+    width: 50px;
+    height: 100px;
+  }
+
+  .lamp {
+    width: 40px;
+    height: 20px;
+  }
+
+  .wishInput {
+    min-height: 60px;
+    font-size: 0.85rem;
   }
 }

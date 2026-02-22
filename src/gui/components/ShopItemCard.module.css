@@ -74,3 +74,53 @@
 .buyBtn {
   flex-shrink: 0;
 }
+
+@media (max-width: 768px) {
+  .card {
+    padding: 8px;
+    gap: 8px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .keyHint {
+    display: none;
+  }
+
+  .icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+  }
+
+  .info {
+    align-items: center;
+    gap: 2px;
+  }
+
+  .name {
+    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .desc {
+    font-size: 0.65rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .cost {
+    font-size: 0.75rem;
+  }
+
+  .buyBtn {
+    font-size: 0.7rem;
+    padding: 6px 14px;
+  }
+}

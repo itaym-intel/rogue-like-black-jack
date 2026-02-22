@@ -70,3 +70,27 @@
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+@media (max-width: 768px) {
+  .panel {
+    min-width: 0;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 0.9rem;
+  }
+
+  .name {
+    font-size: 0.85rem;
+  }
+
+  .desc {
+    font-size: 0.75rem;
+  }
+
+  .list {
+    gap: 6px;
+  }
+}
