@@ -16,7 +16,16 @@
       "Bash(cd /d/rouguelike-blackjack/rogue-like-black-jack && npm install --save-dev @testing-library/react @testing-library/jest-dom jsdom 2>&1)",
       "mcp__plugin_playwright_playwright__browser_run_code",
       "mcp__plugin_playwright_playwright__browser_snapshot",
-      "mcp__plugin_playwright_playwright__browser_evaluate"
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "mcp__plugin_playwright_playwright__browser_press_key",
+      "mcp__plugin_playwright_playwright__browser_resize",
+      "Bash(git add:*)",
+      "mcp__plugin_playwright_playwright__browser_close",
+      "Bash(npm run:*)",
+      "Bash(pkill:*)",
+      "mcp__plugin_playwright_playwright__browser_console_messages",
+      "Bash(git log:*)",
+      "Bash(cd /d/rogue-like-black-jack && npm test 2>&1)"
     ]
   }
 }

@@ -6,8 +6,8 @@ import {
 } from '../../src/sim/strategies.js';
 
 describe('Strategy exports', () => {
-  it('ALL_STRATEGIES contains 8 strategies', () => {
-    expect(ALL_STRATEGIES).toHaveLength(8);
+  it('ALL_STRATEGIES contains 28 strategies', () => {
+    expect(ALL_STRATEGIES).toHaveLength(28);
   });
 
   it('each strategy has name, description, and decideAction', () => {

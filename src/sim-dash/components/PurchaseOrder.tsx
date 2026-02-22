@@ -29,7 +29,7 @@ export function PurchaseOrder({ stats }: { stats: AggregateStats['purchaseOrderS
       <BarChart width={500} height={250} data={data} margin={{ right: 20 }}>
         <XAxis dataKey="slot" tick={{ fill: '#b8b0a0', fontSize: 11 }} />
         <YAxis tick={{ fill: '#b8b0a0', fontSize: 11 }} unit="%" />
-        <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v: number) => `${v}%`} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v: number | undefined) => `${v}%`} />
         <Legend wrapperStyle={{ fontSize: 11 }} />
         <Bar dataKey="cloth" name="Cloth" stackId="a" fill={TIER_COLORS.cloth} />
         <Bar dataKey="bronze" name="Bronze" stackId="a" fill={TIER_COLORS.bronze} />

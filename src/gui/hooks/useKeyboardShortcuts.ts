@@ -73,7 +73,7 @@ export function useKeyboardShortcuts(
       const num = parseInt(e.key);
       if (num >= 1 && num <= 9 && view.shop?.items) {
         const item = view.shop.items[num - 1];
-        if (item && item.cost <= view.player.gold) {
+        if (item && item.item.cost <= view.player.gold) {
           e.preventDefault();
           onAction({ type: 'buy_item', itemIndex: item.index });
         }

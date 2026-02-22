@@ -1,5 +1,5 @@
 import { GameEngine } from '../engine/game.js';
-import type { Equipment, EquipmentSlot } from '../engine/types.js';
+import type { Equipment, EquipmentSlot, GamePhase } from '../engine/types.js';
 import type {
   Strategy, RunResult, RunEvent,
   HandResultEvent, BattleEndEvent, ShopPurchaseEvent, ConsumableUseEvent,
@@ -35,7 +35,7 @@ export function runGame(seed: string, strategy: Strategy): RunResult {
     goldBeforeAction = view.player.gold;
     const prevEnemyHp = view.enemy?.hp ?? 0;
     const prevPlayerHp = view.player.hp;
-    const prevPhase = view.phase;
+    const prevPhase = view.phase as GamePhase;
     const prevConsumableCount = view.player.consumables.length;
 
     const action = strategy.decideAction(view);

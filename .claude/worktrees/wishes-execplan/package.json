@@ -1,0 +1,35 @@
+{
+  "name": "rogue-like-black-jack",
+  "version": "1.0.0",
+  "description": "Geniejack - A rogue-like blackjack game",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/cli/index.ts",
+    "dev:gui": "vite",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sim": "tsx src/sim/cli.ts",
+    "sim:dash": "vite --config vite.sim.config.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "jsdom": "^28.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "recharts": "^3.7.0"
+  }
+}

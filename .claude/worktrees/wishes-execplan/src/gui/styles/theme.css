@@ -1,0 +1,28 @@
+:root {
+  --color-bg-deep: #0a1628;
+  --color-bg-panel: #1a2744;
+  --color-bg-panel-translucent: rgba(26, 39, 68, 0.92);
+  --color-border-gold: #c9a84c;
+  --color-border-gold-bright: #d4af37;
+  --color-text-primary: #e8dcc8;
+  --color-text-gold: #d4af37;
+  --color-text-muted: #b8b0a0;
+  --color-card-table: #0d2137;
+  --color-card-white: #ffffff;
+  --color-suit-red: #c0392b;
+  --color-suit-black: #2c3e50;
+  --color-btn-bg: #1a2744;
+  --color-btn-hover: #243352;
+  --color-btn-text: #d4af37;
+  --color-hp-high: #27ae60;
+  --color-hp-mid: #f39c12;
+  --color-hp-low: #c0392b;
+  --color-gold-icon: #d4af37;
+  --color-boss-accent: #8b0000;
+  --color-affordable-glow: rgba(212, 175, 55, 0.3);
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Noto Sans', sans-serif;
+  --border-ornate: 2px solid var(--color-border-gold);
+  --shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-glow-gold: 0 0 15px rgba(212, 175, 55, 0.3);
+}

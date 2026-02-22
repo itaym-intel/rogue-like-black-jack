@@ -1,0 +1,145 @@
+.table {
+  background: var(--color-card-table);
+  border: 2px solid rgba(201, 168, 76, 0.3);
+  border-radius: 16px 16px 0 0;
+  padding: 24px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.4);
+  margin: 12px 12px 0 12px;
+}
+
+.dealerSection,
+.playerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.divider {
+  width: 60%;
+  height: 1px;
+  background: rgba(201, 168, 76, 0.2);
+}
+
+.label {
+  font-family: var(--font-heading);
+  color: var(--color-text-gold);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.8;
+}
+
+.cardRow {
+  display: flex;
+  gap: 14px;
+  min-height: 154px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.score {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  letter-spacing: 0.05em;
+}
+
+.resultOverlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 24px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  animation: fadeIn 300ms ease;
+  align-self: center;
+}
+
+.resultWinner {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.win { color: var(--color-hp-high); }
+.loss { color: var(--color-hp-low); }
+.push { color: var(--color-text-gold); }
+
+.resultDamage {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+}
+
+.resultBreakdown {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .table {
+    margin: 4px 6px 0 6px;
+    padding: 12px 10px 8px;
+    border-radius: 10px 10px 0 0;
+    flex: 1;
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  .dealerSection,
+  .playerSection {
+    gap: 6px;
+  }
+
+  .cardRow {
+    gap: 8px;
+    min-height: 80px;
+  }
+
+  .label {
+    font-size: 0.7rem;
+  }
+
+  .score {
+    font-size: 0.85rem;
+  }
+
+  .divider {
+    width: 40%;
+    margin: 2px 0;
+  }
+
+  .resultWinner {
+    font-size: 1.2rem;
+  }
+
+  .resultOverlay {
+    padding: 8px 14px;
+    gap: 3px;
+  }
+
+  .resultDamage {
+    font-size: 0.8rem;
+  }
+
+  .resultBreakdown {
+    font-size: 0.65rem;
+  }
+}

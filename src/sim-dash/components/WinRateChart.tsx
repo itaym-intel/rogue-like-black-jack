@@ -25,13 +25,13 @@ export function WinRateChart({ strategies }: { strategies: StrategyStats[] }) {
         <YAxis type="category" dataKey="name" tick={{ fill: '#e8dcc8', fontSize: 11 }} width={130} />
         <Tooltip
           contentStyle={TOOLTIP_STYLE}
-          formatter={(v: number) => [`${v}%`, 'Win Rate']}
+          formatter={(v: number | undefined) => [`${v}%`, 'Win Rate']}
         />
         <Bar dataKey="winRate" radius={[0, 4, 4, 0]}>
           {chartData.map((entry, i) => (
             <Cell key={i} fill={winRateColor(entry.winRate / 100)} />
           ))}
-          <LabelList dataKey="winRate" position="right" fill="#e8dcc8" fontSize={11} formatter={(v: number) => `${v}%`} />
+          <LabelList dataKey="winRate" position="right" fill="#e8dcc8" fontSize={11} formatter={(v: any) => `${v}%`} />
         </Bar>
       </BarChart>
     </div>

@@ -1,0 +1,91 @@
+@import './theme.css';
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-bg-deep);
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  button {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-btn-text);
+  background: var(--color-btn-bg);
+  border: 1.5px solid var(--color-border-gold);
+  border-radius: 4px;
+  padding: 10px 24px;
+  transition: background-color 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+button:hover:not(:disabled) {
+  background: var(--color-btn-hover);
+  border-color: var(--color-border-gold-bright);
+  box-shadow: var(--shadow-glow-gold);
+}
+
+button:active:not(:disabled) {
+  background: #0f1a2e;
+  border-color: var(--color-border-gold-bright);
+}
+
+button:disabled {
+  color: #555;
+  border-color: #444;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input, textarea {
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background: rgba(10, 22, 40, 0.8);
+  border: 1.5px solid var(--color-border-gold);
+  border-radius: 4px;
+  padding: 8px 12px;
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--color-border-gold-bright);
+  box-shadow: var(--shadow-glow-gold);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-gold);
+  border-radius: 3px;
+}

@@ -214,4 +214,5 @@ export interface AggregateStats {
     enemyDealt: Record<string, number>;
   };
   hpOverTime: Record<string, number[]>;
+  hpOverTimeSampleSize: Record<string, number[]>;
 }

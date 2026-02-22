@@ -22,13 +22,13 @@ export function StageFunnel({ funnel }: { funnel: AggregateStats['stageCompletio
         <YAxis tick={{ fill: '#b8b0a0', fontSize: 11 }} />
         <Tooltip
           contentStyle={TOOLTIP_STYLE}
-          formatter={(v: number, _: string, props: any) => [`${v} (${props.payload.pct}%)`, 'Runs']}
+          formatter={(v: any, _: any, props: any) => [`${v} (${props.payload.pct}%)`, 'Runs']}
         />
         <Bar dataKey="count" radius={[4, 4, 0, 0]}>
           {data.map((_, i) => (
             <Cell key={i} fill={STAGE_COLORS[i]} />
           ))}
-          <LabelList dataKey="pct" position="top" fill="#b8b0a0" fontSize={11} formatter={(v: number) => `${v}%`} />
+          <LabelList dataKey="pct" position="top" fill="#b8b0a0" fontSize={11} formatter={(v: any) => `${v}%`} />
         </Bar>
       </BarChart>
     </div>

@@ -1,0 +1,6 @@
+node_modules/
+dist/
+dist-sim-dash/
+sim-data/
+*.local
+.env

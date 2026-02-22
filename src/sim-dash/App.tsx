@@ -54,7 +54,7 @@ export function App() {
         <WinRateChart strategies={data.byStrategy} />
         <StageFunnel funnel={data.stageCompletionFunnel} />
         <EnemyDifficulty stats={data.enemyStats} />
-        <HpTimeline hpOverTime={data.hpOverTime} />
+        <HpTimeline hpOverTime={data.hpOverTime} hpOverTimeSampleSize={data.hpOverTimeSampleSize} totalRuns={data.meta.seedCount} />
         <DamageHistogram distribution={data.damageDistribution} />
         <ConsumableUsage stats={data.consumableStats} />
         <PurchaseOrder stats={data.purchaseOrderStats} />

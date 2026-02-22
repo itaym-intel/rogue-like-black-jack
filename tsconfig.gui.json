@@ -7,5 +7,5 @@
     "outDir": "dist-gui",
     "declaration": false
   },
-  "include": ["src/gui/**/*", "src/engine/**/*"]
+  "include": ["src/css-modules.d.ts", "src/gui/**/*", "src/engine/**/*", "src/sim-dash/**/*", "src/sim/**/*"]
 }

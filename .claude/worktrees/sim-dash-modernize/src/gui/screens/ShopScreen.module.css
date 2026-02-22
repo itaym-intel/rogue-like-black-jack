@@ -1,0 +1,116 @@
+.layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(to bottom, #4a90c2 0%, #87CEEB 30%, #f4e4c1 70%, #d4a76a 100%);
+  position: relative;
+}
+
+.layout::before {
+  content: '';
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200'%3E%3Cpath d='M0 200V100l60-20 40 10 60-30 80 20 60-10 40 15 60-25 80 30 60-15 40 10 60-20 80 25 60-10 40 15 60-25 80 20V200z' fill='%23c0956a' opacity='0.3'/%3E%3Crect x='50' y='40' width='100' height='60' rx='4' fill='%238B4513' opacity='0.4'/%3E%3Cpath d='M30 40 L100 20 L170 40' stroke='%23b22222' stroke-width='3' fill='%23b22222' opacity='0.5'/%3E%3Crect x='1050' y='40' width='100' height='60' rx='4' fill='%238B4513' opacity='0.4'/%3E%3Cpath d='M1030 40 L1100 20 L1170 40' stroke='%23b22222' stroke-width='3' fill='%23b22222' opacity='0.5'/%3E%3C/svg%3E") no-repeat bottom center;
+    background-size: cover;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  padding: 16px;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.goldPanel {
+  background: var(--color-bg-panel-translucent);
+  border: var(--border-ornate);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+.panelHeader {
+  font-family: var(--font-heading);
+  color: var(--color-text-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.goldAmount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.goldIcon {
+  color: var(--color-gold-icon);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.shopTitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--color-text-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 700px;
+  width: 100%;
+}
+
+.skipBtn {
+  margin-top: 8px;
+  font-size: 1rem;
+  padding: 12px 36px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .goldPanel {
+    padding: 10px;
+  }
+
+  .goldAmount {
+    font-size: 1.4rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

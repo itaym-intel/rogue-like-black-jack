@@ -209,6 +209,7 @@ export function aggregateResults(results: RunResult[], config: SimConfig): Aggre
   // ── HP Over Time ──
   // Average HP at the start of each battle (1-12) per strategy
   const hpOverTime: Record<string, number[]> = {};
+  const hpOverTimeSampleSize: Record<string, number[]> = {};
   for (const [stratName, runs] of byStrategyMap) {
     const battleHps: number[][] = Array.from({ length: 12 }, () => []);
 
@@ -232,6 +233,7 @@ export function aggregateResults(results: RunResult[], config: SimConfig): Aggre
     }
 
     hpOverTime[stratName] = battleHps.map(hps => hps.length > 0 ? avg(hps) : 0);
+    hpOverTimeSampleSize[stratName] = battleHps.map(hps => hps.length);
   }
 
   return {
@@ -252,5 +254,6 @@ export function aggregateResults(results: RunResult[], config: SimConfig): Aggre
     handOutcomeDistribution: { playerWins, dealerWins, pushes, total: totalHands },
     damageDistribution: { playerDealt, enemyDealt },
     hpOverTime,
+    hpOverTimeSampleSize,
   };
 }
