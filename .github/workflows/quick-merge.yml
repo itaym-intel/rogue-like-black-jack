@@ -1,0 +1,53 @@
+name: Quick Merge
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  quick-merge:
+    name: Create Force-Override PR into main
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create PR with merge strategy to override main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          branch="${GITHUB_REF#refs/heads/}"
+          echo "Creating PR from $branch into main (force override)..."
+
+          pr_url=$(gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "Quick Merge: $branch → main (force override)" \
+            --body "⚠️ **Force override merge** triggered by workflow dispatch.
+
+          This PR uses a merge commit that takes all changes from \`$branch\`, overriding any conflicting content in \`main\`.
+
+          **Source branch:** \`$branch\`
+          **Triggered by:** @${{ github.actor }}" 2>&1) || true
+
+          # If PR already exists, find it
+          if echo "$pr_url" | grep -q "already exists"; then
+            pr_url=$(gh pr list --head "$branch" --base main --json url --jq '.[0].url')
+            echo "PR already exists: $pr_url"
+          else
+            echo "PR created: $pr_url"
+          fi
+
+          echo "Merging with theirs strategy (source branch wins)..."
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin main
+          git checkout main
+          git merge -X theirs "origin/$branch" --no-edit -m "Quick Merge: force override main with $branch"
+          git push origin main
