@@ -13,22 +13,25 @@ There are three major systems that are the "rogue-like" systems that progress th
 
 - Equipment: Permament items that last throughout a run. There are 5 core slots for equipment.
     - Weapon: Provides a modifier to the player's damage
-    - Helm: Modifies the first instance of damage recieved
-        - Cloth (weakest): Prevents 3 incoming damage
-        - Bronze: Prevents 7 incoming damage
-        - Iron (strongest): Prevents 15 incoming damage
+        - Flint Spear (weakest): +5 Damage for player
+        - Bronze Saif (Arabian Sword): +10 Damage for player
+        - Iron Scimitar (Arabian Sword): +25 Damage for player
+    - Helm: Lowers incoming damage when player busts
+        - Cloth (weakest): Prevents 30% incoming damage on bust
+        - Bronze: Prevents 50% incoming damage on bust
+        - Iron (strongest): Prevents 80% incoming damage on bust
     - Armor: Modifies all instances of damage recieved
-        - Cloth (weakest): Prevents 10% incoming damage
-        - Bronze: Prevents 25% incoming damage
-        - Iron (strongest): Prevents 50% incoming damage
-    - Boots: Modifies you chances ability to dodge incoming damage
-        - Cloth (weakest): 
-        - Bronze: 
-        - Iron (strongest): 
+        - Cloth (weakest): Prevents 20% incoming damage
+        - Bronze: Prevents 40% incoming damage
+        - Iron (strongest): Prevents 60% incoming damage
+    - Boots: Grants the player a chance ability to dodge incoming damage
+        - Cloth (weakest): 10% Dodge chance
+        - Bronze: 25% Dodge chance
+        - Iron (strongest): 40% Dodge chance
     - Trinket: Special abilities that have gameplay modifiers
-        - Cloth (weakest): 
-        - Bronze: 
-        - Iron (strongest): 
+        - Cloth (weakest): +3 Damage for player, +10 gold per battle
+        - Bronze: +8 Damage for player, +20 gold per battle
+        - Iron (strongest): +15 Damage for player, +50 gold per battle
 
 - Consumables: One time use items
     - Health potion: increases health by 5
