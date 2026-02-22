@@ -79,7 +79,7 @@ export function useKeyboardShortcuts(
         }
         return;
       }
-      if ((e.key === 'Escape' || e.key === 'q' || e.key === 'Q') && hasAction('skip_shop')) {
+      if ((e.key === 'Escape' || e.key === 'q' || e.key === 'Q' || e.key === ' ') && hasAction('skip_shop')) {
         e.preventDefault();
         onAction({ type: 'skip_shop' });
         return;

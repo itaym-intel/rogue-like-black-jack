@@ -24,7 +24,7 @@ export function KeybindOverlay({ view, onClose }: KeybindOverlayProps) {
     binds.push({ key: 'N', label: 'New Game', active: true });
   } else if (view.phase === 'shop') {
     binds.push({ key: '1-9', label: 'Buy Item', active: true });
-    binds.push({ key: 'Q', label: 'Skip Shop', active: true });
+    binds.push({ key: 'Space / Q', label: 'Skip Shop', active: true });
   } else {
     binds.push({ key: 'H / 1', label: 'Hit', active: hasAction('hit') });
     binds.push({ key: 'S / 2', label: 'Stand', active: hasAction('stand') });
