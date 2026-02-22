@@ -15,12 +15,24 @@ export function App() {
   const { data, progress, loading, error } = useSimData();
 
   if (loading) {
-    return <div className="no-data">Loading...</div>;
+    return (
+      <div>
+        <header className="header-bar">
+          <h1>Geniejack</h1>
+          <span className="subtitle">Simulation Dashboard</span>
+        </header>
+        <div className="no-data">Loading...</div>
+      </div>
+    );
   }
 
   if (!data) {
     return (
       <div>
+        <header className="header-bar">
+          <h1>Geniejack</h1>
+          <span className="subtitle">Simulation Dashboard</span>
+        </header>
         <SimProgress progress={progress} />
         <div className="no-data">
           No simulation data found.<br />
@@ -32,6 +44,10 @@ export function App() {
 
   return (
     <div>
+      <header className="header-bar">
+        <h1>Geniejack</h1>
+        <span className="subtitle">Simulation Dashboard</span>
+      </header>
       <MetaSummary data={data} />
       <SimProgress progress={progress} />
       <div className="dashboard-grid">
@@ -43,7 +59,7 @@ export function App() {
         <ConsumableUsage stats={data.consumableStats} />
         <PurchaseOrder stats={data.purchaseOrderStats} />
       </div>
-      <div style={{ marginTop: 20 }}>
+      <div style={{ marginTop: 16 }}>
         <EquipmentTable stats={data.equipmentStats} />
       </div>
     </div>

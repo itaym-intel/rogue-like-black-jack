@@ -29,13 +29,14 @@ export function SimProgress({ progress }: { progress: SimProgressType | null }) 
         <div style={{
           width: barWidth,
           height: '100%',
-          background: 'var(--accent-teal)',
+          background: 'linear-gradient(90deg, #c9a84c, #d4af37)',
           transition: 'width 0.5s ease',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: 11,
-          color: '#fff',
+          color: '#0a1628',
+          fontWeight: 600,
           minWidth: 30,
         }}>
           {pct}%
