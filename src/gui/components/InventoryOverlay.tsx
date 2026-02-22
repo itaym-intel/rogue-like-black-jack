@@ -71,7 +71,7 @@ export function InventoryOverlay({ view, onClose }: InventoryOverlayProps) {
             <span className={styles.label}>Wishes</span>
             <ul className={styles.list}>
               {blessings.map((w, i) => (
-                <li key={i} className={styles.blessing}>{w.blessing!.name}</li>
+                <li key={i} className={styles.blessing}>{w.blessing}</li>
               ))}
             </ul>
           </div>

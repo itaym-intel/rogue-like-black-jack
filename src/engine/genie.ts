@@ -19,6 +19,7 @@ export function storeBlessingWish(encounter: GenieEncounter, text: string): Wish
   encounter.blessingText = text;
   return {
     blessingText: text,
+    blessing: text,
     curse: encounter.curseModifier,
     bossName: encounter.bossName,
   };

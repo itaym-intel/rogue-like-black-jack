@@ -30,7 +30,7 @@ function makeView(overrides: Partial<GameView['player']> = {}): GameView {
         { id: 'c2', name: 'Health Potion', type: 'health_potion', description: 'Restore 10 HP', cost: 15, effect: { type: 'health_potion', value: 10 } },
       ],
       wishes: [
-        { blessingText: 'power', curse: { id: 'curse1', name: 'Night Fang', description: 'Lose 2 HP per hand', source: 'wish_curse' }, bossName: 'Ancient Strix' },
+        { blessingText: 'power', blessing: 'power', curse: { id: 'curse1', name: 'Night Fang', description: 'Lose 2 HP per hand', source: 'wish_curse' }, bossName: 'Ancient Strix' },
       ],
       activeEffects: [
         { id: 'e1', name: 'Strength', remainingHands: 3, modifier: { id: 'm2', name: 'Strength', description: '+3 dmg', source: 'consumable' } },

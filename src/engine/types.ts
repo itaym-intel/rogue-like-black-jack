@@ -57,6 +57,7 @@ export interface Consumable {
 
 export interface Wish {
   blessingText: string;
+  blessing: string | null;
   curse: Modifier | null;
   bossName: string;
 }

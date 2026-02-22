@@ -46,7 +46,7 @@ describe('Curse integration — curses modify actual gameplay', () => {
       hp: 50, maxHp: 50, gold: 0,
       equipment: new Map<EquipmentSlot, Equipment | null>(),
       consumables: [],
-      wishes: [{ blessingText: 'test', curse: sultanCurse, bossName: 'Crimson Sultan' }],
+      wishes: [{ blessingText: 'test', blessing: 'test', curse: sultanCurse, bossName: 'Crimson Sultan' }],
       activeEffects: [],
     };
     const enemyState: EnemyState = {
@@ -78,6 +78,7 @@ describe('Curse integration — curses modify actual gameplay', () => {
     const internalPlayer = (game as unknown as { playerState: PlayerState }).playerState;
     internalPlayer.wishes.push({
       blessingText: 'test',
+      blessing: 'test',
       curse: djinnCurse,
       bossName: 'Djinn Warden',
     });
