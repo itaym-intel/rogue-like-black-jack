@@ -9,11 +9,28 @@ export function MetaSummary({ data }: { data: AggregateStats }) {
 
   return (
     <div className="meta-summary">
-      Last sim: {date} | {data.meta.totalGames.toLocaleString()} games
-      ({data.meta.seedCount} seeds x {data.meta.strategies.length} strategies)
-      | Duration: {duration}s
-      | Best win rate: {best?.name} ({(best?.winRate * 100).toFixed(1)}%)
-      | Best progression: {bestStage?.name} (avg stage {bestStage?.avgStageReached.toFixed(2)})
+      <div>
+        <span className="label">Last Sim</span>{' '}
+        <span className="value">{date}</span>
+      </div>
+      <div>
+        <span className="label">Games</span>{' '}
+        <span className="value">
+          {data.meta.totalGames.toLocaleString()} ({data.meta.seedCount} seeds x {data.meta.strategies.length} strategies)
+        </span>
+      </div>
+      <div>
+        <span className="label">Duration</span>{' '}
+        <span className="value">{duration}s</span>
+      </div>
+      <div>
+        <span className="label">Best Win Rate</span>{' '}
+        <span className="value">{best?.name} ({(best?.winRate * 100).toFixed(1)}%)</span>
+      </div>
+      <div>
+        <span className="label">Best Progression</span>{' '}
+        <span className="value">{bestStage?.name} (avg stage {bestStage?.avgStageReached.toFixed(2)})</span>
+      </div>
     </div>
   );
 }

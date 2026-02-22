@@ -3,10 +3,12 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import type { AggregateStats } from '../../sim/types.js';
 
 const TIER_COLORS = {
-  cloth: '#a0a0b0',
-  bronze: '#e67e22',
-  iron: '#95a5a6',
+  cloth: '#b8b0a0',
+  bronze: '#d4882a',
+  iron: '#8a9aad',
 };
+
+const TOOLTIP_STYLE = { background: '#1a2744', border: '1px solid rgba(201,168,76,0.3)', fontSize: 12, color: '#e8dcc8' };
 
 export function PurchaseOrder({ stats }: { stats: AggregateStats['purchaseOrderStats'] }) {
   const slots = Object.keys(stats);
@@ -25,9 +27,9 @@ export function PurchaseOrder({ stats }: { stats: AggregateStats['purchaseOrderS
     <div className="panel">
       <div className="panel-title">First Purchase Tier by Slot</div>
       <BarChart width={500} height={250} data={data} margin={{ right: 20 }}>
-        <XAxis dataKey="slot" tick={{ fill: '#a0a0b0', fontSize: 11 }} />
-        <YAxis tick={{ fill: '#a0a0b0', fontSize: 11 }} unit="%" />
-        <Tooltip contentStyle={{ background: '#16213e', border: 'none', fontSize: 12 }} formatter={(v: number) => `${v}%`} />
+        <XAxis dataKey="slot" tick={{ fill: '#b8b0a0', fontSize: 11 }} />
+        <YAxis tick={{ fill: '#b8b0a0', fontSize: 11 }} unit="%" />
+        <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(v: number) => `${v}%`} />
         <Legend wrapperStyle={{ fontSize: 11 }} />
         <Bar dataKey="cloth" name="Cloth" stackId="a" fill={TIER_COLORS.cloth} />
         <Bar dataKey="bronze" name="Bronze" stackId="a" fill={TIER_COLORS.bronze} />
