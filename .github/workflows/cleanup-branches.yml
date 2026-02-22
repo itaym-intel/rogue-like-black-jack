@@ -1,0 +1,37 @@
+name: Cleanup Stale Branches
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    name: Delete Stale Branches
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete branches with no commits in over a week
+        run: |
+          cutoff=$(date -d '7 days ago' -u +%s)
+          deleted=0
+
+          for branch in $(git branch -r --no-merged origin/main | grep -v 'origin/main$' | grep -v 'origin/HEAD' | sed 's|origin/||'); do
+            last_commit=$(git log -1 --format=%ct "origin/$branch" 2>/dev/null || echo 0)
+            if [ "$last_commit" -lt "$cutoff" ]; then
+              echo "Deleting stale branch: $branch (last commit: $(date -d @$last_commit -u +%Y-%m-%d))"
+              git push origin --delete "$branch"
+              deleted=$((deleted + 1))
+            fi
+          done
+
+          echo ""
+          if [ "$deleted" -eq 0 ]; then
+            echo "No stale branches found."
+          else
+            echo "Deleted $deleted stale branch(es)."
+          fi
