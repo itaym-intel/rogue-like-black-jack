@@ -33,6 +33,17 @@ No tech stack has been chosen yet. All source code is simple prototyping. The pr
 3. Design the engine as a deterministic state machine that accepts a seed
 4. Expose game actions through an interface that both CLI and GUI can consume
 
+## Skill Guides
+
+Self-contained guides for content creation live in `.claude/skills/`:
+
+- **`adding-enemies.md`** — Adding regular enemies or bosses to a stage
+- **`adding-equipment.md`** — Adding weapons, helms, armor, boots, or trinkets
+- **`adding-consumables.md`** — Adding potions or other usable items
+- **`writing-tests.md`** — Reference for all test patterns (makeContext, modifier testing, dodge loops, autoPlay)
+
+Each guide is standalone — read one file and you have everything needed for that task.
+
 # ExecPlans
 
 When writing complex features or significant refactors, use an ExecPlan (as described in .agent/PLANS.md) from design to implementation.
