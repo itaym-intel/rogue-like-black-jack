@@ -1,4 +1,4 @@
-# Genie Blackjack
+# Geniejack
 
 ## Core loop
 - All opponents and the player have health points

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm init:*)",
+      "Bash(npx vitest:*)",
+      "Bash(timeout 5 npx tsx:*)",
+      "Bash(done)",
+      "Bash(ls:*)",
+      "Bash(wc:*)"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "rogue-like-black-jack",
+  "version": "1.0.0",
+  "description": "Geniejack - A rogue-like blackjack game",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/cli/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
