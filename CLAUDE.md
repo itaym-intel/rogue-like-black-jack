@@ -37,6 +37,7 @@ No tech stack has been chosen yet. All source code is simple prototyping. The pr
 
 Self-contained guides for content creation live in `.claude/skills/`:
 
+- **`onboard-session.md`** — Run at the start of a new session: reads all docs, inspects code, patches stale documentation, outputs a session brief
 - **`adding-enemies.md`** — Adding regular enemies or bosses to a stage
 - **`adding-equipment.md`** — Adding weapons, helms, armor, boots, or trinkets
 - **`adding-consumables.md`** — Adding potions or other usable items

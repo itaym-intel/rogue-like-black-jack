@@ -4,6 +4,7 @@ Self-contained guides for common content creation tasks. Each guide includes tem
 
 | Guide | When to use |
 |---|---|
+| [onboard-session.md](onboard-session.md) | Start of a new session — read all docs, inspect code, patch stale documentation |
 | [adding-enemies.md](adding-enemies.md) | Adding regular enemies or bosses to a stage |
 | [adding-equipment.md](adding-equipment.md) | Adding weapons, helms, armor, boots, or trinkets |
 | [adding-consumables.md](adding-consumables.md) | Adding potions or other usable items |
