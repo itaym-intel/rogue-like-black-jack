@@ -2,4 +2,4 @@
 
 npm run build
 chmod +x node_modules/.bin/*
-echo "Linux build fixed"
+echo "Linux built and fixed"
