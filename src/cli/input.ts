@@ -43,6 +43,27 @@ export function createInputHandler(): {
         return { type: 'double_down' };
       }
 
+      // Remove card
+      if (input === 'r' && availableActions.some(a => a.type === 'remove_card')) {
+        const idxStr = await prompt('Card to remove (1-based): ');
+        const idx = parseInt(idxStr, 10);
+        if (!isNaN(idx) && idx >= 1) {
+          return { type: 'remove_card', cardIndex: idx - 1 };
+        }
+        console.log('Invalid index');
+        continue;
+      }
+
+      // Peek
+      if (input === 'p' && availableActions.some(a => a.type === 'peek')) {
+        return { type: 'peek' };
+      }
+
+      // Surrender
+      if ((input === 'rr' || input === 'surrender') && availableActions.some(a => a.type === 'surrender')) {
+        return { type: 'surrender' };
+      }
+
       // Use consumable
       if (input === 'u' && availableActions.some(a => a.type === 'use_consumable')) {
         const idxStr = await prompt('Item index (0-based): ');

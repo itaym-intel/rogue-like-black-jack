@@ -49,6 +49,11 @@ export function renderView(view: GameView): string {
 
   // Wishes
   if (view.player.wishes.length > 0) {
+    const blessings = view.player.wishes
+      .filter(w => w.blessing)
+      .map(w => w.blessing!.name)
+      .join(', ');
+    if (blessings) lines.push(`Blessings: ${blessings}`);
     const curses = view.player.wishes
       .filter(w => w.curse)
       .map(w => w.curse!.name)
@@ -132,6 +137,9 @@ export function renderView(view: GameView): string {
   if (view.phase === 'player_turn') {
     const parts = ['(h)it', '(s)tand'];
     if (view.availableActions.some(a => a.type === 'double_down')) parts.push('(d)ouble');
+    if (view.availableActions.some(a => a.type === 'remove_card')) parts.push('(r)emove');
+    if (view.availableActions.some(a => a.type === 'peek')) parts.push('(p)eek');
+    if (view.availableActions.some(a => a.type === 'surrender')) parts.push('su(rr)ender');
     lines.push(`> ${parts.join(' ')}`);
   } else if (view.phase === 'pre_hand') {
     const parts: string[] = [];

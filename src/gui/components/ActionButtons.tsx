@@ -10,13 +10,18 @@ interface ActionButtonsProps {
 
 export function ActionButtons({ view, onAction }: ActionButtonsProps) {
   const [showConsumables, setShowConsumables] = useState(false);
+  const [showRemoveSelect, setShowRemoveSelect] = useState(false);
   const actions = view.availableActions;
   const hasHit = actions.some(a => a.type === 'hit');
   const hasStand = actions.some(a => a.type === 'stand');
   const hasDoubleDown = actions.some(a => a.type === 'double_down');
   const hasContinue = actions.some(a => a.type === 'continue');
   const hasConsumables = actions.some(a => a.type === 'use_consumable');
+  const hasRemoveCard = actions.some(a => a.type === 'remove_card');
+  const hasPeek = actions.some(a => a.type === 'peek');
+  const hasSurrender = actions.some(a => a.type === 'surrender');
 
+  const showBlessingRow = hasRemoveCard || hasPeek || hasSurrender;
   const showPrimaryRow = hasHit || hasStand;
   const showSecondaryRow = hasDoubleDown || (hasConsumables && view.phase === 'pre_hand');
 
@@ -31,6 +36,43 @@ export function ActionButtons({ view, onAction }: ActionButtonsProps) {
           }}
           onClose={() => setShowConsumables(false)}
         />
+      )}
+      {showBlessingRow && (
+        <div className={styles.blessingRow}>
+          {hasRemoveCard && !showRemoveSelect && (
+            <button className={styles.blessingBtn} onClick={() => setShowRemoveSelect(true)}>
+              <span className={styles.hint}>R</span> Remove Card
+            </button>
+          )}
+          {hasRemoveCard && showRemoveSelect && view.player.hand && (
+            <div className={styles.removeSelect}>
+              <span className={styles.removeLabel}>Remove which card?</span>
+              {view.player.hand.map((card, idx) => (
+                <button
+                  key={idx}
+                  className={styles.removeCardBtn}
+                  onClick={() => {
+                    onAction({ type: 'remove_card', cardIndex: idx });
+                    setShowRemoveSelect(false);
+                  }}
+                >
+                  {card.rank}{card.suit[0].toUpperCase()}
+                </button>
+              ))}
+              <button className={styles.removeCardBtn} onClick={() => setShowRemoveSelect(false)}>Cancel</button>
+            </div>
+          )}
+          {hasPeek && (
+            <button className={styles.blessingBtn} onClick={() => onAction({ type: 'peek' })}>
+              <span className={styles.hint}>P</span> Peek
+            </button>
+          )}
+          {hasSurrender && (
+            <button className={styles.blessingBtn} onClick={() => onAction({ type: 'surrender' })}>
+              Surrender
+            </button>
+          )}
+        </div>
       )}
       {showPrimaryRow && (
         <div className={styles.primaryRow}>

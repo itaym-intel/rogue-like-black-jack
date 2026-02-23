@@ -115,6 +115,54 @@
   font-style: italic;
 }
 
+.charCounter {
+  text-align: right;
+  color: var(--color-text-muted, #888);
+  font-size: 0.85rem;
+  margin-top: -8px;
+}
+
+.loading {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--color-text-gold);
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.blessingResult {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 6px;
+  padding: 16px;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.blessingName {
+  color: var(--color-text-gold);
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+}
+
+.blessingDesc {
+  color: var(--color-text-body, #ddd);
+  font-size: 1rem;
+}
+
+.effectList {
+  list-style: disc;
+  padding-left: 20px;
+  color: var(--color-text-body, #ddd);
+  font-size: 0.9rem;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }

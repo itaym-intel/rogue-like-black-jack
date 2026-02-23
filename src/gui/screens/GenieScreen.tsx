@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import type { GameView, PlayerAction } from '../../engine/types';
+import type { GameView, PlayerAction, BlessingDefinition } from '../../engine/types';
+import { fetchBlessing } from '../../llm/wish-api';
+import { buildWishContext } from '../../llm/wish-generator';
 import { HeaderBar } from '../components/HeaderBar';
 import styles from './GenieScreen.module.css';
 
@@ -10,10 +12,28 @@ interface ScreenProps {
 
 export function GenieScreen({ view, onAction }: ScreenProps) {
   const [wishText, setWishText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [blessingResult, setBlessingResult] = useState<BlessingDefinition | null>(null);
   const genie = view.genie;
   if (!genie) return null;
 
   const curses = view.player.wishes.filter(w => w.curse !== null);
+
+  async function handleGrantWish() {
+    setLoading(true);
+    try {
+      const wishContext = buildWishContext(view);
+      const blessingDef = await fetchBlessing(wishText, wishContext);
+      setBlessingResult(blessingDef);
+    } catch {
+      setBlessingResult({ name: 'Minor Boon', description: 'A small gift from the Genie', effects: [{ type: 'flat_damage_bonus', value: 3 }] });
+    }
+    setLoading(false);
+  }
+
+  function handleContinue() {
+    onAction({ type: 'enter_wish', text: wishText, blessing: blessingResult ?? undefined });
+  }
 
   return (
     <div className={styles.layout}>
@@ -53,19 +73,36 @@ export function GenieScreen({ view, onAction }: ScreenProps) {
         <aside className={styles.right}>
           <div className={styles.panel}>
             <h2 className={styles.panelHeader}>Enter Your Wish:</h2>
-            {!genie.blessingEntered ? (
+            {loading ? (
+              <div className={styles.loading}>
+                <p>The Genie ponders your wish...</p>
+              </div>
+            ) : blessingResult ? (
+              <div className={styles.blessingResult}>
+                <h3 className={styles.blessingName}>{blessingResult.name}</h3>
+                <p className={styles.blessingDesc}>{blessingResult.description}</p>
+                <ul className={styles.effectList}>
+                  {blessingResult.effects.map((e, i) => (
+                    <li key={i}>{e.type.replace(/_/g, ' ')} ({e.value})</li>
+                  ))}
+                </ul>
+                <button onClick={handleContinue}>Continue</button>
+              </div>
+            ) : !genie.blessingEntered ? (
               <>
                 <textarea
                   className={styles.wishInput}
                   placeholder="I wish for..."
                   value={wishText}
-                  onChange={(e) => setWishText(e.target.value)}
+                  onChange={(e) => setWishText(e.target.value.slice(0, 40))}
+                  maxLength={40}
                   rows={4}
                   aria-label="Wish input"
                 />
+                <div className={styles.charCounter}>{wishText.length}/40</div>
                 <button
                   disabled={wishText.trim().length === 0}
-                  onClick={() => onAction({ type: 'enter_wish', text: wishText })}
+                  onClick={handleGrantWish}
                 >
                   Grant Wish
                 </button>
