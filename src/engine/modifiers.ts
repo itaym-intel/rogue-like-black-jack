@@ -17,6 +17,8 @@ export function getDefaultRules(): GameRules {
       aceHighValue: 11,
       aceLowValue: 1,
       faceCardValue: 10,
+      flexibleRanks: [],
+      rankValueOverrides: {},
     },
     turnOrder: {
       playerGoesFirst: true,
@@ -42,16 +44,29 @@ export function getDefaultRules(): GameRules {
       percentBonusDamage: 0,
       flatDamageReduction: 0,
       percentDamageReduction: 0,
+      thornsPercent: 0,
+      damageShield: 0,
+      damageCap: null,
+      overkillCarryPercent: 0,
     },
     actions: {
       canDoubleDown: true,
       canSplit: false,
       canSurrender: false,
       doubleDownMultiplier: 2,
+      canRemoveCard: false,
+      cardRemovesPerHand: 0,
+      canPeek: false,
+      canDoubleDownAnyTime: false,
+      canHitAfterDouble: false,
     },
     deck: {
       numberOfDecks: 1,
       reshuffleBetweenHands: true,
+      removedRanks: [],
+      removedSuits: [],
+      forcedRanks: null,
+      extraCopies: [],
     },
     economy: {
       goldPerBattle: 10,
@@ -73,13 +88,24 @@ export function getDefaultRules(): GameRules {
 
 function deepCloneRules(rules: GameRules): GameRules {
   return {
-    scoring: { ...rules.scoring, additionalBlackjackValues: [...rules.scoring.additionalBlackjackValues] },
+    scoring: {
+      ...rules.scoring,
+      additionalBlackjackValues: [...rules.scoring.additionalBlackjackValues],
+      flexibleRanks: [...rules.scoring.flexibleRanks],
+      rankValueOverrides: { ...rules.scoring.rankValueOverrides },
+    },
     turnOrder: { ...rules.turnOrder },
     dealer: { ...rules.dealer },
     winConditions: { ...rules.winConditions },
     damage: { ...rules.damage },
     actions: { ...rules.actions },
-    deck: { ...rules.deck },
+    deck: {
+      ...rules.deck,
+      removedRanks: [...rules.deck.removedRanks],
+      removedSuits: [...rules.deck.removedSuits],
+      forcedRanks: rules.deck.forcedRanks ? [...rules.deck.forcedRanks] : null,
+      extraCopies: rules.deck.extraCopies.map(e => ({ ...e })),
+    },
     economy: { ...rules.economy },
     health: { ...rules.health },
     progression: { ...rules.progression },
@@ -121,6 +147,13 @@ export function collectModifiers(
   for (const wish of playerState.wishes) {
     if (wish.curse) {
       playerModifiers.push(wish.curse);
+    }
+  }
+
+  // Player wish blessings
+  for (const wish of playerState.wishes) {
+    if (wish.blessing) {
+      playerModifiers.push(wish.blessing);
     }
   }
 

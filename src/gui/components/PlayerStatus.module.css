@@ -71,6 +71,10 @@
   color: var(--color-text-muted);
 }
 
+.blessing {
+  color: #d4af37;
+}
+
 .curse {
   color: #c0392b;
 }

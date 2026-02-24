@@ -41,6 +41,53 @@
   opacity: 0.7;
 }
 
+.blessingRow {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.blessingBtn {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+}
+
+.blessingBtn:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: rgba(212, 175, 55, 0.7);
+}
+
+.removeSelect {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.removeLabel {
+  color: var(--color-text-gold);
+  font-size: 0.9rem;
+  margin-right: 4px;
+}
+
+.removeCardBtn {
+  min-width: auto;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--color-text-body, #ddd);
+}
+
+.removeCardBtn:hover {
+  background: rgba(212, 175, 55, 0.25);
+}
+
 @media (max-width: 768px) {
   .container {
     margin: 0 6px;

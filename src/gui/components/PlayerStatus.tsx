@@ -23,6 +23,7 @@ export function PlayerStatus({ view, onInventory }: PlayerStatusProps) {
     consumableGroups.set(c.name, (consumableGroups.get(c.name) ?? 0) + 1);
   }
 
+  const blessings = player.wishes.filter(w => w.blessing !== null);
   const curses = player.wishes.filter(w => w.curse !== null);
 
   return (
@@ -79,6 +80,17 @@ export function PlayerStatus({ view, onInventory }: PlayerStatusProps) {
           <ul className={styles.list}>
             {player.activeEffects.map(e => (
               <li key={e.id}>{e.name} ({e.remainingHands} hand{e.remainingHands !== 1 ? 's' : ''})</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {blessings.length > 0 && (
+        <div className={styles.section}>
+          <span className={styles.label}>Blessings</span>
+          <ul className={styles.list}>
+            {blessings.map((w, i) => (
+              <li key={i} className={styles.blessing}>{w.blessing!.name}</li>
             ))}
           </ul>
         </div>

@@ -68,6 +68,13 @@ export function useKeyboardShortcuts(
       return;
     }
 
+    // Peek (blessing action)
+    if ((e.key === 'p' || e.key === 'P') && hasAction('peek')) {
+      e.preventDefault();
+      onAction({ type: 'peek' });
+      return;
+    }
+
     // Shop: number keys 1-9 to buy items, Escape/Q to skip
     if (view.phase === 'shop') {
       const num = parseInt(e.key);

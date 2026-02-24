@@ -8,6 +8,7 @@ import { SeededRNG } from './rng.js';
 import { getDefaultRules, applyModifierPipeline, collectModifiers, applyDamageModifiers } from './modifiers.js';
 import { initCombat, dealInitialCards, playerHit, playerStand, playerDoubleDown, dealerPlay, resolveHand, CombatState } from './combat.js';
 import { scoreHand } from './scoring.js';
+import { cardToString } from './cards.js';
 import { getEnemiesForStage, getBossForStage } from './combatants.js';
 import { generateShopInventory, purchaseItem } from './shop.js';
 import { createGenieEncounter, storeBlessingWish } from './genie.js';
@@ -34,6 +35,17 @@ export class GameEngine {
   private rules: GameRules;
   private isBossBattle: boolean;
   private firstActionInHand: boolean;
+  private cardRemovesUsed: number;
+  private hasPeeked: boolean;
+  private peekedCard: Card | null;
+  private handsWonThisBattle: number;
+  private lastDamageDealt: number;
+  private lastDamageTaken: number;
+  private consecutiveWins: number;
+  private consecutiveLosses: number;
+  private previousHandScore: number | null;
+  private killCause: 'hand_damage' | 'dot' | null;
+  private remainingDamageShield: number;
 
   constructor(seed?: string) {
     this.seed = seed ?? Date.now().toString();
@@ -45,6 +57,17 @@ export class GameEngine {
     this.handNumber = 1;
     this.isBossBattle = false;
     this.firstActionInHand = true;
+    this.cardRemovesUsed = 0;
+    this.hasPeeked = false;
+    this.peekedCard = null;
+    this.handsWonThisBattle = 0;
+    this.lastDamageDealt = 0;
+    this.lastDamageTaken = 0;
+    this.consecutiveWins = 0;
+    this.consecutiveLosses = 0;
+    this.previousHandScore = null;
+    this.killCause = null;
+    this.remainingDamageShield = 0;
 
     this.playerState = {
       hp: this.rules.health.playerStartHp,
@@ -105,6 +128,15 @@ export class GameEngine {
       stage: this.stage,
       battle: this.battle,
       handNumber: this.handNumber,
+      lastDamageDealt: this.lastDamageDealt,
+      lastDamageTaken: this.lastDamageTaken,
+      handsWonThisBattle: this.handsWonThisBattle,
+      consecutiveWins: this.consecutiveWins,
+      consecutiveLosses: this.consecutiveLosses,
+      previousHandScore: this.previousHandScore,
+      peekedCard: this.peekedCard,
+      cardRemovesUsed: this.cardRemovesUsed,
+      killCause: this.killCause,
     };
   }
 
@@ -175,6 +207,8 @@ export class GameEngine {
         bossName: this.genieEncounter.bossName,
         curseDescription: this.genieEncounter.curseModifier.description,
         blessingEntered: this.genieEncounter.blessingText !== null,
+        blessingName: null,
+        blessingDescription: null,
       } : null,
       lastHandResult: this.lastHandResult,
       availableActions: this.getAvailableActions(),
@@ -199,8 +233,17 @@ export class GameEngine {
       case 'player_turn':
         actions.push({ type: 'hit' });
         actions.push({ type: 'stand' });
-        if (rules.actions.canDoubleDown && this.firstActionInHand && this.combatState && !this.combatState.doubledDown) {
+        if (rules.actions.canDoubleDown && (this.firstActionInHand || rules.actions.canDoubleDownAnyTime) && this.combatState && !this.combatState.doubledDown) {
           actions.push({ type: 'double_down' });
+        }
+        if (rules.actions.canRemoveCard && this.cardRemovesUsed < rules.actions.cardRemovesPerHand && this.combatState && this.combatState.playerHand.cards.length > 1) {
+          actions.push({ type: 'remove_card', cardIndex: -1 });
+        }
+        if (rules.actions.canPeek && !this.hasPeeked) {
+          actions.push({ type: 'peek' });
+        }
+        if (rules.actions.canSurrender && this.firstActionInHand) {
+          actions.push({ type: 'surrender' });
         }
         break;
 
@@ -269,6 +312,12 @@ export class GameEngine {
     }
 
     if (action.type === 'continue') {
+      // Reset per-hand trackers
+      this.cardRemovesUsed = 0;
+      this.hasPeeked = false;
+      this.peekedCard = null;
+      this.killCause = null;
+
       // Apply curse hand-start effects
       const ctx = this.makeContext();
       const { playerModifiers } = collectModifiers(this.playerState, this.enemyState!);
@@ -342,11 +391,58 @@ export class GameEngine {
     }
 
     if (action.type === 'double_down') {
-      if (!rules.actions.canDoubleDown || !this.firstActionInHand) {
+      if (!rules.actions.canDoubleDown || (!this.firstActionInHand && !rules.actions.canDoubleDownAnyTime)) {
         return { success: false, message: 'Cannot double down', newPhase: this.phase };
       }
       this.combatState = playerDoubleDown(this.combatState);
+      if (rules.actions.canHitAfterDouble) {
+        return { success: true, message: 'Doubled down', newPhase: 'player_turn' };
+      }
       return this.finishHand();
+    }
+
+    if (action.type === 'remove_card') {
+      if (!rules.actions.canRemoveCard) {
+        return { success: false, message: 'Cannot remove cards', newPhase: this.phase };
+      }
+      if (this.cardRemovesUsed >= rules.actions.cardRemovesPerHand) {
+        return { success: false, message: 'No removes remaining', newPhase: this.phase };
+      }
+      if (action.cardIndex < 0 || action.cardIndex >= this.combatState.playerHand.cards.length) {
+        return { success: false, message: 'Invalid card index', newPhase: this.phase };
+      }
+      if (this.combatState.playerHand.cards.length <= 1) {
+        return { success: false, message: 'Cannot remove last card', newPhase: this.phase };
+      }
+      this.combatState = {
+        ...this.combatState,
+        playerHand: { cards: [...this.combatState.playerHand.cards] },
+      };
+      this.combatState.playerHand.cards.splice(action.cardIndex, 1);
+      this.cardRemovesUsed++;
+      this.log.push('Removed a card from hand');
+      return { success: true, message: 'Card removed', newPhase: 'player_turn' };
+    }
+
+    if (action.type === 'peek') {
+      if (!rules.actions.canPeek || this.hasPeeked) {
+        return { success: false, message: 'Cannot peek', newPhase: this.phase };
+      }
+      const nextCard = this.combatState.deck[this.combatState.deckIndex];
+      this.hasPeeked = true;
+      this.peekedCard = nextCard ?? null;
+      if (nextCard) {
+        this.log.push(`Peeked: ${cardToString(nextCard)}`);
+        return { success: true, message: `Next card: ${cardToString(nextCard)}`, newPhase: 'player_turn' };
+      }
+      return { success: true, message: 'No more cards', newPhase: 'player_turn' };
+    }
+
+    if (action.type === 'surrender') {
+      if (!rules.actions.canSurrender) {
+        return { success: false, message: 'Cannot surrender', newPhase: this.phase };
+      }
+      return this.finishHandWithSurrender();
     }
 
     return { success: false, message: 'Invalid action', newPhase: this.phase };
@@ -368,10 +464,56 @@ export class GameEngine {
     this.lastHandResult = result;
 
     // Apply damage
+    this.lastDamageDealt = 0;
+    this.lastDamageTaken = 0;
     if (result.damageTarget === 'player' && result.damageDealt > 0) {
       this.playerState.hp = Math.max(0, this.playerState.hp - result.damageDealt);
+      this.lastDamageTaken = result.damageDealt;
     } else if (result.damageTarget === 'dealer' && result.damageDealt > 0) {
       this.enemyState.hp = Math.max(0, this.enemyState.hp - result.damageDealt);
+      this.lastDamageDealt = result.damageDealt;
+    }
+
+    // Track previous hand score
+    this.previousHandScore = result.playerScore.value;
+
+    // Track consecutive wins/losses
+    if (result.winner === 'player') {
+      this.consecutiveWins++;
+      this.consecutiveLosses = 0;
+      this.handsWonThisBattle++;
+    } else if (result.winner === 'dealer') {
+      this.consecutiveLosses++;
+      this.consecutiveWins = 0;
+    } else {
+      this.consecutiveWins = 0;
+      this.consecutiveLosses = 0;
+    }
+
+    // Track kill cause
+    if (this.enemyState.hp <= 0) {
+      this.killCause = 'hand_damage';
+    }
+
+    // Fire onPush hooks
+    if (result.winner === 'push') {
+      for (const mod of playerModifiers) {
+        if (mod.onPush) mod.onPush(ctx);
+      }
+    }
+
+    // Fire onEnemyBust hooks
+    if (result.dealerScore.busted) {
+      for (const mod of playerModifiers) {
+        if (mod.onEnemyBust) mod.onEnemyBust(ctx);
+      }
+    }
+
+    // Fire onDodge hooks
+    if (result.dodged && result.damageTarget === 'player') {
+      for (const mod of playerModifiers) {
+        if (mod.onDodge) mod.onDodge(ctx);
+      }
     }
 
     // Run onHandEnd for all modifiers
@@ -384,6 +526,11 @@ export class GameEngine {
     // Tick active effects (poison, etc.)
     const effectMsgs = tickActiveEffects(this.playerState, this.enemyState, endCtx);
     for (const msg of effectMsgs) this.log.push(msg);
+
+    // Check if enemy died from DoT
+    if (this.enemyState.hp <= 0 && this.killCause !== 'hand_damage') {
+      this.killCause = 'dot';
+    }
 
     // Log result
     const winnerLabel = result.winner === 'player' ? 'WIN' : result.winner === 'dealer' ? 'LOSS' : 'PUSH';
@@ -404,6 +551,35 @@ export class GameEngine {
     this.phase = 'hand_result';
     this.handNumber++;
     return { success: true, message: `${winnerLabel}`, newPhase: 'hand_result' };
+  }
+
+  private finishHandWithSurrender(): ActionResult {
+    if (!this.combatState || !this.enemyState) {
+      return { success: false, message: 'No active combat', newPhase: this.phase };
+    }
+
+    // Player surrenders — takes half of what damage the dealer would deal
+    const rules = this.getModifiedRules();
+    const dealerScore = scoreHand(this.combatState.dealerHand, rules);
+    const halfDamage = Math.floor(dealerScore.value / 2);
+    this.playerState.hp = Math.max(0, this.playerState.hp - halfDamage);
+    this.lastDamageTaken = halfDamage;
+    this.lastDamageDealt = 0;
+    this.consecutiveLosses++;
+    this.consecutiveWins = 0;
+
+    this.log.push(`Surrendered! Took ${halfDamage} damage`);
+
+    if (this.playerState.hp <= 0) {
+      this.phase = 'game_over';
+      this.log.push(`Defeated by ${this.enemyState.data.name}!`);
+      return { success: true, message: 'Defeated', newPhase: 'game_over' };
+    }
+
+    this.phase = 'hand_result';
+    this.handNumber++;
+    this.lastHandResult = null;
+    return { success: true, message: 'Surrendered', newPhase: 'hand_result' };
   }
 
   private endBattle(): ActionResult {
@@ -433,6 +609,12 @@ export class GameEngine {
     this.combatState = null;
     this.lastHandResult = null;
     this.handNumber = 1;
+    this.handsWonThisBattle = 0;
+    this.consecutiveWins = 0;
+    this.consecutiveLosses = 0;
+    this.previousHandScore = null;
+    this.remainingDamageShield = 0;
+    this.killCause = null;
 
     return { success: true, message: `Victory! +${gold} gold`, newPhase: 'battle_result' };
   }
@@ -524,9 +706,9 @@ export class GameEngine {
       return { success: false, message: 'Enter your wish', newPhase: 'genie' };
     }
 
-    const wish = storeBlessingWish(this.genieEncounter, action.text);
+    const wish = storeBlessingWish(this.genieEncounter, action.text, action.blessing);
     this.playerState.wishes.push(wish);
-    this.log.push(`Blessing stored: "${action.text}"`);
+    this.log.push(`Blessing: "${wish.blessing?.name ?? 'none'}"`);
     this.log.push(`Curse received: ${wish.curse?.name ?? 'none'}`);
 
     // Reset HP after boss
