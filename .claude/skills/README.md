@@ -9,3 +9,4 @@ Self-contained guides for common content creation tasks. Each guide includes tem
 | [adding-equipment.md](adding-equipment.md) | Adding weapons, helms, armor, boots, or trinkets |
 | [adding-consumables.md](adding-consumables.md) | Adding potions or other usable items |
 | [writing-tests.md](writing-tests.md) | Reference for all test patterns (makeContext, modifier testing, dodge loops, autoPlay) |
+| [using-seed-finder.md](using-seed-finder.md) | Finding seeds with specific RNG outcomes (CLI and programmatic) |

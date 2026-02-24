@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { GameEngine } from '../../engine/game.js';
+import { createEngineAtGenie } from '../../engine/fast-forward.js';
 import type { GameView, PlayerAction, ActionResult } from '../../engine/types.js';
 
 export function useGameEngine() {
@@ -8,6 +9,12 @@ export function useGameEngine() {
 
   const startGame = useCallback((seed?: string) => {
     const engine = new GameEngine(seed || undefined);
+    engineRef.current = engine;
+    setView(engine.getView());
+  }, []);
+
+  const startAtGenie = useCallback((seed?: string) => {
+    const engine = createEngineAtGenie(seed || undefined);
     engineRef.current = engine;
     setView(engine.getView());
   }, []);
@@ -24,5 +31,5 @@ export function useGameEngine() {
     setView(null);
   }, []);
 
-  return { view, startGame, performAction, resetGame };
+  return { view, startGame, startAtGenie, performAction, resetGame };
 }

@@ -3,9 +3,10 @@ import styles from './StartScreen.module.css';
 
 interface StartScreenProps {
   onStart: (seed?: string) => void;
+  onStartAtGenie?: (seed?: string) => void;
 }
 
-export function StartScreen({ onStart }: StartScreenProps) {
+export function StartScreen({ onStart, onStartAtGenie }: StartScreenProps) {
   const [seed, setSeed] = useState('');
 
   return (
@@ -28,6 +29,14 @@ export function StartScreen({ onStart }: StartScreenProps) {
           >
             New Game
           </button>
+          {onStartAtGenie && (
+            <button
+              className={styles.devBtn}
+              onClick={() => onStartAtGenie(seed || undefined)}
+            >
+              Skip to Genie
+            </button>
+          )}
         </div>
       </div>
     </div>

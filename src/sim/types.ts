@@ -1,4 +1,4 @@
-import type { GameView, PlayerAction, EquipmentSlot, EquipmentTier } from '../engine/types.js';
+import type { GameView, PlayerAction, Card, EquipmentSlot, EquipmentTier } from '../engine/types.js';
 
 // ── Strategy ──
 
@@ -215,4 +215,83 @@ export interface AggregateStats {
   };
   hpOverTime: Record<string, number[]>;
   hpOverTimeSampleSize: Record<string, number[]>;
+}
+
+// ── Seed Finder ──
+
+export interface HandTrace {
+  stage: number;
+  battle: number;
+  handNumber: number;
+  playerCards: Card[];
+  dealerCards: Card[];
+  playerScore: number;
+  dealerScore: number;
+  playerBlackjack: boolean;
+  dealerBlackjack: boolean;
+  playerBusted: boolean;
+  dealerBusted: boolean;
+  winner: 'player' | 'dealer' | 'push';
+  damageDealt: number;
+  damageTarget: string;
+  dodged: boolean;
+  playerHp: number;
+  enemyHp: number;
+}
+
+export interface ShopTrace {
+  stage: number;
+  battle: number;
+  inventory: { id: string; name: string; type: string; slot?: string; tier?: string; cost: number }[];
+  purchased: string[];
+}
+
+export interface BattleTrace {
+  stage: number;
+  battle: number;
+  enemyName: string;
+  enemyMaxHp: number;
+  isBoss: boolean;
+  handsPlayed: number;
+  playerHpAfter: number;
+}
+
+export interface GameTrace {
+  seed: string;
+  strategyName: string;
+  outcome: 'victory' | 'game_over';
+  finalStage: number;
+  finalBattle: number;
+  finalHp: number;
+  finalGold: number;
+  totalHandsPlayed: number;
+  hands: HandTrace[];
+  shops: ShopTrace[];
+  battles: BattleTrace[];
+  deathEnemy: string | null;
+}
+
+export type SeedFilter = (trace: GameTrace) => boolean;
+export type SeedScorer = (trace: GameTrace) => number;
+
+export interface SeedFinderConfig {
+  count: number;
+  seedPrefix: string;
+  strategy: Strategy;
+  filters: SeedFilter[];
+  scorer: SeedScorer;
+  topN: number;
+}
+
+export interface SeedFinderMatch {
+  seed: string;
+  score: number;
+  trace: GameTrace;
+}
+
+export interface SeedFinderOutput {
+  matches: SeedFinderMatch[];
+  totalSearched: number;
+  totalMatched: number;
+  durationMs: number;
 }

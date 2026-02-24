@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import type { Plugin } from 'vite';
 
@@ -6,6 +6,14 @@ function wishApiPlugin(): Plugin {
   return {
     name: 'wish-api',
     configureServer(server) {
+      // Load .env into process.env so generateBlessing() can read ANTHROPIC_API_KEY
+      const env = loadEnv('development', process.cwd(), '');
+      for (const [key, val] of Object.entries(env)) {
+        if (!(key in process.env)) {
+          process.env[key] = val;
+        }
+      }
+
       server.middlewares.use('/api/wish', async (req, res) => {
         if (req.method !== 'POST') {
           res.statusCode = 405;

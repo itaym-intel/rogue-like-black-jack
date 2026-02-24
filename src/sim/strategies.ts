@@ -1641,6 +1641,7 @@ const neverBustFullKit: Strategy = {
 
 // ── Exported strategies ──
 
+export const standOn14 = makeStandOnN(14, () => null, '_skipShop');
 export const standOn17 = makeStandOnN(17, buyCheapestEquipment);
 export const standOn15 = makeStandOnN(15, buyCheapestEquipment);
 export const standOn19 = makeStandOnN(19, buyCheapestEquipment);
@@ -1658,6 +1659,7 @@ export {
 };
 
 export const ALL_STRATEGIES: Strategy[] = [
+  standOn14,
   standOn17,
   standOn15,
   standOn19,

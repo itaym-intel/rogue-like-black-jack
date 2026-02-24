@@ -48,6 +48,7 @@ Self-contained guides for content creation live in `.claude/skills/`:
 - **`adding-equipment.md`** — Adding weapons, helms, armor, boots, or trinkets
 - **`adding-consumables.md`** — Adding potions or other usable items
 - **`writing-tests.md`** — Reference for all test patterns (makeContext, modifier testing, dodge loops, autoPlay)
+- **`using-seed-finder.md`** — Finding seeds with specific RNG outcomes (CLI and programmatic)
 
 Each guide is standalone — read one file and you have everything needed for that task.
 

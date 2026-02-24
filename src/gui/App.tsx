@@ -14,7 +14,7 @@ import { KeybindOverlay } from './components/KeybindOverlay';
 import type { GameView, PlayerAction } from '../engine/types';
 
 export function App() {
-  const { view, startGame, performAction, resetGame } = useGameEngine();
+  const { view, startGame, startAtGenie, performAction, resetGame } = useGameEngine();
 
   const onAction = (action: PlayerAction) => performAction(action);
   const onStartGame = () => startGame();
@@ -38,7 +38,7 @@ export function App() {
 
   function renderScreen() {
     if (!view) {
-      return <StartScreen onStart={(seed) => startGame(seed)} />;
+      return <StartScreen onStart={(seed) => startGame(seed)} onStartAtGenie={(seed) => startAtGenie(seed)} />;
     }
 
     switch (view.phase) {
