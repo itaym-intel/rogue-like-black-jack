@@ -160,11 +160,30 @@ Output a concise session brief in this format:
 
 ### Key Facts for This Session
 - Engine entry point: src/engine/game.ts (GameEngine class)
-- Test command: npm test
-- CLI command: npm run dev
-- GUI command: npm run dev:gui
-- Sim command: npm run sim (if implemented)
+- Test command: npm test  OR  .setup/runTests.sh
+- Test watch: npm run test:watch  OR  .setup/runTestsWatch.sh
+- CLI command: npm run dev  OR  .setup/runDevCli.sh
+- GUI command: npm run dev:gui  OR  .setup/runDevGui.sh
+- Sim command: npm run sim  OR  .setup/runSimulation.sh (if implemented)
+- Sim dashboard: npm run sim:dash  OR  .setup/runSimDashboard.sh (if implemented)
+- Linux build: npm run build  OR  .setup/runLinuxBuild.sh
+- Windows build: npm run build  OR  .setup/runWindowsBuild.sh
 - [any other critical session-specific facts]
 ```
+
+## Setup Scripts (`.setup/`)
+
+All `.setup/` scripts run `chmod +x node_modules/.bin/*` first to restore binary permissions if lost (common on some Linux environments), then invoke the corresponding `npm` script. Use them instead of `npm run ...` if you hit "permission denied" errors on binaries.
+
+| Script | Equivalent npm command | Purpose |
+|---|---|---|
+| `runDevCli.sh` | `npm run dev` | Start CLI dev mode |
+| `runDevGui.sh` | `npm run dev:gui` | Start GUI dev server |
+| `runLinuxBuild.sh` | `npm run build` | Production build (Linux) |
+| `runWindowsBuild.sh` | `npm run build` | Production build (Windows) |
+| `runTests.sh` | `npm test` | Run test suite once |
+| `runTestsWatch.sh` | `npm run test:watch` | Run tests in watch mode |
+| `runSimulation.sh` | `npm run sim` | Run simulation |
+| `runSimDashboard.sh` | `npm run sim:dash` | Launch sim dashboard |
 
 This brief is the deliverable. After outputting it, the session is ready.

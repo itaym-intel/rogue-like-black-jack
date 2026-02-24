@@ -1,5 +1,5 @@
 #!/bin/bash
 
-npm run build
 chmod +x node_modules/.bin/*
+npm run build
 echo "Linux built and fixed"
