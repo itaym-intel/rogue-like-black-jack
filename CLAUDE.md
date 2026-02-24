@@ -26,12 +26,18 @@ This repo uses a structured `docs/` directory as the system of record:
 
 ## Development Status
 
-No tech stack has been chosen yet. All source code is simple prototyping. The project is in the design/specification phase. When implementation begins:
+The project is fully implemented. Tech stack: **TypeScript + Vite + React 19 + Vitest**. 287 tests pass.
 
-1. Consult `docs/product-specs/backbone.md` for base game rules
-2. Respect the core beliefs in `docs/design-docs/core-beliefs.md`
-3. Design the engine as a deterministic state machine that accepts a seed
-4. Expose game actions through an interface that both CLI and GUI can consume
+Implemented systems:
+- `src/engine/` — deterministic game engine (state machine, modifier pipeline, scoring, combatants, equipment, consumables, shop, genie/wish system, blessing builder)
+- `src/cli/` — full terminal interface (`npm run dev`)
+- `src/gui/` — React/Vite GUI with Arabian Nights theme (`npm run dev:gui`)
+- `src/sim/` — simulation runner + analytics dashboard (`npm run sim` / `npm run sim:dash`)
+- `src/llm/` — Anthropic Claude Haiku integration for LLM-generated wish blessings
+
+Missing docs (noted for awareness):
+- `docs/product-specs/backbone.md` — does not exist
+- `docs/design-docs/index.md` — does not exist
 
 ## Skill Guides
 

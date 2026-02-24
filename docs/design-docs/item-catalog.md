@@ -16,7 +16,7 @@ All Equipment and Consumables have tiers, which are represented as (T1/2/3) in t
   - Even though previous tiers of Consumables CAN be found in the shops, they are less likely to be found. Below is the rate for Consumable spawns by tier per Stage X Boss defeated:
     - No Boss Defeated: 100% T1
     - Stage 1 Boss Defeated: 15% T1, 85% T2
-    - Stage 2 Boss Defeated: 15% T1, 15% T2, 70% T2
+    - Stage 2 Boss Defeated: 15% T1, 15% T2, 70% T3
 
 Equipment from the next tier can be taken in place of current equipment, by simply purchasing the higher tier equipment.
   - Ex: T1 Helm can be replaced with a T2 or T3 Helm by simply purchasing the new item.
