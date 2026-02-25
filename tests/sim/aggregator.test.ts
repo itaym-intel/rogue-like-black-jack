@@ -65,7 +65,7 @@ describe('Aggregator produces valid AggregateStats', () => {
     const { results, config } = makeResults(5);
     const stats = aggregateResults(results, config);
 
-    expect(stats.equipmentStats.length).toBe(15); // 15 equipment items
+    expect(stats.equipmentStats.length).toBe(39); // 39 equipment items
     for (const eq of stats.equipmentStats) {
       expect(eq.purchaseRate).toBeGreaterThanOrEqual(0);
       expect(eq.purchaseRate).toBeLessThanOrEqual(1);
@@ -76,7 +76,7 @@ describe('Aggregator produces valid AggregateStats', () => {
     const { results, config } = makeResults(5);
     const stats = aggregateResults(results, config);
 
-    expect(stats.consumableStats.length).toBe(4); // 4 consumable types
+    expect(stats.consumableStats.length).toBe(10); // 10 consumable types
     for (const c of stats.consumableStats) {
       expect(c.totalUsed).toBeGreaterThanOrEqual(0);
       expect(c.avgPerRun).toBeGreaterThanOrEqual(0);

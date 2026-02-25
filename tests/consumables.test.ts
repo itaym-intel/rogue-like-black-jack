@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { applyConsumable, tickActiveEffects, getAllConsumables, getConsumableByType } from '../src/engine/consumables.js';
 import { getDefaultRules } from '../src/engine/modifiers.js';
 import { SeededRNG } from '../src/engine/rng.js';
-import type { PlayerState, EnemyState, ModifierContext } from '../src/engine/types.js';
+import type { PlayerState, EnemyState, ModifierContext, ActiveEffect } from '../src/engine/types.js';
 
 function makePlayerState(overrides?: Partial<PlayerState>): PlayerState {
   return {
@@ -118,7 +118,85 @@ describe('Poison Potion', () => {
     expect(es.hp).toBe(11); // 20 - 3*3 = 11
   });
 
-  it('getAllConsumables returns 4 items', () => {
-    expect(getAllConsumables()).toHaveLength(4);
+  it('getAllConsumables returns 10 items', () => {
+    expect(getAllConsumables()).toHaveLength(10);
+  });
+});
+
+// ── New Consumable Tests ──
+
+describe('Elixir of Iron Skin', () => {
+  it('applies 30% damage reduction for 2 hands', () => {
+    const ps = makePlayerState();
+    const es = makeEnemyState();
+    applyConsumable(getConsumableByType('armor_elixir'), ps, es);
+    expect(ps.activeEffects).toHaveLength(1);
+    expect(ps.activeEffects[0].remainingHands).toBe(2);
+    expect(ps.activeEffects[0].modifier.modifyDamageReceived!(100, makeContext(ps, es))).toBe(70);
+  });
+});
+
+describe("Sand Dancer's Brew", () => {
+  it('applies 25% dodge for 1 hand', () => {
+    const ps = makePlayerState();
+    const es = makeEnemyState();
+    applyConsumable(getConsumableByType('dodge_brew'), ps, es);
+    expect(ps.activeEffects).toHaveLength(1);
+    expect(ps.activeEffects[0].remainingHands).toBe(1);
+    let dodges = 0;
+    for (let i = 0; i < 1000; i++) {
+      const ctx = makeContext(ps, es);
+      ctx.rng = new SeededRNG(`dodge-brew-${i}`);
+      if (ps.activeEffects[0].modifier.dodgeCheck!(ctx)) dodges++;
+    }
+    expect(dodges).toBeGreaterThan(180);
+    expect(dodges).toBeLessThan(320);
+  });
+});
+
+describe('Phoenix Draught', () => {
+  it('heals 2 HP per hand for 3 hands', () => {
+    const ps = makePlayerState({ hp: 30, maxHp: 50 });
+    const es = makeEnemyState();
+    applyConsumable(getConsumableByType('regen_draught'), ps, es);
+    expect(ps.activeEffects).toHaveLength(1);
+    expect(ps.activeEffects[0].remainingHands).toBe(3);
+    const ctx = makeContext(ps, es);
+    ps.activeEffects[0].modifier.onHandStart!(ctx);
+    expect(ps.hp).toBe(32);
+  });
+});
+
+describe('Battle Trance', () => {
+  it('+40% damage dealt and −20% damage received for 2 hands', () => {
+    const ps = makePlayerState();
+    const es = makeEnemyState();
+    applyConsumable(getConsumableByType('battle_trance'), ps, es);
+    expect(ps.activeEffects).toHaveLength(1);
+    expect(ps.activeEffects[0].remainingHands).toBe(2);
+    const mod = ps.activeEffects[0].modifier;
+    expect(mod.modifyDamageDealt!(100, makeContext(ps, es))).toBe(140);
+    expect(mod.modifyDamageReceived!(100, makeContext(ps, es))).toBe(80);
+  });
+});
+
+describe("Fortune's Vessel", () => {
+  it('instantly adds 20 gold', () => {
+    const ps = makePlayerState({ gold: 10 });
+    const es = makeEnemyState();
+    applyConsumable(getConsumableByType('fortune_vessel'), ps, es);
+    expect(ps.gold).toBe(30);
+    expect(ps.activeEffects).toHaveLength(0);
+  });
+});
+
+describe('Wrath Elixir', () => {
+  it('+80% damage for 1 hand', () => {
+    const ps = makePlayerState();
+    const es = makeEnemyState();
+    applyConsumable(getConsumableByType('wrath_elixir'), ps, es);
+    expect(ps.activeEffects).toHaveLength(1);
+    expect(ps.activeEffects[0].remainingHands).toBe(1);
+    expect(ps.activeEffects[0].modifier.modifyDamageDealt!(100, makeContext(ps, es))).toBe(180);
   });
 });

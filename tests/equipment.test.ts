@@ -137,7 +137,167 @@ describe('Trinkets', () => {
     expect(result).toEqual({ busted: false, effectiveScore: 10 });
   });
 
-  it('getAllEquipment returns 15 items', () => {
-    expect(getAllEquipment()).toHaveLength(15);
+  it('getAllEquipment returns 39 items', () => {
+    expect(getAllEquipment()).toHaveLength(39);
+  });
+});
+
+// ── New Cloth Tier Tests ──
+
+describe('Cloth Tier Expansion', () => {
+  it('Copper Khanjar: +4 damage, +4 more with 2 or fewer cards', () => {
+    const eq = getEquipmentById('weapon_cloth_2');
+    const ctx2 = makeContext({
+      playerHand: { cards: [{ suit: 'hearts', rank: '10' }, { suit: 'spades', rank: '8' }] },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, ctx2)).toBe(18); // 10 + 4 + 4
+    const ctx3 = makeContext({
+      playerHand: { cards: [{ suit: 'hearts', rank: '5' }, { suit: 'spades', rank: '6' }, { suit: 'clubs', rank: '7' }] },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, ctx3)).toBe(14); // 10 + 4 only
+  });
+
+  it('Bone Club: +3 damage and 2 damage DOT', () => {
+    const eq = getEquipmentById('weapon_cloth_3');
+    expect(eq.modifier.modifyDamageDealt!(10, makeContext())).toBe(13);
+    const es = { data: { name: 'T', maxHp: 20, isBoss: false, equipment: [], description: '' }, hp: 20 };
+    eq.modifier.onHandEnd!(makeContext({ enemyState: es }));
+    expect(es.hp).toBe(18);
+  });
+
+  it('Keffiyeh of Warding: 20% less damage with 2 or fewer cards', () => {
+    const eq = getEquipmentById('helm_cloth_2');
+    const ctx2 = makeContext({
+      playerHand: { cards: [{ suit: 'hearts', rank: '10' }, { suit: 'spades', rank: '8' }] },
+    });
+    expect(eq.modifier.modifyDamageReceived!(10, ctx2)).toBe(8);
+    const ctx3 = makeContext({
+      playerHand: { cards: [{ suit: 'hearts', rank: '5' }, { suit: 'spades', rank: '6' }, { suit: 'clubs', rank: '7' }] },
+    });
+    expect(eq.modifier.modifyDamageReceived!(10, ctx3)).toBe(10);
+  });
+
+  it('Hardened Linen: 15% less damage', () => {
+    const eq = getEquipmentById('armor_cloth_2');
+    expect(eq.modifier.modifyDamageReceived!(20, makeContext())).toBe(17);
+  });
+
+  it('Lucky Knucklebone: +15 gold if 2+ hands won', () => {
+    const eq = getEquipmentById('trinket_cloth_4');
+    const ctx2 = makeContext({ handsWonThisBattle: 3 } as any);
+    expect(eq.modifier.modifyGoldEarned!(0, ctx2)).toBe(15);
+    const ctx1 = makeContext({ handsWonThisBattle: 1 } as any);
+    expect(eq.modifier.modifyGoldEarned!(0, ctx1)).toBe(0);
+  });
+});
+
+// ── New Bronze Tier Tests ──
+
+describe('Bronze Tier Expansion', () => {
+  it('Oasis Blade: +9 damage, +6 more at score 18+', () => {
+    const eq = getEquipmentById('weapon_bronze_2');
+    const ctx18 = makeContext({
+      playerScore: { value: 20, soft: false, busted: false, isBlackjack: false },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, ctx18)).toBe(25); // 10 + 9 + 6
+    const ctxLow = makeContext({
+      playerScore: { value: 16, soft: false, busted: false, isBlackjack: false },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, ctxLow)).toBe(19); // 10 + 9
+  });
+
+  it('Twin Fangs: +8 damage, +8 more with Ace', () => {
+    const eq = getEquipmentById('weapon_bronze_3');
+    const ctxAce = makeContext({
+      playerHand: { cards: [{ suit: 'hearts', rank: 'A' }, { suit: 'clubs', rank: '7' }] },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, ctxAce)).toBe(26); // 10 + 8 + 8
+    const ctxNoAce = makeContext({
+      playerHand: { cards: [{ suit: 'hearts', rank: 'K' }, { suit: 'clubs', rank: '7' }] },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, ctxNoAce)).toBe(18); // 10 + 8
+  });
+
+  it("Vizier's Headpiece: 40% less bust damage and heals 3", () => {
+    const eq = getEquipmentById('helm_bronze_2');
+    const bustCtx = makeContext({
+      playerScore: { value: 25, soft: false, busted: true, isBlackjack: false },
+    });
+    expect(eq.modifier.modifyDamageReceived!(10, bustCtx)).toBe(6);
+    const ps = { hp: 20, maxHp: 30, gold: 0, equipment: new Map(), consumables: [], wishes: [], activeEffects: [] };
+    eq.modifier.onHandEnd!(makeContext({
+      playerState: ps as any,
+      playerScore: { value: 25, soft: false, busted: true, isBlackjack: false },
+    }));
+    expect(ps.hp).toBe(23);
+  });
+
+  it('Silk-Wrapped Mail: 30% less damage', () => {
+    const eq = getEquipmentById('armor_bronze_2');
+    expect(eq.modifier.modifyDamageReceived!(20, makeContext())).toBe(14);
+  });
+
+  it("Merchant's Medallion: +18 gold", () => {
+    const eq = getEquipmentById('trinket_bronze_2');
+    expect(eq.modifier.modifyGoldEarned!(10, makeContext())).toBe(28);
+  });
+});
+
+// ── New Iron Tier Tests ──
+
+describe('Iron Tier Expansion', () => {
+  it('Golden Scimitar: +22 damage, +10 on blackjack', () => {
+    const eq = getEquipmentById('weapon_iron_2');
+    const bjCtx = makeContext({
+      playerScore: { value: 21, soft: false, busted: false, isBlackjack: true },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, bjCtx)).toBe(42); // 10 + 22 + 10
+    const nobjCtx = makeContext({
+      playerScore: { value: 20, soft: false, busted: false, isBlackjack: false },
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, nobjCtx)).toBe(32); // 10 + 22
+  });
+
+  it('Sunfire Lance: +20 damage, +8 if dealer has 4+ cards', () => {
+    const eq = getEquipmentById('weapon_iron_3');
+    const ctx4 = makeContext({
+      dealerHand: { cards: [
+        { suit: 'hearts', rank: '2' }, { suit: 'clubs', rank: '3' },
+        { suit: 'spades', rank: '4' }, { suit: 'diamonds', rank: '5' },
+      ]},
+    });
+    expect(eq.modifier.modifyDamageDealt!(10, ctx4)).toBe(38); // 10 + 20 + 8
+    expect(eq.modifier.modifyDamageDealt!(10, makeContext())).toBe(30); // 10 + 20
+  });
+
+  it("Sultan's Crown: 75% less bust damage and heals 4", () => {
+    const eq = getEquipmentById('helm_iron_2');
+    const bustCtx = makeContext({
+      playerScore: { value: 25, soft: false, busted: true, isBlackjack: false },
+    });
+    expect(eq.modifier.modifyDamageReceived!(20, bustCtx)).toBe(5);
+  });
+
+  it('Lamellar Armor: 55% less damage', () => {
+    const eq = getEquipmentById('armor_iron_2');
+    expect(eq.modifier.modifyDamageReceived!(20, makeContext())).toBe(9);
+  });
+
+  it('Seal of the Caliph: double damage on hand 1', () => {
+    const eq = getEquipmentById('trinket_iron_4');
+    const h1 = makeContext({ handNumber: 1 } as any);
+    expect(eq.modifier.modifyDamageDealt!(10, h1)).toBe(20);
+    const h2 = makeContext({ handNumber: 2 } as any);
+    expect(eq.modifier.modifyDamageDealt!(10, h2)).toBe(10);
+  });
+
+  it('Ring of Solomon: 15% less all damage', () => {
+    const eq = getEquipmentById('trinket_iron_3');
+    expect(eq.modifier.modifyDamageReceived!(20, makeContext())).toBe(17);
+  });
+
+  it('Lamp of Fortune: +30 gold', () => {
+    const eq = getEquipmentById('trinket_iron_2');
+    expect(eq.modifier.modifyGoldEarned!(10, makeContext())).toBe(40);
   });
 });

@@ -2,14 +2,14 @@ import type {
   GamePhase, PlayerAction, ActionResult, GameView, GameRules,
   PlayerState, EnemyState, HandResult, ShopItem, Equipment, Consumable,
   EquipmentSlot, Card, ModifierContext, Modifier, SerializedGameState, GameReplay,
-  ActiveEffect, HandScore,
+  ActiveEffect, HandScore, CombatantData,
 } from './types.js';
 import { SeededRNG } from './rng.js';
 import { getDefaultRules, applyModifierPipeline, collectModifiers, applyDamageModifiers } from './modifiers.js';
 import { initCombat, dealInitialCards, playerHit, playerStand, playerDoubleDown, dealerPlay, resolveHand, CombatState } from './combat.js';
 import { scoreHand } from './scoring.js';
 import { cardToString } from './cards.js';
-import { getEnemiesForStage, getBossForStage } from './combatants.js';
+import { getEnemiesForStage, getBossForStage, sampleEnemiesForStage } from './combatants.js';
 import { generateShopInventory, purchaseItem } from './shop.js';
 import { createGenieEncounter, storeBlessingWish } from './genie.js';
 import { applyConsumable, tickActiveEffects } from './consumables.js';
@@ -46,6 +46,7 @@ export class GameEngine {
   private previousHandScore: number | null;
   private killCause: 'hand_damage' | 'dot' | null;
   private remainingDamageShield: number;
+  private sampledStageEnemies: Map<number, CombatantData[]> = new Map();
 
   constructor(seed?: string) {
     this.seed = seed ?? Date.now().toString();
@@ -92,10 +93,17 @@ export class GameEngine {
     this.loadEnemy();
   }
 
+  private getEnemiesForCurrentStage(): CombatantData[] {
+    if (!this.sampledStageEnemies.has(this.stage)) {
+      this.sampledStageEnemies.set(this.stage, sampleEnemiesForStage(this.stage, this.rng));
+    }
+    return this.sampledStageEnemies.get(this.stage)!;
+  }
+
   private loadEnemy(): void {
     const rules = this.getModifiedRules();
     if (this.battle <= rules.progression.battlesPerStage) {
-      const enemies = getEnemiesForStage(this.stage);
+      const enemies = this.getEnemiesForCurrentStage();
       const enemyIndex = (this.battle - 1) % enemies.length;
       const data = enemies[enemyIndex];
       this.enemyState = { data, hp: data.maxHp };
