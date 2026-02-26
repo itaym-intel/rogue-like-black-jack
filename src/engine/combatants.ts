@@ -45,6 +45,52 @@ const desertJackal: CombatantData = {
   ],
 };
 
+const qarin: CombatantData = {
+  name: 'Qarin',
+  maxHp: 18,
+  isBoss: false,
+  description: 'A personal shadow demon that mirrors the player\'s every fear.',
+  equipment: [
+    enemyEquip('qarin_boots', 'Spirit Veil', 'boots', {
+      id: 'mod_qarin_dodge', name: 'Spirit Veil',
+      description: '20% dodge', source: 'enemy',
+      dodgeCheck(context) { return context.rng.next() < 0.20; },
+    }),
+  ],
+};
+
+const rocHatchling: CombatantData = {
+  name: 'Roc Hatchling',
+  maxHp: 22,
+  isBoss: false,
+  description: 'A young roc, its iron beak already capable of shattering bone.',
+  equipment: [
+    enemyEquip('roc_weapon', 'Razor Beak', 'weapon', {
+      id: 'mod_roc_dmg', name: 'Razor Beak',
+      description: '+3 damage, +3 more if player has 3+ cards', source: 'enemy',
+      modifyDamageDealt(damage, context) {
+        return damage + 3 + (context.playerHand.cards.length >= 3 ? 3 : 0);
+      },
+    }),
+  ],
+};
+
+const ghul: CombatantData = {
+  name: 'Ghul',
+  maxHp: 25,
+  isBoss: false,
+  description: 'A carrion-eating desert ghoul that feasts on the misfortune of others.',
+  equipment: [
+    enemyEquip('ghul_trinket', 'Carrion Hunger', 'trinket', {
+      id: 'mod_ghul_bust', name: 'Carrion Hunger',
+      description: '+5 damage when player busts', source: 'enemy',
+      modifyDamageDealt(damage, context) {
+        return context.playerScore.busted ? damage + 5 : damage;
+      },
+    }),
+  ],
+};
+
 const ancientStrix: CombatantData = {
   name: 'Ancient Strix',
   maxHp: 50,
@@ -129,24 +175,83 @@ const sandSerpent: CombatantData = {
   ],
 };
 
-const djinnWarden: CombatantData = {
-  name: 'Djinn Warden',
+const salamander: CombatantData = {
+  name: 'Salamander',
+  maxHp: 22,
+  isBoss: false,
+  description: 'A fire elemental spirit that feeds on the heat of the oasis sands.',
+  equipment: [
+    enemyEquip('salamander_trinket', 'Ember Scales', 'trinket', {
+      id: 'mod_salamander_red', name: 'Ember Scales',
+      description: '+3 damage per red card in dealer hand', source: 'enemy',
+      modifyDamageDealt(damage, context) {
+        const reds = context.dealerHand.cards.filter(
+          c => c.suit === 'hearts' || c.suit === 'diamonds'
+        ).length;
+        return damage + reds * 3;
+      },
+    }),
+  ],
+};
+
+const brassSentinel: CombatantData = {
+  name: 'Brass Sentinel',
+  maxHp: 30,
+  isBoss: false,
+  description: 'An ancient brass automaton guardian, still dutifully protecting its long-dead master\'s tomb.',
+  equipment: [
+    enemyEquip('brass_sentinel_armor', 'Brass Casing', 'armor', {
+      id: 'mod_brass_sentinel_armor', name: 'Brass Casing',
+      description: '30% less damage', source: 'enemy',
+      modifyDamageReceived(damage) { return Math.round(damage * 0.7); },
+    }),
+  ],
+};
+
+const shadhavar: CombatantData = {
+  name: 'Shadhavar',
+  maxHp: 28,
+  isBoss: false,
+  description: 'A mythical one-horned beast whose hollow horn emits a melody that weakens all who hear it.',
+  equipment: [
+    enemyEquip('shadhavar_weapon', 'Hollow Horn', 'weapon', {
+      id: 'mod_shadhavar_dmg', name: 'Hollow Horn',
+      description: '+4 flat damage', source: 'enemy',
+      modifyDamageDealt(damage) { return damage + 4; },
+    }),
+    enemyEquip('shadhavar_trinket', 'Eerie Melody', 'trinket', {
+      id: 'mod_shadhavar_dot', name: 'Eerie Melody',
+      description: 'Player takes 2 damage at the start of each hand', source: 'enemy',
+      onHandStart(context) {
+        context.playerState.hp = Math.max(0, context.playerState.hp - 2);
+      },
+    }),
+  ],
+};
+
+const muradTheBrassIfrit: CombatantData = {
+  name: 'Murad the Brass Ifrit',
   maxHp: 75,
   isBoss: true,
-  description: 'A bound djinn forced to guard the oasis for eternity.',
+  description: 'A fire spirit bound in brass rings, enforcer of the Shadow King across the Oasis Ruins.',
   equipment: [
-    enemyEquip('djinn_weapon', 'Warden Blade', 'weapon', {
-      id: 'mod_djinn_dmg', name: 'Warden Blade',
+    enemyEquip('murad_weapon', "Murad's Ember", 'weapon', {
+      id: 'mod_murad_dmg', name: "Murad's Ember",
       description: '+8 flat damage', source: 'enemy',
       modifyDamageDealt(damage) { return damage + 8; },
     }),
-    enemyEquip('djinn_trinket', 'Oasis Heart', 'trinket', {
-      id: 'mod_djinn_heal', name: 'Oasis Heart',
-      description: 'Heals 10 on blackjack', source: 'enemy',
+    enemyEquip('murad_armor', 'Brass Shackle', 'armor', {
+      id: 'mod_murad_armor', name: 'Brass Shackle',
+      description: '20% less damage', source: 'enemy',
+      modifyDamageReceived(damage) { return Math.round(damage * 0.8); },
+    }),
+    enemyEquip('murad_trinket', 'Sihr Amulet', 'trinket', {
+      id: 'mod_murad_heal', name: 'Sihr Amulet',
+      description: 'Heals 8 HP when player busts', source: 'enemy',
       onHandEnd(context) {
-        if (context.dealerScore.isBlackjack) {
+        if (context.playerScore.busted) {
           context.enemyState.hp = Math.min(
-            context.enemyState.hp + 10,
+            context.enemyState.hp + 8,
             context.enemyState.data.maxHp
           );
         }
@@ -154,10 +259,12 @@ const djinnWarden: CombatantData = {
     }),
   ],
   curse: {
-    id: 'curse_djinn', name: 'Warden Curse',
-    description: 'Take 3 damage at the start of each hand', source: 'wish_curse',
-    onHandStart(context) {
-      context.playerState.hp = Math.max(0, context.playerState.hp - 3);
+    id: 'curse_murad', name: "Murad's Brand",
+    description: 'Take 4 damage whenever you bust', source: 'wish_curse',
+    onHandEnd(context) {
+      if (context.playerScore.busted) {
+        context.playerState.hp = Math.max(0, context.playerState.hp - 4);
+      }
     },
   },
 };
@@ -216,59 +323,131 @@ const fireDancer: CombatantData = {
   ],
 };
 
-const crimsonSultan: CombatantData = {
-  name: 'Crimson Sultan',
+const palaceGuard: CombatantData = {
+  name: 'Palace Guard',
+  maxHp: 35,
+  isBoss: false,
+  description: 'An elite warrior of the Sultan\'s palace, armored in layered iron and trained to kill.',
+  equipment: [
+    enemyEquip('palace_guard_weapon', 'Palace Halberd', 'weapon', {
+      id: 'mod_palace_guard_dmg', name: 'Palace Halberd',
+      description: '+8 flat damage', source: 'enemy',
+      modifyDamageDealt(damage) { return damage + 8; },
+    }),
+    enemyEquip('palace_guard_armor', 'Tower Shield', 'armor', {
+      id: 'mod_palace_guard_armor', name: 'Tower Shield',
+      description: '20% less damage', source: 'enemy',
+      modifyDamageReceived(damage) { return Math.round(damage * 0.8); },
+    }),
+  ],
+};
+
+const jinnInquisitor: CombatantData = {
+  name: 'Jinn Inquisitor',
+  maxHp: 30,
+  isBoss: false,
+  description: 'A bound jinn tasked with judging souls. It strikes hardest when victory is closest.',
+  equipment: [
+    enemyEquip('inquisitor_trinket', 'Eye of Judgment', 'trinket', {
+      id: 'mod_inquisitor_judge', name: 'Eye of Judgment',
+      description: '+6 damage when dealer wins with higher score than player (non-bust loss)', source: 'enemy',
+      modifyDamageDealt(damage, context) {
+        if (!context.playerScore.busted && !context.dealerScore.busted
+            && context.dealerScore.value > context.playerScore.value) {
+          return damage + 6;
+        }
+        return damage;
+      },
+    }),
+  ],
+};
+
+const cursedVizier: CombatantData = {
+  name: 'Cursed Vizier',
+  maxHp: 38,
+  isBoss: false,
+  description: 'A disgraced palace official whose soul was bound here as punishment. His suffering feeds on yours.',
+  equipment: [
+    enemyEquip('vizier_trinket', 'Ledger of Debt', 'trinket', {
+      id: 'mod_vizier_debt', name: 'Ledger of Debt',
+      description: '+2 damage per consecutive loss (max +8)', source: 'enemy',
+      modifyDamageDealt(damage, context) {
+        return damage + Math.min((context.consecutiveLosses ?? 0) * 2, 8);
+      },
+    }),
+  ],
+};
+
+const zahhakTheMirrorKing: CombatantData = {
+  name: 'Zahhak the Mirror King',
   maxHp: 100,
   isBoss: true,
-  description: 'The tyrannical ruler of the palace, wielding forbidden magic.',
+  description: 'The sorcerer-tyrant who enslaved the jinn and stole their power. Master of illusions and stolen magic.',
   equipment: [
-    enemyEquip('sultan_weapon', 'Crimson Blade', 'weapon', {
-      id: 'mod_sultan_dmg', name: 'Crimson Blade',
-      description: '+15 flat damage', source: 'enemy',
-      modifyDamageDealt(damage) { return damage + 15; },
+    enemyEquip('zahhak_weapon', 'Serpent Fang', 'weapon', {
+      id: 'mod_zahhak_dmg', name: 'Serpent Fang',
+      description: '+12 damage, +4 per face card in player hand', source: 'enemy',
+      modifyDamageDealt(damage, context) {
+        const faces = context.playerHand.cards.filter(
+          c => c.rank === 'J' || c.rank === 'Q' || c.rank === 'K'
+        ).length;
+        return damage + 12 + faces * 4;
+      },
     }),
-    enemyEquip('sultan_armor', 'Royal Guard', 'armor', {
-      id: 'mod_sultan_armor', name: 'Royal Guard',
-      description: '30% less damage', source: 'enemy',
-      modifyDamageReceived(damage) { return Math.round(damage * 0.7); },
+    enemyEquip('zahhak_armor', 'Mirror Aegis', 'armor', {
+      id: 'mod_zahhak_armor', name: 'Mirror Aegis',
+      description: '35% less damage', source: 'enemy',
+      modifyDamageReceived(damage) { return Math.round(damage * 0.65); },
     }),
-    enemyEquip('sultan_trinket', 'Tyrant Crown', 'trinket', {
-      id: 'mod_sultan_push', name: 'Tyrant Crown',
-      description: '5 damage to player on push', source: 'enemy',
+    enemyEquip('zahhak_trinket', 'Crown of Stolen Souls', 'trinket', {
+      id: 'mod_zahhak_steal', name: 'Crown of Stolen Souls',
+      description: 'Heals 6 HP when player scores 19-21 without blackjack', source: 'enemy',
       onHandEnd(context) {
-        // Check if this hand was a push by comparing scores
-        if (!context.playerScore.busted && !context.dealerScore.busted &&
-            context.playerScore.value === context.dealerScore.value) {
-          context.playerState.hp = Math.max(0, context.playerState.hp - 5);
+        const score = context.playerScore.value;
+        if (!context.playerScore.busted && !context.playerScore.isBlackjack
+            && score >= 19 && score <= 21) {
+          context.enemyState.hp = Math.min(
+            context.enemyState.hp + 6,
+            context.enemyState.data.maxHp
+          );
         }
       },
     }),
   ],
   curse: {
-    id: 'curse_sultan', name: 'Crimson Curse',
-    description: 'Ties favor the dealer', source: 'wish_curse',
-    modifyRules(rules) {
-      return {
-        ...rules,
-        winConditions: { ...rules.winConditions, tieResolution: 'dealer' as const },
-      };
-    },
+    id: 'curse_zahhak', name: 'Curse of the Serpent King',
+    description: 'Your damage output is permanently reduced by 20%', source: 'wish_curse',
+    modifyDamageDealt(damage) { return Math.floor(damage * 0.8); },
   },
 };
 
 // ── Stage data ──
 
-const STAGES: CombatantData[][] = [
-  [vampireBat, sandScorpion, desertJackal],
-  [dustWraith, tombGuardian, sandSerpent],
-  [obsidianGolem, shadowAssassin, fireDancer],
+export const STAGE_POOLS: CombatantData[][] = [
+  [vampireBat, sandScorpion, desertJackal, qarin, rocHatchling, ghul],
+  [dustWraith, tombGuardian, sandSerpent, salamander, brassSentinel, shadhavar],
+  [obsidianGolem, shadowAssassin, fireDancer, palaceGuard, jinnInquisitor, cursedVizier],
 ];
 
-const BOSSES: CombatantData[] = [ancientStrix, djinnWarden, crimsonSultan];
+const BOSSES: CombatantData[] = [ancientStrix, muradTheBrassIfrit, zahhakTheMirrorKing];
 
 export function getEnemiesForStage(stage: number): CombatantData[] {
   if (stage < 1 || stage > 3) throw new Error(`Invalid stage: ${stage}`);
-  return STAGES[stage - 1];
+  return STAGE_POOLS[stage - 1].slice(0, 3);
+}
+
+export function sampleEnemiesForStage(
+  stage: number,
+  rng: { nextInt(min: number, max: number): number }
+): CombatantData[] {
+  if (stage < 1 || stage > 3) throw new Error(`Invalid stage: ${stage}`);
+  const pool = [...STAGE_POOLS[stage - 1]];
+  // Fisher-Yates shuffle using seeded RNG
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = rng.nextInt(0, i);
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, 3);
 }
 
 export function getBossForStage(stage: number): CombatantData {

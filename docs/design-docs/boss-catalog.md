@@ -25,12 +25,12 @@ Bosses are `CombatantData` objects with `isBoss: true`. They differ from regular
 **Equipment:**
 
 - **Night Fang** (weapon)
-  - *+8 damage when the dealer hits blackjack.*
+  - *+10 damage when the dealer hits blackjack.*
   - Hook: `modifyDamageDealt` — checks `context.dealerScore.isBlackjack`; if true, adds 10.
 
 - **Red Bane** (trinket)
   - *+2 damage per red card (hearts or diamonds) in the player's hand.*
-  - Hook: `modifyDamageReceived` — counts cards in `context.playerHand.cards` where `suit === 'hearts' || suit === 'diamonds'`; adds `count × 2` to incoming damage (player takes more).
+  - Hook: `modifyDamageReceived` — counts cards in `context.playerHand.cards` where `suit === 'hearts' || suit === 'diamonds'`; adds `count * 2` to incoming damage (player takes more).
 
 **Curse — Night Fang Curse** (`curse_strix`)
 
@@ -47,73 +47,76 @@ Bosses are `CombatantData` objects with `isBoss: true`. They differ from regular
 
 ---
 
-## Stage 2 Boss — Djinn Warden
+## Stage 2 Boss — Murad the Brass Ifrit
 
 | Stat | Value |
 |---|---|
 | Max HP | 75 |
-| Description | A bound djinn forced to guard the oasis for eternity. |
+| Description | A fire spirit bound in brass rings, enforcer of the Shadow King across the Oasis Ruins. |
 
 **Equipment:**
 
-- **Warden Blade** (weapon)
+- **Murad's Ember** (weapon)
   - *+8 flat damage to the player on every hand the enemy wins.*
   - Hook: `modifyDamageDealt` — unconditionally adds 8.
 
-- **Oasis Heart** (trinket)
-  - *Heals the Djinn Warden for 10 HP whenever the dealer hits blackjack.*
-  - Hook: `onHandEnd` — checks `context.dealerScore.isBlackjack`; if true, sets `context.enemyState.hp = Math.min(hp + 10, maxHp)`.
-  - *Note:* This can meaningfully extend the fight. If the player cannot avoid the Djinn hitting blackjack, the boss partially regenerates.
+- **Brass Shackle** (armor)
+  - *20% damage reduction on all incoming hits.*
+  - Hook: `modifyDamageReceived` — multiplies incoming damage by `0.8`, rounded with `Math.round`.
 
-**Curse — Warden Curse** (`curse_djinn`)
+- **Sihr Amulet** (trinket)
+  - *Heals the boss for 8 HP whenever the player busts.*
+  - Hook: `onHandEnd` — checks `context.playerScore.busted`; if true, sets `context.enemyState.hp = Math.min(hp + 8, maxHp)`.
+
+**Curse — Murad's Brand** (`curse_murad`)
 
 | Curse Property | Value |
 |---|---|
-| Display name | Warden Curse |
-| Trigger | `onHandStart` on the player |
-| Effect | Player loses 3 HP whenever the player hits blackjack |
+| Display name | Murad's Brand |
+| Trigger | `onHandEnd` on the player |
+| Effect | Player takes 4 damage whenever they bust |
 | Source tag | `wish_curse` |
 
-*Implementation:* Installs `onHandStart` on the player's modifier stack. Executes `context.playerState.hp = Math.max(0, context.playerState.hp - 3)` unconditionally at the start of each hand, before cards are dealt.
+*Implementation:* Installs `onHandEnd` on the player's modifier stack. Checks `context.playerScore.busted`; if true, executes `context.playerState.hp = Math.max(0, context.playerState.hp - 4)`.
 
-*Scope:* Applies to all remaining enemy encounters for the entire run. At 3 damage per hand, this is a significant pressure effect in long battles.
+*Scope:* Applies to all remaining enemy encounters for the entire run. Punishes risky play and combos with the Sihr Amulet's self-heal during the boss fight.
 
 ---
 
-## Stage 3 Boss — Crimson Sultan
+## Stage 3 Boss — Zahhak the Mirror King
 
 | Stat | Value |
 |---|---|
 | Max HP | 100 |
-| Description | The tyrannical ruler of the palace, wielding forbidden magic. |
+| Description | The sorcerer-tyrant who enslaved the jinn and stole their power. Master of illusions and stolen magic. |
 
 **Equipment:**
 
-- **Crimson Blade** (weapon)
-  - *+15 flat damage to the player on every hand the enemy wins.*
-  - Hook: `modifyDamageDealt` — unconditionally adds 15.
+- **Serpent Fang** (weapon)
+  - *+12 base damage, plus +4 per face card (J/Q/K) in the player's hand.*
+  - Hook: `modifyDamageDealt` — adds 12 + (face card count * 4).
 
-- **Royal Guard** (armor)
-  - *30% damage reduction on all incoming hits.*
-  - Hook: `modifyDamageReceived` — multiplies incoming damage by `0.7`, rounded with `Math.round`.
+- **Mirror Aegis** (armor)
+  - *35% damage reduction on all incoming hits.*
+  - Hook: `modifyDamageReceived` — multiplies incoming damage by `0.65`, rounded with `Math.round`.
 
-- **Tyrant Crown** (trinket)
-  - *Deals 5 damage directly to the player on any push (tie).*
-  - Hook: `onHandEnd` — checks `!context.playerScore.busted && !context.dealerScore.busted && context.playerScore.value === context.dealerScore.value`; if true, executes `context.playerState.hp = Math.max(0, context.playerState.hp - 5)`.
-  - *Note:* This punishes the player even on neutral outcomes, eliminating "safe" plays.
+- **Crown of Stolen Souls** (trinket)
+  - *Heals the boss for 6 HP when the player scores 19-21 without blackjack.*
+  - Hook: `onHandEnd` — checks `!busted && !isBlackjack && score >= 19 && score <= 21`; if true, heals 6 HP.
+  - *Note:* Punishes strong but non-blackjack hands. The player must either score blackjack or accept the boss healing.
 
-**Curse — Curse of the Crown** (`curse_sultan`)
+**Curse — Curse of the Serpent King** (`curse_zahhak`)
 
 | Curse Property | Value |
 |---|---|
-| Display name | Crimson Curse |
-| Trigger | `modifyRules` |
-| Effect | Ties resolve as dealer wins; player receives 5 damage instead of a push |
+| Display name | Curse of the Serpent King |
+| Trigger | `modifyDamageDealt` on the player |
+| Effect | Player's damage output is permanently reduced by 20% |
 | Source tag | `wish_curse` |
 
-*Implementation:* Installs `modifyRules` on the player's modifier stack. Sets `rules.winConditions.tieResolution = 'dealer'`. This is a rule-level change — the engine reads `tieResolution` during hand result calculation and awards the hand to the dealer on any push. The player takes dealer damage on what would otherwise be a draw.
+*Implementation:* Installs `modifyDamageDealt` on the player's modifier stack. Returns `Math.floor(damage * 0.8)`.
 
-*Scope:* Applies to all remaining encounters for the entire run. This is the most strategically impactful curse — it completely eliminates the push outcome.
+*Scope:* Applies to all remaining encounters for the entire run. This is a flat multiplicative reduction on all player damage, making every subsequent fight harder.
 
 ---
 
@@ -122,5 +125,5 @@ Bosses are `CombatantData` objects with `isBoss: true`. They differ from regular
 | Stage | Boss | HP | Equipment | Curse Effect |
 |---|---|---|---|---|
 | 1 | Ancient Strix | 50 | +10 on dealer BJ · +2/red card in player hand | +5 incoming damage on dealer BJ |
-| 2 | Djinn Warden | 75 | +8 flat damage · heals 10 on dealer BJ | 3 damage to player at hand start |
-| 3 | Crimson Sultan | 100 | +15 flat damage · 30% DR · 5 damage on push | Ties resolve as dealer wins |
+| 2 | Murad the Brass Ifrit | 75 | +8 flat damage · 20% DR · heals 8 on player bust | 4 damage to player on bust |
+| 3 | Zahhak the Mirror King | 100 | +12 +4/face card · 35% DR · heals 6 on player 19-21 | Player damage reduced 20% |

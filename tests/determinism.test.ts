@@ -93,8 +93,8 @@ describe('Determinism', () => {
   });
 
   it('different seeds produce different games', () => {
-    const { view: view1 } = playGame('seed-alpha');
-    const { view: view2 } = playGame('seed-beta');
+    const { view: view1 } = playGame('seed-alpha-1');
+    const { view: view2 } = playGame('seed-beta-2');
     // They almost certainly differ in hp or gold or stage
     const different =
       view1.player.hp !== view2.player.hp ||

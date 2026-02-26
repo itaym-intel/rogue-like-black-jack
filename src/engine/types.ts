@@ -36,7 +36,17 @@ export interface Equipment {
 
 // ── Consumable types ──
 
-export type ConsumableType = 'health_potion' | 'damage_potion' | 'strength_potion' | 'poison_potion';
+export type ConsumableType =
+  | 'health_potion'
+  | 'damage_potion'
+  | 'strength_potion'
+  | 'poison_potion'
+  | 'armor_elixir'
+  | 'dodge_brew'
+  | 'regen_draught'
+  | 'battle_trance'
+  | 'fortune_vessel'
+  | 'wrath_elixir';
 
 export interface ConsumableEffect {
   type: ConsumableType;
