@@ -11,6 +11,7 @@
     "sim": "tsx src/sim/cli.ts",
     "seed-find": "tsx src/sim/seed-finder-cli.ts",
     "sim:dash": "vite --config vite.sim.config.ts",
+    "dev:editor": "vite --config vite.editor.config.ts",
     "build": "tsc -p tsconfig.gui.json --noEmit && vite build"
   },
   "keywords": [],

@@ -1,0 +1,103 @@
+[
+  {
+    "id": "health_potion",
+    "name": "Health Potion",
+    "description": "Restores 5 HP",
+    "tags": ["consumable", "healing", "instant"],
+    "effects": [
+      { "type": "instant_heal", "value": 5 }
+    ],
+    "consumable": { "cost": 10, "instant": true }
+  },
+  {
+    "id": "damage_potion",
+    "name": "Damage Potion",
+    "description": "Deals 5 damage to enemy",
+    "tags": ["consumable", "damage", "instant"],
+    "effects": [
+      { "type": "instant_damage", "value": 5 }
+    ],
+    "consumable": { "cost": 15, "instant": true }
+  },
+  {
+    "id": "strength_potion",
+    "name": "Strength Potion",
+    "description": "+30% damage for 1 hand",
+    "tags": ["consumable", "damage", "duration"],
+    "effects": [
+      { "type": "percent_damage_bonus", "value": 0.3 }
+    ],
+    "consumable": { "cost": 20, "instant": false, "duration": 1 }
+  },
+  {
+    "id": "poison_potion",
+    "name": "Poison Potion",
+    "description": "3 damage/hand for 3 hands",
+    "tags": ["consumable", "dot", "duration"],
+    "effects": [
+      { "type": "poison", "value": 3 }
+    ],
+    "consumable": { "cost": 20, "instant": false, "duration": 3 }
+  },
+  {
+    "id": "armor_elixir",
+    "name": "Elixir of Iron Skin",
+    "description": "-30% damage received for 2 hands",
+    "tags": ["consumable", "defense", "duration"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.3 }
+    ],
+    "consumable": { "cost": 20, "instant": false, "duration": 2 }
+  },
+  {
+    "id": "dodge_brew",
+    "name": "Sand Dancer's Brew",
+    "description": "25% dodge chance for 1 hand",
+    "tags": ["consumable", "defense", "duration"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.25 }
+    ],
+    "consumable": { "cost": 18, "instant": false, "duration": 1 }
+  },
+  {
+    "id": "regen_draught",
+    "name": "Phoenix Draught",
+    "description": "Heal 2 HP per hand for 3 hands",
+    "tags": ["consumable", "healing", "duration"],
+    "effects": [
+      { "type": "heal_per_hand", "value": 2 }
+    ],
+    "consumable": { "cost": 22, "instant": false, "duration": 3 }
+  },
+  {
+    "id": "battle_trance",
+    "name": "Battle Trance",
+    "description": "+40% damage dealt and -20% damage received for 2 hands",
+    "tags": ["consumable", "damage", "defense", "duration"],
+    "effects": [
+      { "type": "percent_damage_bonus", "value": 0.4 },
+      { "type": "percent_damage_reduction", "value": 0.2 }
+    ],
+    "consumable": { "cost": 25, "instant": false, "duration": 2 }
+  },
+  {
+    "id": "fortune_vessel",
+    "name": "Fortune's Vessel",
+    "description": "Instantly gain 20 gold",
+    "tags": ["consumable", "economy", "instant"],
+    "effects": [
+      { "type": "instant_gold", "value": 20 }
+    ],
+    "consumable": { "cost": 20, "instant": true }
+  },
+  {
+    "id": "wrath_elixir",
+    "name": "Wrath Elixir",
+    "description": "+80% damage for 1 hand",
+    "tags": ["consumable", "damage", "duration"],
+    "effects": [
+      { "type": "percent_damage_bonus", "value": 0.8 }
+    ],
+    "consumable": { "cost": 28, "instant": false, "duration": 1 }
+  }
+]

@@ -1,0 +1,158 @@
+[
+  {
+    "id": "enemy_obsidian_golem",
+    "name": "Obsidian Golem",
+    "description": "A hulking construct of volcanic glass.",
+    "tags": ["enemy", "stage_3"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 35,
+      "isBoss": false,
+      "stagePool": 3,
+      "equipmentIds": ["enemy_equip_golem_armor"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_golem_armor",
+    "name": "Obsidian Plates",
+    "description": "40% less damage",
+    "tags": ["equipment", "armor", "enemy", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.4 }
+    ]
+  },
+  {
+    "id": "enemy_shadow_assassin",
+    "name": "Shadow Assassin",
+    "description": "A silent killer wreathed in magical darkness.",
+    "tags": ["enemy", "stage_3"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 30,
+      "isBoss": false,
+      "stagePool": 3,
+      "equipmentIds": ["enemy_equip_assassin_weapon", "enemy_equip_assassin_boots"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_assassin_weapon",
+    "name": "Shadow Blade",
+    "description": "+10 flat damage",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      { "type": "flat_damage_bonus", "value": 10 }
+    ]
+  },
+  {
+    "id": "enemy_equip_assassin_boots",
+    "name": "Shadow Step",
+    "description": "20% dodge",
+    "tags": ["equipment", "boots", "enemy", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.20 }
+    ]
+  },
+  {
+    "id": "enemy_fire_dancer",
+    "name": "Fire Dancer",
+    "description": "A performer whose flames are anything but theatrical.",
+    "tags": ["enemy", "stage_3"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 32,
+      "isBoss": false,
+      "stagePool": 3,
+      "equipmentIds": ["enemy_equip_dancer_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_dancer_trinket",
+    "name": "Flame Veil",
+    "description": "+3 damage per red card in dealer hand",
+    "tags": ["equipment", "trinket", "enemy", "damage"],
+    "effects": [
+      { "type": "own_hand_color_damage_bonus", "value": 3, "color": "red" }
+    ]
+  },
+  {
+    "id": "enemy_palace_guard",
+    "name": "Palace Guard",
+    "description": "An elite warrior of the Sultan's palace, armored in layered iron and trained to kill.",
+    "tags": ["enemy", "stage_3"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 35,
+      "isBoss": false,
+      "stagePool": 3,
+      "equipmentIds": ["enemy_equip_palace_guard_weapon", "enemy_equip_palace_guard_armor"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_palace_guard_weapon",
+    "name": "Palace Halberd",
+    "description": "+8 flat damage",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      { "type": "flat_damage_bonus", "value": 8 }
+    ]
+  },
+  {
+    "id": "enemy_equip_palace_guard_armor",
+    "name": "Tower Shield",
+    "description": "20% less damage",
+    "tags": ["equipment", "armor", "enemy", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.2 }
+    ]
+  },
+  {
+    "id": "enemy_jinn_inquisitor",
+    "name": "Jinn Inquisitor",
+    "description": "A bound jinn tasked with judging souls. It strikes hardest when victory is closest.",
+    "tags": ["enemy", "stage_3"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 30,
+      "isBoss": false,
+      "stagePool": 3,
+      "equipmentIds": ["enemy_equip_inquisitor_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_inquisitor_trinket",
+    "name": "Eye of Judgment",
+    "description": "+6 damage when dealer wins with higher score than player (non-bust loss)",
+    "tags": ["equipment", "trinket", "enemy", "damage"],
+    "effects": [
+      { "type": "bonus_damage_on_score_win", "value": 6 }
+    ]
+  },
+  {
+    "id": "enemy_cursed_vizier",
+    "name": "Cursed Vizier",
+    "description": "A disgraced palace official whose soul was bound here as punishment. His suffering feeds on yours.",
+    "tags": ["enemy", "stage_3"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 38,
+      "isBoss": false,
+      "stagePool": 3,
+      "equipmentIds": ["enemy_equip_vizier_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_vizier_trinket",
+    "name": "Ledger of Debt",
+    "description": "+2 damage per consecutive loss (max +8)",
+    "tags": ["equipment", "trinket", "enemy", "damage"],
+    "effects": [
+      { "type": "consecutive_loss_damage_bonus", "value": 2, "max": 8 }
+    ]
+  }
+]

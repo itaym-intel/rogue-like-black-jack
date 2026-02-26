@@ -1,0 +1,53 @@
+[
+  {
+    "id": "enemy_zahhak",
+    "name": "Zahhak the Mirror King",
+    "description": "The sorcerer-tyrant who enslaved the jinn and stole their power. Master of illusions and stolen magic.",
+    "tags": ["boss", "stage_3"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 100,
+      "isBoss": true,
+      "stagePool": 3,
+      "equipmentIds": ["enemy_equip_zahhak_weapon", "enemy_equip_zahhak_armor", "enemy_equip_zahhak_trinket"],
+      "curseId": "curse_zahhak"
+    }
+  },
+  {
+    "id": "enemy_equip_zahhak_weapon",
+    "name": "Serpent Fang",
+    "description": "+12 damage, +4 per face card in player hand",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      { "type": "flat_damage_bonus", "value": 12 },
+      { "type": "face_card_damage_bonus", "value": 4 }
+    ]
+  },
+  {
+    "id": "enemy_equip_zahhak_armor",
+    "name": "Mirror Aegis",
+    "description": "35% less damage",
+    "tags": ["equipment", "armor", "enemy", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.35 }
+    ]
+  },
+  {
+    "id": "enemy_equip_zahhak_trinket",
+    "name": "Crown of Stolen Souls",
+    "description": "Heals 6 HP when player scores 19-21 without blackjack",
+    "tags": ["equipment", "trinket", "enemy", "healing"],
+    "effects": [
+      { "type": "heal_on_opponent_near_blackjack", "value": 6, "minScore": 19, "maxScore": 21 }
+    ]
+  },
+  {
+    "id": "curse_zahhak",
+    "name": "Curse of the Serpent King",
+    "description": "Your damage output is permanently reduced by 20%",
+    "tags": ["curse", "stage_3"],
+    "effects": [
+      { "type": "percent_damage_penalty", "value": 0.2 }
+    ]
+  }
+]

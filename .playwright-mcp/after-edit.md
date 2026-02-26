@@ -1,0 +1,733 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - heading "Geniejack" [level=1] [ref=e4]
+    - generic [ref=e5]: Component Editor
+    - textbox "Search components..." [ref=e7]
+    - button "+ New" [ref=e9] [cursor=pointer]
+  - generic [ref=e10]:
+    - navigation [ref=e11]:
+      - button "All 102" [ref=e12] [cursor=pointer]:
+        - generic [ref=e13]: All
+        - generic [ref=e14]: "102"
+      - generic [ref=e15]:
+        - generic [ref=e16]: Equipment
+        - button "Weapons 17" [ref=e17] [cursor=pointer]:
+          - generic [ref=e18]: Weapons
+          - generic [ref=e19]: "17"
+        - button "Helms 6" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: Helms
+          - generic [ref=e22]: "6"
+        - button "Armor 12" [ref=e23] [cursor=pointer]:
+          - generic [ref=e24]: Armor
+          - generic [ref=e25]: "12"
+        - button "Boots 9" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: Boots
+          - generic [ref=e28]: "9"
+        - button "Trinkets 23" [ref=e29] [cursor=pointer]:
+          - generic [ref=e30]: Trinkets
+          - generic [ref=e31]: "23"
+      - generic [ref=e32]:
+        - generic [ref=e33]: Items
+        - button "Consumables 10" [ref=e34] [cursor=pointer]:
+          - generic [ref=e35]: Consumables
+          - generic [ref=e36]: "10"
+      - generic [ref=e37]:
+        - generic [ref=e38]: Enemies
+        - button "Stage 1 6" [ref=e39] [cursor=pointer]:
+          - generic [ref=e40]: Stage 1
+          - generic [ref=e41]: "6"
+        - button "Stage 2 6" [ref=e42] [cursor=pointer]:
+          - generic [ref=e43]: Stage 2
+          - generic [ref=e44]: "6"
+        - button "Stage 3 6" [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: Stage 3
+          - generic [ref=e47]: "6"
+        - button "Bosses 3" [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: Bosses
+          - generic [ref=e50]: "3"
+      - generic [ref=e51]:
+        - generic [ref=e52]: Other
+        - button "Curses 3" [ref=e53] [cursor=pointer]:
+          - generic [ref=e54]: Curses
+          - generic [ref=e55]: "3"
+        - button "Rules 1" [ref=e56] [cursor=pointer]:
+          - generic [ref=e57]: Rules
+          - generic [ref=e58]: "1"
+    - generic [ref=e59]:
+      - generic [ref=e60]:
+        - heading "All Components" [level=2] [ref=e61]
+        - generic [ref=e62]: "102"
+      - generic [ref=e63] [cursor=pointer]:
+        - generic [ref=e64]: Ancient Strix
+        - generic [ref=e65]:
+          - generic [ref=e66]: 50 HP
+          - generic [ref=e67]: boss
+      - generic [ref=e68] [cursor=pointer]:
+        - generic [ref=e69]: Battle Trance
+        - generic [ref=e70]:
+          - generic [ref=e71]: 25g
+          - generic [ref=e72]: percent_damage_bonus
+      - generic [ref=e73] [cursor=pointer]:
+        - generic [ref=e74]: Bone Club
+        - generic [ref=e75]:
+          - generic [ref=e76]: cloth
+          - generic [ref=e77]: weapon
+          - generic [ref=e78]: 30g
+          - generic [ref=e79]: flat_damage_bonus
+      - generic [ref=e80] [cursor=pointer]:
+        - generic [ref=e81]: Brass Casing
+        - generic [ref=e83]: percent_damage_reduction
+      - generic [ref=e84] [cursor=pointer]:
+        - generic [ref=e85]: Brass Sentinel
+        - generic [ref=e87]: 30 HP
+      - generic [ref=e88] [cursor=pointer]:
+        - generic [ref=e89]: Brass Shackle
+        - generic [ref=e91]: percent_damage_reduction
+      - generic [ref=e92] [cursor=pointer]:
+        - generic [ref=e93]: Bronze Armor
+        - generic [ref=e94]:
+          - generic [ref=e95]: bronze
+          - generic [ref=e96]: armor
+          - generic [ref=e97]: 55g
+          - generic [ref=e98]: percent_damage_reduction
+      - generic [ref=e99] [cursor=pointer]:
+        - generic [ref=e100]: Bronze Boots
+        - generic [ref=e101]:
+          - generic [ref=e102]: bronze
+          - generic [ref=e103]: boots
+          - generic [ref=e104]: 50g
+          - generic [ref=e105]: dodge_chance
+      - generic [ref=e106] [cursor=pointer]:
+        - generic [ref=e107]: Bronze Helm
+        - generic [ref=e108]:
+          - generic [ref=e109]: bronze
+          - generic [ref=e110]: helm
+          - generic [ref=e111]: 45g
+          - generic [ref=e112]: reduce_bust_damage
+      - generic [ref=e113] [cursor=pointer]:
+        - generic [ref=e114]: Bronze Saif
+        - generic [ref=e115]:
+          - generic [ref=e116]: bronze
+          - generic [ref=e117]: weapon
+          - generic [ref=e118]: 60g
+          - generic [ref=e119]: flat_damage_bonus
+      - generic [ref=e120] [cursor=pointer]:
+        - generic [ref=e121]: Bronze Trinket
+        - generic [ref=e122]:
+          - generic [ref=e123]: bronze
+          - generic [ref=e124]: trinket
+          - generic [ref=e125]: 40g
+          - generic [ref=e126]: random_suit_damage_reduction
+      - generic [ref=e127] [cursor=pointer]:
+        - generic [ref=e128]: Carrion Hunger
+        - generic [ref=e130]: bonus_damage_on_opponent_bust
+      - generic [ref=e131] [cursor=pointer]:
+        - generic [ref=e132]: Cloth Armor
+        - generic [ref=e133]:
+          - generic [ref=e134]: cloth
+          - generic [ref=e135]: armor
+          - generic [ref=e136]: 25g
+          - generic [ref=e137]: percent_damage_reduction
+      - generic [ref=e138] [cursor=pointer]:
+        - generic [ref=e139]: Cloth Boots
+        - generic [ref=e140]:
+          - generic [ref=e141]: cloth
+          - generic [ref=e142]: boots
+          - generic [ref=e143]: 20g
+          - generic [ref=e144]: dodge_chance
+      - generic [ref=e145] [cursor=pointer]:
+        - generic [ref=e146]: Cloth Helm
+        - generic [ref=e147]:
+          - generic [ref=e148]: cloth
+          - generic [ref=e149]: helm
+          - generic [ref=e150]: 20g
+          - generic [ref=e151]: reduce_bust_damage
+      - generic [ref=e152] [cursor=pointer]:
+        - generic [ref=e153]: Cloth Trinket
+        - generic [ref=e154]:
+          - generic [ref=e155]: cloth
+          - generic [ref=e156]: trinket
+          - generic [ref=e157]: 15g
+          - generic [ref=e158]: flat_gold_bonus
+      - generic [ref=e159] [cursor=pointer]:
+        - generic [ref=e160]: Copper Coin Ring
+        - generic [ref=e161]:
+          - generic [ref=e162]: cloth
+          - generic [ref=e163]: trinket
+          - generic [ref=e164]: 18g
+          - generic [ref=e165]: flat_gold_bonus
+      - generic [ref=e166] [cursor=pointer]:
+        - generic [ref=e167]: Copper Khanjar
+        - generic [ref=e168]:
+          - generic [ref=e169]: cloth
+          - generic [ref=e170]: weapon
+          - generic [ref=e171]: 28g
+          - generic [ref=e172]: conditional_flat_damage
+      - generic [ref=e173] [cursor=pointer]:
+        - generic [ref=e174]: Crown of Stolen Souls
+        - generic [ref=e176]: heal_on_opponent_near_blackjack
+      - generic [ref=e177] [cursor=pointer]:
+        - generic [ref=e178]: Curse of the Serpent King
+        - generic [ref=e180]: percent_damage_penalty
+      - generic [ref=e181] [cursor=pointer]:
+        - generic [ref=e182]: Cursed Vizier
+        - generic [ref=e184]: 38 HP
+      - generic [ref=e185] [cursor=pointer]:
+        - generic [ref=e186]: Damage Potion
+        - generic [ref=e187]:
+          - generic [ref=e188]: 15g
+          - generic [ref=e189]: instant_damage
+      - generic [ref=e190] [cursor=pointer]:
+        - generic [ref=e191]: Desert Eye
+        - generic [ref=e192]:
+          - generic [ref=e193]: bronze
+          - generic [ref=e194]: trinket
+          - generic [ref=e195]: 42g
+          - generic [ref=e196]: random_suit_damage_reduction
+      - generic [ref=e197] [cursor=pointer]:
+        - generic [ref=e198]: Desert Jackal
+        - generic [ref=e200]: 20 HP
+      - generic [ref=e201] [cursor=pointer]:
+        - generic [ref=e202]: Dust Wraith
+        - generic [ref=e204]: 25 HP
+      - generic [ref=e205] [cursor=pointer]:
+        - generic [ref=e206]: Eerie Melody
+        - generic [ref=e208]: dot_to_opponent
+      - generic [ref=e209] [cursor=pointer]:
+        - generic [ref=e210]: Elixir of Iron Skin
+        - generic [ref=e211]:
+          - generic [ref=e212]: 20g
+          - generic [ref=e213]: percent_damage_reduction
+      - generic [ref=e214] [cursor=pointer]:
+        - generic [ref=e215]: Ember Scales
+        - generic [ref=e217]: own_hand_color_damage_bonus
+      - generic [ref=e218] [cursor=pointer]:
+        - generic [ref=e219]: Eye of Judgment
+        - generic [ref=e221]: bonus_damage_on_score_win
+      - generic [ref=e222] [cursor=pointer]:
+        - generic [ref=e223]: Fire Dancer
+        - generic [ref=e225]: 32 HP
+      - generic [ref=e226] [cursor=pointer]:
+        - generic [ref=e227]: Flame Veil
+        - generic [ref=e229]: own_hand_color_damage_bonus
+      - generic [ref=e230] [cursor=pointer]:
+        - generic [ref=e231]: Flint Spear
+        - generic [ref=e232]:
+          - generic [ref=e233]: cloth
+          - generic [ref=e234]: weapon
+          - generic [ref=e235]: 30g
+          - generic [ref=e236]: flat_damage_bonus
+      - generic [ref=e237] [cursor=pointer]:
+        - generic [ref=e238]: Fortune's Vessel
+        - generic [ref=e239]:
+          - generic [ref=e240]: 20g
+          - generic [ref=e241]: instant_gold
+      - generic [ref=e242] [cursor=pointer]:
+        - generic [ref=e243]: Ghul
+        - generic [ref=e245]: 25 HP
+      - generic [ref=e247] [cursor=pointer]: Global Default Rules
+      - generic [ref=e248] [cursor=pointer]:
+        - generic [ref=e249]: Golden Scimitar
+        - generic [ref=e250]:
+          - generic [ref=e251]: iron
+          - generic [ref=e252]: weapon
+          - generic [ref=e253]: 95g
+          - generic [ref=e254]: flat_damage_bonus
+      - generic [ref=e255] [cursor=pointer]:
+        - generic [ref=e256]: Hardened Linen
+        - generic [ref=e257]:
+          - generic [ref=e258]: cloth
+          - generic [ref=e259]: armor
+          - generic [ref=e260]: 22g
+          - generic [ref=e261]: percent_damage_reduction
+      - generic [ref=e262] [cursor=pointer]:
+        - generic [ref=e263]: Health Potion
+        - generic [ref=e264]:
+          - generic [ref=e265]: 10g
+          - generic [ref=e266]: instant_heal
+      - generic [ref=e267] [cursor=pointer]:
+        - generic [ref=e268]: Hollow Horn
+        - generic [ref=e270]: flat_damage_bonus
+      - generic [ref=e271] [cursor=pointer]:
+        - generic [ref=e272]: Iron Armor
+        - generic [ref=e273]:
+          - generic [ref=e274]: iron
+          - generic [ref=e275]: armor
+          - generic [ref=e276]: 90g
+          - generic [ref=e277]: percent_damage_reduction
+      - generic [ref=e278] [cursor=pointer]:
+        - generic [ref=e279]: Iron Boots
+        - generic [ref=e280]:
+          - generic [ref=e281]: iron
+          - generic [ref=e282]: boots
+          - generic [ref=e283]: 85g
+          - generic [ref=e284]: dodge_chance
+      - generic [ref=e285] [cursor=pointer]:
+        - generic [ref=e286]: Iron Helm
+        - generic [ref=e287]:
+          - generic [ref=e288]: iron
+          - generic [ref=e289]: helm
+          - generic [ref=e290]: 80g
+          - generic [ref=e291]: reduce_bust_damage
+      - generic [ref=e292] [cursor=pointer]:
+        - generic [ref=e293]: Iron Scimitar
+        - generic [ref=e294]:
+          - generic [ref=e295]: iron
+          - generic [ref=e296]: weapon
+          - generic [ref=e297]: 100g
+          - generic [ref=e298]: flat_damage_bonus
+      - generic [ref=e299] [cursor=pointer]:
+        - generic [ref=e300]: Iron Trinket
+        - generic [ref=e301]:
+          - generic [ref=e302]: iron
+          - generic [ref=e303]: trinket
+          - generic [ref=e304]: 75g
+          - generic [ref=e305]: bust_save
+      - generic [ref=e306] [cursor=pointer]:
+        - generic [ref=e307]: Jinn Inquisitor
+        - generic [ref=e309]: 30 HP
+      - generic [ref=e310] [cursor=pointer]:
+        - generic [ref=e311]: Keffiyeh of Warding
+        - generic [ref=e312]:
+          - generic [ref=e313]: cloth
+          - generic [ref=e314]: helm
+          - generic [ref=e315]: 24g
+          - generic [ref=e316]: conditional_damage_reduction
+      - generic [ref=e317] [cursor=pointer]:
+        - generic [ref=e318]: Lamellar Armor
+        - generic [ref=e319]:
+          - generic [ref=e320]: iron
+          - generic [ref=e321]: armor
+          - generic [ref=e322]: 92g
+          - generic [ref=e323]: percent_damage_reduction
+      - generic [ref=e324] [cursor=pointer]:
+        - generic [ref=e325]: Lamp of Fortune
+        - generic [ref=e326]:
+          - generic [ref=e327]: iron
+          - generic [ref=e328]: trinket
+          - generic [ref=e329]: 80g
+          - generic [ref=e330]: flat_gold_bonus
+      - generic [ref=e331] [cursor=pointer]:
+        - generic [ref=e332]: Ledger of Debt
+        - generic [ref=e334]: consecutive_loss_damage_bonus
+      - generic [ref=e335] [cursor=pointer]:
+        - generic [ref=e336]: Lucky Knucklebone
+        - generic [ref=e337]:
+          - generic [ref=e338]: cloth
+          - generic [ref=e339]: trinket
+          - generic [ref=e340]: 25g
+          - generic [ref=e341]: gold_if_hands_won_gte
+      - generic [ref=e342] [cursor=pointer]:
+        - generic [ref=e343]: Merchant's Medallion
+        - generic [ref=e344]:
+          - generic [ref=e345]: bronze
+          - generic [ref=e346]: trinket
+          - generic [ref=e347]: 45g
+          - generic [ref=e348]: flat_gold_bonus
+      - generic [ref=e349] [cursor=pointer]:
+        - generic [ref=e350]: Mirror Aegis
+        - generic [ref=e352]: percent_damage_reduction
+      - generic [ref=e353] [cursor=pointer]:
+        - generic [ref=e354]: Murad the Brass Ifrit
+        - generic [ref=e355]:
+          - generic [ref=e356]: 75 HP
+          - generic [ref=e357]: boss
+      - generic [ref=e358] [cursor=pointer]:
+        - generic [ref=e359]: Murad's Brand
+        - generic [ref=e361]: self_damage_on_bust
+      - generic [ref=e362] [cursor=pointer]:
+        - generic [ref=e363]: Murad's Ember
+        - generic [ref=e365]: flat_damage_bonus
+      - generic [ref=e366] [cursor=pointer]:
+        - generic [ref=e367]: Night Fang
+        - generic [ref=e369]: blackjack_bonus_damage
+      - generic [ref=e370] [cursor=pointer]:
+        - generic [ref=e371]: Night Fang Curse
+        - generic [ref=e373]: extra_damage_on_dealer_blackjack
+      - generic [ref=e374] [cursor=pointer]:
+        - generic [ref=e375]: Oasis Blade
+        - generic [ref=e376]:
+          - generic [ref=e377]: bronze
+          - generic [ref=e378]: weapon
+          - generic [ref=e379]: 55g
+          - generic [ref=e380]: conditional_flat_damage
+      - generic [ref=e381] [cursor=pointer]:
+        - generic [ref=e382]: Obsidian Golem
+        - generic [ref=e384]: 35 HP
+      - generic [ref=e385] [cursor=pointer]:
+        - generic [ref=e386]: Obsidian Plates
+        - generic [ref=e388]: percent_damage_reduction
+      - generic [ref=e389] [cursor=pointer]:
+        - generic [ref=e390]: Palace Guard
+        - generic [ref=e392]: 35 HP
+      - generic [ref=e393] [cursor=pointer]:
+        - generic [ref=e394]: Palace Halberd
+        - generic [ref=e396]: flat_damage_bonus
+      - generic [ref=e397] [cursor=pointer]:
+        - generic [ref=e398]: Phantom Step
+        - generic [ref=e400]: dodge_chance
+      - generic [ref=e401] [cursor=pointer]:
+        - generic [ref=e402]: Phoenix Draught
+        - generic [ref=e403]:
+          - generic [ref=e404]: 22g
+          - generic [ref=e405]: heal_per_hand
+      - generic [ref=e406] [cursor=pointer]:
+        - generic [ref=e407]: Poison Potion
+        - generic [ref=e408]:
+          - generic [ref=e409]: 20g
+          - generic [ref=e410]: poison
+      - generic [ref=e411] [cursor=pointer]:
+        - generic [ref=e412]: Predator Fangs
+        - generic [ref=e414]: flat_damage_bonus
+      - generic [ref=e415] [cursor=pointer]:
+        - generic [ref=e416]: Qarin
+        - generic [ref=e418]: 18 HP
+      - generic [ref=e419] [cursor=pointer]:
+        - generic [ref=e420]: Quickstep Shoes
+        - generic [ref=e421]:
+          - generic [ref=e422]: bronze
+          - generic [ref=e423]: boots
+          - generic [ref=e424]: 48g
+          - generic [ref=e425]: dodge_chance
+      - generic [ref=e426] [cursor=pointer]:
+        - generic [ref=e427]: Razor Beak
+        - generic [ref=e429]: conditional_flat_damage
+      - generic [ref=e430] [cursor=pointer]:
+        - generic [ref=e431]: Red Bane
+        - generic [ref=e433]: color_card_damage_bonus
+      - generic [ref=e434] [cursor=pointer]:
+        - generic [ref=e435]: Ring of Solomon
+        - generic [ref=e436]:
+          - generic [ref=e437]: iron
+          - generic [ref=e438]: trinket
+          - generic [ref=e439]: 90g
+          - generic [ref=e440]: percent_damage_reduction
+      - generic [ref=e441] [cursor=pointer]:
+        - generic [ref=e442]: Roc Hatchling
+        - generic [ref=e444]: 22 HP
+      - generic [ref=e445] [cursor=pointer]:
+        - generic [ref=e446]: Salamander
+        - generic [ref=e448]: 22 HP
+      - generic [ref=e449] [cursor=pointer]:
+        - generic [ref=e450]: Sand Dancer's Brew
+        - generic [ref=e451]:
+          - generic [ref=e452]: 18g
+          - generic [ref=e453]: dodge_chance
+      - generic [ref=e454] [cursor=pointer]:
+        - generic [ref=e455]: Sand Scorpion
+        - generic [ref=e457]: 18 HP
+      - generic [ref=e458] [cursor=pointer]:
+        - generic [ref=e459]: Sand Serpent
+        - generic [ref=e461]: 22 HP
+      - generic [ref=e462] [cursor=pointer]:
+        - generic [ref=e463]: Seal of the Caliph
+        - generic [ref=e464]:
+          - generic [ref=e465]: iron
+          - generic [ref=e466]: trinket
+          - generic [ref=e467]: 85g
+          - generic [ref=e468]: first_hand_damage_multiplier
+      - generic [ref=e469] [cursor=pointer]:
+        - generic [ref=e470]: Serpent Amulet
+        - generic [ref=e471]:
+          - generic [ref=e472]: bronze
+          - generic [ref=e473]: trinket
+          - generic [ref=e474]: 50g
+          - generic [ref=e475]: flat_gold_bonus
+      - generic [ref=e476] [cursor=pointer]:
+        - generic [ref=e477]: Serpent Fang
+        - generic [ref=e479]: flat_damage_bonus
+      - generic [ref=e480] [cursor=pointer]:
+        - generic [ref=e481]: Shadhavar
+        - generic [ref=e483]: 28 HP
+      - generic [ref=e484] [cursor=pointer]:
+        - generic [ref=e485]: Shadow Assassin
+        - generic [ref=e487]: 30 HP
+      - generic [ref=e488] [cursor=pointer]:
+        - generic [ref=e489]: Shadow Blade
+        - generic [ref=e491]: flat_damage_bonus
+      - generic [ref=e492] [cursor=pointer]:
+        - generic [ref=e493]: Shadow Cloak
+        - generic [ref=e495]: suit_in_attacker_hand_damage_reduction
+      - generic [ref=e496] [cursor=pointer]:
+        - generic [ref=e497]: Shadow Step
+        - generic [ref=e499]: dodge_chance
+      - generic [ref=e500] [cursor=pointer]:
+        - generic [ref=e501]: Sihr Amulet
+        - generic [ref=e503]: heal_on_opponent_bust
+      - generic [ref=e504] [cursor=pointer]:
+        - generic [ref=e505]: Silk-Wrapped Mail
+        - generic [ref=e506]:
+          - generic [ref=e507]: bronze
+          - generic [ref=e508]: armor
+          - generic [ref=e509]: 52g
+          - generic [ref=e510]: percent_damage_reduction
+      - generic [ref=e511] [cursor=pointer]:
+        - generic [ref=e512]: Spirit Veil
+        - generic [ref=e514]: dodge_chance
+      - generic [ref=e515] [cursor=pointer]:
+        - generic [ref=e516]: Stone Shell
+        - generic [ref=e518]: percent_damage_reduction
+      - generic [ref=e519] [cursor=pointer]:
+        - generic [ref=e520]: Strength Potion
+        - generic [ref=e521]:
+          - generic [ref=e522]: 20g
+          - generic [ref=e523]: percent_damage_bonus
+      - generic [ref=e524] [cursor=pointer]:
+        - generic [ref=e525]: Sultan's Crown
+        - generic [ref=e526]:
+          - generic [ref=e527]: iron
+          - generic [ref=e528]: helm
+          - generic [ref=e529]: 85g
+          - generic [ref=e530]: reduce_bust_damage
+      - generic [ref=e531] [cursor=pointer]:
+        - generic [ref=e532]: Sunfire Lance
+        - generic [ref=e533]:
+          - generic [ref=e534]: iron
+          - generic [ref=e535]: weapon
+          - generic [ref=e536]: 108g
+          - generic [ref=e537]: flat_damage_bonus
+      - generic [ref=e538] [cursor=pointer]:
+        - generic [ref=e539]: Tomb Guardian
+        - generic [ref=e541]: 28 HP
+      - generic [ref=e542] [cursor=pointer]:
+        - generic [ref=e543]: Tower Shield
+        - generic [ref=e545]: percent_damage_reduction
+      - generic [ref=e546] [cursor=pointer]:
+        - generic [ref=e547]: Twin Fangs
+        - generic [ref=e548]:
+          - generic [ref=e549]: bronze
+          - generic [ref=e550]: weapon
+          - generic [ref=e551]: 65g
+          - generic [ref=e552]: conditional_flat_damage
+      - generic [ref=e553] [cursor=pointer]:
+        - generic [ref=e554]: Vampire Bat
+        - generic [ref=e556]: 15 HP
+      - generic [ref=e557] [cursor=pointer]:
+        - generic [ref=e558]: Venom Fangs
+        - generic [ref=e560]: flat_damage_bonus
+      - generic [ref=e561] [cursor=pointer]:
+        - generic [ref=e562]: Vizier's Headpiece
+        - generic [ref=e563]:
+          - generic [ref=e564]: bronze
+          - generic [ref=e565]: helm
+          - generic [ref=e566]: 48g
+          - generic [ref=e567]: reduce_bust_damage
+      - generic [ref=e568] [cursor=pointer]:
+        - generic [ref=e569]: Wanderer's Pouch
+        - generic [ref=e570]:
+          - generic [ref=e571]: cloth
+          - generic [ref=e572]: trinket
+          - generic [ref=e573]: 22g
+          - generic [ref=e574]: gold_per_hand_won
+      - generic [ref=e575] [cursor=pointer]:
+        - generic [ref=e576]: Whirling Sandals
+        - generic [ref=e577]:
+          - generic [ref=e578]: cloth
+          - generic [ref=e579]: boots
+          - generic [ref=e580]: 22g
+          - generic [ref=e581]: dodge_chance
+      - generic [ref=e582] [cursor=pointer]:
+        - generic [ref=e583]: Winged Sandals
+        - generic [ref=e584]:
+          - generic [ref=e585]: iron
+          - generic [ref=e586]: boots
+          - generic [ref=e587]: 88g
+          - generic [ref=e588]: dodge_chance
+      - generic [ref=e589] [cursor=pointer]:
+        - generic [ref=e590]: Wrath Elixir
+        - generic [ref=e591]:
+          - generic [ref=e592]: 28g
+          - generic [ref=e593]: percent_damage_bonus
+      - generic [ref=e594] [cursor=pointer]:
+        - generic [ref=e595]: Zahhak the Mirror King
+        - generic [ref=e596]:
+          - generic [ref=e597]: 100 HP
+          - generic [ref=e598]: boss
+    - generic [ref=e601]:
+      - generic [ref=e602]:
+        - generic [ref=e603]: Identity
+        - generic [ref=e604]:
+          - generic [ref=e605]:
+            - generic [ref=e606]: ID
+            - textbox [ref=e607]: weapon_cloth
+          - generic [ref=e608]:
+            - generic [ref=e609]: Name
+            - textbox [ref=e610]: Flint Spear
+        - generic [ref=e612]:
+          - generic [ref=e613]: Description
+          - textbox [active] [ref=e614]: +7 flat damage
+      - generic [ref=e615]:
+        - generic [ref=e616]: Tags
+        - generic [ref=e617]:
+          - generic [ref=e618]:
+            - generic [ref=e619]:
+              - text: equipment
+              - generic "Remove tag" [ref=e620] [cursor=pointer]: x
+            - generic [ref=e621]:
+              - text: weapon
+              - generic "Remove tag" [ref=e622] [cursor=pointer]: x
+            - generic [ref=e623]:
+              - text: cloth
+              - generic "Remove tag" [ref=e624] [cursor=pointer]: x
+            - generic [ref=e625]:
+              - text: damage
+              - generic "Remove tag" [ref=e626] [cursor=pointer]: x
+          - generic [ref=e627]:
+            - combobox [ref=e629] [cursor=pointer]:
+              - option "Add known tag..." [selected]
+              - option "consumable"
+              - option "enemy"
+              - option "boss"
+              - option "curse"
+              - option "blessing_template"
+              - option "rules_override"
+              - option "helm"
+              - option "armor"
+              - option "boots"
+              - option "trinket"
+              - option "bronze"
+              - option "iron"
+              - option "stage_1"
+              - option "stage_2"
+              - option "stage_3"
+              - option "defense"
+              - option "healing"
+              - option "economy"
+              - option "utility"
+              - option "dot"
+              - option "instant"
+              - option "duration"
+            - textbox "Custom tag..." [ref=e631]
+      - generic [ref=e632]:
+        - generic [ref=e633]: Equipment Properties
+        - generic [ref=e634]:
+          - generic [ref=e635]:
+            - generic [ref=e636]: Slot
+            - combobox [ref=e637] [cursor=pointer]:
+              - option "weapon" [selected]
+              - option "helm"
+              - option "armor"
+              - option "boots"
+              - option "trinket"
+          - generic [ref=e638]:
+            - generic [ref=e639]: Tier
+            - combobox [ref=e640] [cursor=pointer]:
+              - option "cloth" [selected]
+              - option "bronze"
+              - option "iron"
+          - generic [ref=e641]:
+            - generic [ref=e642]: Cost
+            - spinbutton [ref=e643]: "30"
+      - generic [ref=e644]:
+        - generic [ref=e645]: Effects
+        - generic [ref=e646]:
+          - generic [ref=e647]:
+            - generic [ref=e648]:
+              - generic [ref=e649]: Effect Type
+              - combobox [ref=e650] [cursor=pointer]:
+                - option "Flexible Rank"
+                - option "Change Face Card Value"
+                - option "Change Ace High Value"
+                - option "Suit Card Value Bonus"
+                - option "Rank Value Override"
+                - option "Remove Rank from Deck"
+                - option "Remove Suit from Deck"
+                - option "Force Deck Ranks"
+                - option "Extra Copies of Rank"
+                - option "No Reshuffle"
+                - option "Multiple Decks"
+                - option "Bust Threshold Bonus"
+                - option "Additional Blackjack Value"
+                - option "Bust Save"
+                - option "Bust Card Value Halved"
+                - option "Ignore Card on Bust"
+                - option "Five Card Charlie"
+                - option "Soft Hand Bonus"
+                - option "Exact Target Bonus"
+                - option "Enable Remove Card"
+                - option "Enable Peek"
+                - option "Enable Surrender"
+                - option "Enable Split"
+                - option "Extra Starting Cards"
+                - option "Fewer Starting Cards"
+                - option "Double Down Any Time"
+                - option "Hit After Double"
+                - option "Dealer Stands On"
+                - option "Dealer Hits Soft 17"
+                - option "Ties Favor Player"
+                - option "Double Bust Favors Player"
+                - option "Dealer Reveals Cards"
+                - option "Dealer Extra Starting Card"
+                - option "Dealer Fewer Starting Cards"
+                - option "Flat Damage Bonus" [selected]
+                - option "% Damage Bonus"
+                - option "Damage Multiplier"
+                - option "Suit Damage Bonus"
+                - option "Face Card Damage Bonus"
+                - option "Ace Damage Bonus"
+                - option "Even Card Bonus"
+                - option "Odd Card Bonus"
+                - option "Low Card Bonus"
+                - option "High Card Bonus"
+                - option "Blackjack Bonus Damage"
+                - option "Blackjack Damage Multiplier"
+                - option "Damage on Push"
+                - option "Damage per Card in Hand"
+                - option "Overkill Carry"
+                - option "Scaling Damage per Win"
+                - option "Double Down Multiplier"
+                - option "Conditional Flat Damage"
+                - option "Dealer Hand Size Bonus"
+                - option "Bonus on Opponent Bust"
+                - option "Bonus on Score Win"
+                - option "Consecutive Loss Bonus"
+                - option "Color Card Damage Bonus"
+                - option "Own Hand Color Bonus"
+                - option "First Hand Multiplier"
+                - option "% Damage Penalty"
+                - option "Flat Damage Reduction"
+                - option "% Damage Reduction"
+                - option "Dodge Chance"
+                - option "Thorns"
+                - option "Damage Shield"
+                - option "Damage Cap"
+                - option "Suit Damage Reduction"
+                - option "Reduce Bust Damage"
+                - option "Conditional Damage Reduction"
+                - option "Random Suit Reduction"
+                - option "Suit in Attacker Hand Reduction"
+                - option "Max HP Bonus"
+                - option "Heal per Hand"
+                - option "Heal on Win"
+                - option "Heal on Blackjack"
+                - option "Heal on Dodge"
+                - option "Lifesteal"
+                - option "Heal per Battle"
+                - option "Heal on Push"
+                - option "Heal on Bust"
+                - option "Heal on Opponent Bust"
+                - option "Heal on Near-Blackjack"
+                - option "Damage per Hand"
+                - option "Poison"
+                - option "Damage on Enemy Bust"
+                - option "DoT to Opponent"
+                - option "Self Damage on Bust"
+                - option "Flat Gold Bonus"
+                - option "% Gold Bonus"
+                - option "Gold per Hand Won"
+                - option "Gold per Blackjack"
+                - option "Shop Discount"
+                - option "Gold if Hands Won >="
+                - option "Instant Heal"
+                - option "Instant Damage"
+                - option "Instant Gold"
+                - option "Extra Damage on Dealer BJ"
+            - generic [ref=e651]:
+              - generic [ref=e652]: Value (1–25)
+              - spinbutton [ref=e653]: "7"
+          - button "X" [ref=e654] [cursor=pointer]
+        - button "+ Add Effect" [ref=e655] [cursor=pointer]
+      - generic [ref=e656]:
+        - button "Save" [ref=e657] [cursor=pointer]
+        - button "Revert" [ref=e658] [cursor=pointer]
+        - button "Delete" [ref=e659] [cursor=pointer]
