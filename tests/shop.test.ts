@@ -21,6 +21,36 @@ describe('Shop', () => {
     expect(items.length).toBeGreaterThan(0);
   });
 
+  it('stage 1 shop only offers cloth equipment', () => {
+    const rng = new SeededRNG('tier-stage1');
+    const items = generateShopInventory(1, makePlayer(), rng);
+    const equip = items.filter(i => i.type === 'equipment');
+    expect(equip.length).toBeGreaterThan(0);
+    for (const e of equip) {
+      expect((e.item as Equipment).tier).toBe('cloth');
+    }
+  });
+
+  it('stage 2 shop only offers bronze equipment', () => {
+    const rng = new SeededRNG('tier-stage2');
+    const items = generateShopInventory(2, makePlayer(), rng);
+    const equip = items.filter(i => i.type === 'equipment');
+    expect(equip.length).toBeGreaterThan(0);
+    for (const e of equip) {
+      expect((e.item as Equipment).tier).toBe('bronze');
+    }
+  });
+
+  it('stage 3 shop only offers iron equipment', () => {
+    const rng = new SeededRNG('tier-stage3');
+    const items = generateShopInventory(3, makePlayer(), rng);
+    const equip = items.filter(i => i.type === 'equipment');
+    expect(equip.length).toBeGreaterThan(0);
+    for (const e of equip) {
+      expect((e.item as Equipment).tier).toBe('iron');
+    }
+  });
+
   it('marks affordability correctly', () => {
     const rng = new SeededRNG('afford-test');
     const player = makePlayer({ gold: 15 });

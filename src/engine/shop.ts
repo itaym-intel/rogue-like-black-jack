@@ -3,7 +3,7 @@ import { SeededRNG } from './rng.js';
 import { getAllEquipment } from './equipment.js';
 import { getAllConsumables } from './consumables.js';
 
-const TIER_ORDER: Record<EquipmentTier, number> = { cloth: 0, bronze: 1, iron: 2 };
+const STAGE_TIER: Record<number, EquipmentTier> = { 1: 'cloth', 2: 'bronze', 3: 'iron' };
 
 export function generateShopInventory(
   stage: number,
@@ -13,12 +13,9 @@ export function generateShopInventory(
   const allEquipment = getAllEquipment();
   const allConsumables = getAllConsumables();
 
-  // Filter equipment: only offer items that are higher tier than what player has
-  const availableEquipment = allEquipment.filter(eq => {
-    const current = playerState.equipment.get(eq.slot);
-    if (!current) return true;
-    return TIER_ORDER[eq.tier] > TIER_ORDER[current.tier];
-  });
+  // Filter equipment: only offer items matching the current stage's tier
+  const stageTier = STAGE_TIER[stage] ?? 'iron';
+  const availableEquipment = allEquipment.filter(eq => eq.tier === stageTier);
 
   // Shuffle and pick 3-5 equipment items
   const shuffledEquip = rng.shuffle(availableEquipment);

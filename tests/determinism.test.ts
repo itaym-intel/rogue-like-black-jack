@@ -93,13 +93,14 @@ describe('Determinism', () => {
   });
 
   it('different seeds produce different games', () => {
-    const { view: view1 } = playGame('seed-alpha-1');
-    const { view: view2 } = playGame('seed-beta-2');
-    // They almost certainly differ in hp or gold or stage
+    const { view: view1 } = playGame('diverge-aaa-111');
+    const { view: view2 } = playGame('diverge-zzz-999');
+    // They almost certainly differ in hp, gold, stage, or battle
     const different =
       view1.player.hp !== view2.player.hp ||
       view1.player.gold !== view2.player.gold ||
       view1.stage !== view2.stage ||
+      view1.battle !== view2.battle ||
       view1.phase !== view2.phase;
     expect(different).toBe(true);
   });
