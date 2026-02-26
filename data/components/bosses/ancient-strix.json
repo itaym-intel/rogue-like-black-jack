@@ -1,0 +1,43 @@
+[
+  {
+    "id": "enemy_ancient_strix",
+    "name": "Ancient Strix",
+    "description": "An ancient owl-like demon of the desert night.",
+    "tags": ["boss", "stage_1"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 50,
+      "isBoss": true,
+      "stagePool": 1,
+      "equipmentIds": ["enemy_equip_strix_weapon", "enemy_equip_strix_trinket"],
+      "curseId": "curse_strix"
+    }
+  },
+  {
+    "id": "enemy_equip_strix_weapon",
+    "name": "Night Fang",
+    "description": "+10 damage on blackjack",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      { "type": "blackjack_bonus_damage", "value": 10 }
+    ]
+  },
+  {
+    "id": "enemy_equip_strix_trinket",
+    "name": "Red Bane",
+    "description": "+2 damage per red card in player hand",
+    "tags": ["equipment", "trinket", "enemy", "damage"],
+    "effects": [
+      { "type": "color_card_damage_bonus", "value": 2, "color": "red" }
+    ]
+  },
+  {
+    "id": "curse_strix",
+    "name": "Night Fang Curse",
+    "description": "Enemies deal +5 damage on blackjack",
+    "tags": ["curse", "stage_1"],
+    "effects": [
+      { "type": "extra_damage_on_dealer_blackjack", "value": 5 }
+    ]
+  }
+]

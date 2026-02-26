@@ -1,0 +1,229 @@
+[
+  {
+    "id": "weapon_cloth",
+    "name": "Flint Spear",
+    "description": "+5 flat damage",
+    "tags": [
+      "equipment",
+      "weapon",
+      "cloth",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "flat_damage_bonus",
+        "value": 5
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "cloth",
+      "cost": 30
+    }
+  },
+  {
+    "id": "weapon_cloth_2",
+    "name": "Copper Khanjar",
+    "description": "+4 damage; +4 more if player has 2 or fewer cards",
+    "tags": [
+      "equipment",
+      "weapon",
+      "cloth",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "conditional_flat_damage",
+        "value": 4,
+        "bonusValue": 4,
+        "condition": {
+          "type": "hand_size_lte",
+          "value": 2
+        }
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "cloth",
+      "cost": 28
+    }
+  },
+  {
+    "id": "weapon_cloth_3",
+    "name": "Bone Club",
+    "description": "+3 damage on win; deals 2 damage to enemy each hand",
+    "tags": [
+      "equipment",
+      "weapon",
+      "cloth",
+      "damage",
+      "dot"
+    ],
+    "effects": [
+      {
+        "type": "flat_damage_bonus",
+        "value": 3
+      },
+      {
+        "type": "dot_to_opponent",
+        "value": 2
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "cloth",
+      "cost": 30
+    }
+  },
+  {
+    "id": "weapon_bronze",
+    "name": "Bronze Saif",
+    "description": "+10 flat damage",
+    "tags": [
+      "equipment",
+      "weapon",
+      "bronze",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "flat_damage_bonus",
+        "value": 10
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "bronze",
+      "cost": 60
+    }
+  },
+  {
+    "id": "weapon_bronze_2",
+    "name": "Oasis Blade",
+    "description": "+9 flat damage; +6 more if player score is 18 or higher",
+    "tags": [
+      "equipment",
+      "weapon",
+      "bronze",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "conditional_flat_damage",
+        "value": 9,
+        "bonusValue": 6,
+        "condition": {
+          "type": "score_gte",
+          "value": 18
+        }
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "bronze",
+      "cost": 55
+    }
+  },
+  {
+    "id": "weapon_bronze_3",
+    "name": "Twin Fangs",
+    "description": "+8 flat damage; +8 more if player holds an Ace",
+    "tags": [
+      "equipment",
+      "weapon",
+      "bronze",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "conditional_flat_damage",
+        "value": 8,
+        "bonusValue": 8,
+        "condition": {
+          "type": "hand_contains_rank",
+          "rank": "A"
+        }
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "bronze",
+      "cost": 65
+    }
+  },
+  {
+    "id": "weapon_iron",
+    "name": "Iron Scimitar",
+    "description": "+25 flat damage",
+    "tags": [
+      "equipment",
+      "weapon",
+      "iron",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "flat_damage_bonus",
+        "value": 25
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "iron",
+      "cost": 100
+    }
+  },
+  {
+    "id": "weapon_iron_2",
+    "name": "Golden Scimitar",
+    "description": "+22 flat damage; +10 on blackjack",
+    "tags": [
+      "equipment",
+      "weapon",
+      "iron",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "flat_damage_bonus",
+        "value": 22
+      },
+      {
+        "type": "blackjack_bonus_damage",
+        "value": 10
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "iron",
+      "cost": 95
+    }
+  },
+  {
+    "id": "weapon_iron_3",
+    "name": "Sunfire Lance",
+    "description": "+20 flat damage; +8 if dealer drew 4 or more cards",
+    "tags": [
+      "equipment",
+      "weapon",
+      "iron",
+      "damage"
+    ],
+    "effects": [
+      {
+        "type": "flat_damage_bonus",
+        "value": 20
+      },
+      {
+        "type": "dealer_hand_size_bonus_damage",
+        "value": 8,
+        "threshold": 4
+      }
+    ],
+    "equipment": {
+      "slot": "weapon",
+      "tier": "iron",
+      "cost": 108
+    }
+  }
+]

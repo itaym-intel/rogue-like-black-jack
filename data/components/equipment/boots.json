@@ -1,0 +1,62 @@
+[
+  {
+    "id": "boots_cloth",
+    "name": "Cloth Boots",
+    "description": "10% dodge chance",
+    "tags": ["equipment", "boots", "cloth", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.10 }
+    ],
+    "equipment": { "slot": "boots", "tier": "cloth", "cost": 20 }
+  },
+  {
+    "id": "boots_cloth_2",
+    "name": "Whirling Sandals",
+    "description": "12% dodge chance",
+    "tags": ["equipment", "boots", "cloth", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.12 }
+    ],
+    "equipment": { "slot": "boots", "tier": "cloth", "cost": 22 }
+  },
+  {
+    "id": "boots_bronze",
+    "name": "Bronze Boots",
+    "description": "25% dodge chance",
+    "tags": ["equipment", "boots", "bronze", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.25 }
+    ],
+    "equipment": { "slot": "boots", "tier": "bronze", "cost": 50 }
+  },
+  {
+    "id": "boots_bronze_2",
+    "name": "Quickstep Shoes",
+    "description": "20% dodge chance",
+    "tags": ["equipment", "boots", "bronze", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.20 }
+    ],
+    "equipment": { "slot": "boots", "tier": "bronze", "cost": 48 }
+  },
+  {
+    "id": "boots_iron",
+    "name": "Iron Boots",
+    "description": "40% dodge chance",
+    "tags": ["equipment", "boots", "iron", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.40 }
+    ],
+    "equipment": { "slot": "boots", "tier": "iron", "cost": 85 }
+  },
+  {
+    "id": "boots_iron_2",
+    "name": "Winged Sandals",
+    "description": "35% dodge chance",
+    "tags": ["equipment", "boots", "iron", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.35 }
+    ],
+    "equipment": { "slot": "boots", "tier": "iron", "cost": 88 }
+  }
+]

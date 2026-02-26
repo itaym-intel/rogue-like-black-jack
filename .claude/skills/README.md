@@ -10,3 +10,4 @@ Self-contained guides for common content creation tasks. Each guide includes tem
 | [adding-consumables.md](adding-consumables.md) | Adding potions or other usable items |
 | [writing-tests.md](writing-tests.md) | Reference for all test patterns (makeContext, modifier testing, dodge loops, autoPlay) |
 | [using-seed-finder.md](using-seed-finder.md) | Finding seeds with specific RNG outcomes (CLI and programmatic) |
+| [apply-components.md](apply-components.md) | After editing components in the GUI editor — regenerate TypeScript registry, run tests, commit |

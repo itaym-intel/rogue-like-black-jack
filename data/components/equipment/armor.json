@@ -1,0 +1,62 @@
+[
+  {
+    "id": "armor_cloth",
+    "name": "Cloth Armor",
+    "description": "20% less incoming damage",
+    "tags": ["equipment", "armor", "cloth", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.2 }
+    ],
+    "equipment": { "slot": "armor", "tier": "cloth", "cost": 25 }
+  },
+  {
+    "id": "armor_cloth_2",
+    "name": "Hardened Linen",
+    "description": "15% less incoming damage",
+    "tags": ["equipment", "armor", "cloth", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.15 }
+    ],
+    "equipment": { "slot": "armor", "tier": "cloth", "cost": 22 }
+  },
+  {
+    "id": "armor_bronze",
+    "name": "Bronze Armor",
+    "description": "40% less incoming damage",
+    "tags": ["equipment", "armor", "bronze", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.4 }
+    ],
+    "equipment": { "slot": "armor", "tier": "bronze", "cost": 55 }
+  },
+  {
+    "id": "armor_bronze_2",
+    "name": "Silk-Wrapped Mail",
+    "description": "30% less incoming damage",
+    "tags": ["equipment", "armor", "bronze", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.3 }
+    ],
+    "equipment": { "slot": "armor", "tier": "bronze", "cost": 52 }
+  },
+  {
+    "id": "armor_iron",
+    "name": "Iron Armor",
+    "description": "60% less incoming damage",
+    "tags": ["equipment", "armor", "iron", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.6 }
+    ],
+    "equipment": { "slot": "armor", "tier": "iron", "cost": 90 }
+  },
+  {
+    "id": "armor_iron_2",
+    "name": "Lamellar Armor",
+    "description": "55% less incoming damage",
+    "tags": ["equipment", "armor", "iron", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.55 }
+    ],
+    "equipment": { "slot": "armor", "tier": "iron", "cost": 92 }
+  }
+]

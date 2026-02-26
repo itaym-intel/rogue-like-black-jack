@@ -1,0 +1,136 @@
+[
+  {
+    "id": "enemy_vampire_bat",
+    "name": "Vampire Bat",
+    "description": "A leathery winged creature that thrives in darkness.",
+    "tags": ["enemy", "stage_1"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 15,
+      "isBoss": false,
+      "stagePool": 1,
+      "equipmentIds": ["enemy_equip_vbat_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_vbat_trinket",
+    "name": "Shadow Cloak",
+    "description": "50% less damage from spade hands",
+    "tags": ["equipment", "trinket", "enemy", "defense"],
+    "effects": [
+      { "type": "suit_in_attacker_hand_damage_reduction", "value": 0.5, "suit": "spades" }
+    ]
+  },
+  {
+    "id": "enemy_sand_scorpion",
+    "name": "Sand Scorpion",
+    "description": "A large scorpion with a venomous stinger.",
+    "tags": ["enemy", "stage_1"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 18,
+      "isBoss": false,
+      "stagePool": 1,
+      "equipmentIds": [],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_desert_jackal",
+    "name": "Desert Jackal",
+    "description": "A cunning predator of the dunes.",
+    "tags": ["enemy", "stage_1"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 20,
+      "isBoss": false,
+      "stagePool": 1,
+      "equipmentIds": ["enemy_equip_jackal_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_jackal_trinket",
+    "name": "Predator Fangs",
+    "description": "+3 flat damage",
+    "tags": ["equipment", "trinket", "enemy", "damage"],
+    "effects": [
+      { "type": "flat_damage_bonus", "value": 3 }
+    ]
+  },
+  {
+    "id": "enemy_qarin",
+    "name": "Qarin",
+    "description": "A personal shadow demon that mirrors the player's every fear.",
+    "tags": ["enemy", "stage_1"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 18,
+      "isBoss": false,
+      "stagePool": 1,
+      "equipmentIds": ["enemy_equip_qarin_boots"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_qarin_boots",
+    "name": "Spirit Veil",
+    "description": "20% dodge",
+    "tags": ["equipment", "boots", "enemy", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.20 }
+    ]
+  },
+  {
+    "id": "enemy_roc_hatchling",
+    "name": "Roc Hatchling",
+    "description": "A young roc, its iron beak already capable of shattering bone.",
+    "tags": ["enemy", "stage_1"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 22,
+      "isBoss": false,
+      "stagePool": 1,
+      "equipmentIds": ["enemy_equip_roc_weapon"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_roc_weapon",
+    "name": "Razor Beak",
+    "description": "+3 damage, +3 more if player has 3+ cards",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      {
+        "type": "conditional_flat_damage",
+        "value": 3,
+        "bonusValue": 3,
+        "condition": { "type": "hand_size_gte", "value": 3 }
+      }
+    ]
+  },
+  {
+    "id": "enemy_ghul",
+    "name": "Ghul",
+    "description": "A carrion-eating desert ghoul that feasts on the misfortune of others.",
+    "tags": ["enemy", "stage_1"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 25,
+      "isBoss": false,
+      "stagePool": 1,
+      "equipmentIds": ["enemy_equip_ghul_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_ghul_trinket",
+    "name": "Carrion Hunger",
+    "description": "+5 damage when player busts",
+    "tags": ["equipment", "trinket", "enemy", "damage"],
+    "effects": [
+      { "type": "bonus_damage_on_opponent_bust", "value": 5 }
+    ]
+  }
+]

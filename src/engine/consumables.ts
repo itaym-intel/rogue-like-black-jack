@@ -1,67 +1,19 @@
 import type { Consumable, ConsumableType, PlayerState, EnemyState, ActiveEffect, ModifierContext } from './types.js';
+import {
+  getRegistryConsumables,
+  getRegistryConsumableByType,
+} from './component-registry.js';
 
-const CONSUMABLE_DEFS: Consumable[] = [
-  {
-    id: 'health_potion', name: 'Health Potion', type: 'health_potion',
-    description: 'Restores 5 HP', cost: 10,
-    effect: { type: 'health_potion', value: 5 },
-  },
-  {
-    id: 'damage_potion', name: 'Damage Potion', type: 'damage_potion',
-    description: 'Deals 5 damage to enemy', cost: 15,
-    effect: { type: 'damage_potion', value: 5 },
-  },
-  {
-    id: 'strength_potion', name: 'Strength Potion', type: 'strength_potion',
-    description: '+30% damage for 1 hand', cost: 20,
-    effect: { type: 'strength_potion', value: 0.3, duration: 1 },
-  },
-  {
-    id: 'poison_potion', name: 'Poison Potion', type: 'poison_potion',
-    description: '3 damage/hand for 3 hands', cost: 20,
-    effect: { type: 'poison_potion', value: 3, duration: 3 },
-  },
-  {
-    id: 'armor_elixir', name: 'Elixir of Iron Skin', type: 'armor_elixir',
-    description: '−30% damage received for 2 hands', cost: 20,
-    effect: { type: 'armor_elixir', value: 0.30, duration: 2 },
-  },
-  {
-    id: 'dodge_brew', name: "Sand Dancer's Brew", type: 'dodge_brew',
-    description: '25% dodge chance for 1 hand', cost: 18,
-    effect: { type: 'dodge_brew', value: 0.25, duration: 1 },
-  },
-  {
-    id: 'regen_draught', name: 'Phoenix Draught', type: 'regen_draught',
-    description: 'Heal 2 HP per hand for 3 hands', cost: 22,
-    effect: { type: 'regen_draught', value: 2, duration: 3 },
-  },
-  {
-    id: 'battle_trance', name: 'Battle Trance', type: 'battle_trance',
-    description: '+40% damage dealt and −20% damage received for 2 hands', cost: 25,
-    effect: { type: 'battle_trance', value: 0.40, duration: 2 },
-  },
-  {
-    id: 'fortune_vessel', name: "Fortune's Vessel", type: 'fortune_vessel',
-    description: 'Instantly gain 20 gold', cost: 20,
-    effect: { type: 'fortune_vessel', value: 20 },
-  },
-  {
-    id: 'wrath_elixir', name: 'Wrath Elixir', type: 'wrath_elixir',
-    description: '+80% damage for 1 hand', cost: 28,
-    effect: { type: 'wrath_elixir', value: 0.80, duration: 1 },
-  },
-];
-
+// Re-export data access from registry
 export function getAllConsumables(): Consumable[] {
-  return [...CONSUMABLE_DEFS];
+  return getRegistryConsumables();
 }
 
 export function getConsumableByType(type: ConsumableType): Consumable {
-  const found = CONSUMABLE_DEFS.find(c => c.type === type);
-  if (!found) throw new Error(`Consumable not found: ${type}`);
-  return found;
+  return getRegistryConsumableByType(type);
 }
+
+// Behavioral functions remain here — these contain game logic, not just data
 
 export function applyConsumable(
   consumable: Consumable,

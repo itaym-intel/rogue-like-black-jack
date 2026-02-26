@@ -1,0 +1,149 @@
+[
+  {
+    "id": "enemy_dust_wraith",
+    "name": "Dust Wraith",
+    "description": "A swirling phantom of desert sand.",
+    "tags": ["enemy", "stage_2"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 25,
+      "isBoss": false,
+      "stagePool": 2,
+      "equipmentIds": ["enemy_equip_wraith_boots"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_wraith_boots",
+    "name": "Phantom Step",
+    "description": "15% dodge",
+    "tags": ["equipment", "boots", "enemy", "defense"],
+    "effects": [
+      { "type": "dodge_chance", "value": 0.15 }
+    ]
+  },
+  {
+    "id": "enemy_tomb_guardian",
+    "name": "Tomb Guardian",
+    "description": "An animated stone sentinel guarding forgotten tombs.",
+    "tags": ["enemy", "stage_2"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 28,
+      "isBoss": false,
+      "stagePool": 2,
+      "equipmentIds": ["enemy_equip_guardian_armor"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_guardian_armor",
+    "name": "Stone Shell",
+    "description": "25% less damage",
+    "tags": ["equipment", "armor", "enemy", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.25 }
+    ]
+  },
+  {
+    "id": "enemy_sand_serpent",
+    "name": "Sand Serpent",
+    "description": "A massive viper that strikes from beneath the dunes.",
+    "tags": ["enemy", "stage_2"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 22,
+      "isBoss": false,
+      "stagePool": 2,
+      "equipmentIds": ["enemy_equip_serpent_weapon"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_serpent_weapon",
+    "name": "Venom Fangs",
+    "description": "+5 flat damage",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      { "type": "flat_damage_bonus", "value": 5 }
+    ]
+  },
+  {
+    "id": "enemy_salamander",
+    "name": "Salamander",
+    "description": "A fire elemental spirit that feeds on the heat of the oasis sands.",
+    "tags": ["enemy", "stage_2"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 22,
+      "isBoss": false,
+      "stagePool": 2,
+      "equipmentIds": ["enemy_equip_salamander_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_salamander_trinket",
+    "name": "Ember Scales",
+    "description": "+3 damage per red card in dealer hand",
+    "tags": ["equipment", "trinket", "enemy", "damage"],
+    "effects": [
+      { "type": "own_hand_color_damage_bonus", "value": 3, "color": "red" }
+    ]
+  },
+  {
+    "id": "enemy_brass_sentinel",
+    "name": "Brass Sentinel",
+    "description": "An ancient brass automaton guardian, still dutifully protecting its long-dead master's tomb.",
+    "tags": ["enemy", "stage_2"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 30,
+      "isBoss": false,
+      "stagePool": 2,
+      "equipmentIds": ["enemy_equip_brass_sentinel_armor"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_brass_sentinel_armor",
+    "name": "Brass Casing",
+    "description": "30% less damage",
+    "tags": ["equipment", "armor", "enemy", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.3 }
+    ]
+  },
+  {
+    "id": "enemy_shadhavar",
+    "name": "Shadhavar",
+    "description": "A mythical one-horned beast whose hollow horn emits a melody that weakens all who hear it.",
+    "tags": ["enemy", "stage_2"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 28,
+      "isBoss": false,
+      "stagePool": 2,
+      "equipmentIds": ["enemy_equip_shadhavar_weapon", "enemy_equip_shadhavar_trinket"],
+      "curseId": null
+    }
+  },
+  {
+    "id": "enemy_equip_shadhavar_weapon",
+    "name": "Hollow Horn",
+    "description": "+4 flat damage",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      { "type": "flat_damage_bonus", "value": 4 }
+    ]
+  },
+  {
+    "id": "enemy_equip_shadhavar_trinket",
+    "name": "Eerie Melody",
+    "description": "Player takes 2 damage at the start of each hand",
+    "tags": ["equipment", "trinket", "enemy", "dot"],
+    "effects": [
+      { "type": "dot_to_opponent", "value": 2 }
+    ]
+  }
+]

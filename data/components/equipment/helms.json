@@ -1,0 +1,68 @@
+[
+  {
+    "id": "helm_cloth",
+    "name": "Cloth Helm",
+    "description": "30% less damage on bust",
+    "tags": ["equipment", "helm", "cloth", "defense"],
+    "effects": [
+      { "type": "reduce_bust_damage", "value": 0.3 }
+    ],
+    "equipment": { "slot": "helm", "tier": "cloth", "cost": 20 }
+  },
+  {
+    "id": "helm_cloth_2",
+    "name": "Keffiyeh of Warding",
+    "description": "20% less damage when player has 2 or fewer cards in hand",
+    "tags": ["equipment", "helm", "cloth", "defense"],
+    "effects": [
+      {
+        "type": "conditional_damage_reduction",
+        "value": 0.2,
+        "condition": { "type": "hand_size_lte", "value": 2 }
+      }
+    ],
+    "equipment": { "slot": "helm", "tier": "cloth", "cost": 24 }
+  },
+  {
+    "id": "helm_bronze",
+    "name": "Bronze Helm",
+    "description": "50% less damage on bust",
+    "tags": ["equipment", "helm", "bronze", "defense"],
+    "effects": [
+      { "type": "reduce_bust_damage", "value": 0.5 }
+    ],
+    "equipment": { "slot": "helm", "tier": "bronze", "cost": 45 }
+  },
+  {
+    "id": "helm_bronze_2",
+    "name": "Vizier's Headpiece",
+    "description": "40% less bust damage; heal 3 HP on bust",
+    "tags": ["equipment", "helm", "bronze", "defense", "healing"],
+    "effects": [
+      { "type": "reduce_bust_damage", "value": 0.4 },
+      { "type": "heal_on_bust", "value": 3 }
+    ],
+    "equipment": { "slot": "helm", "tier": "bronze", "cost": 48 }
+  },
+  {
+    "id": "helm_iron",
+    "name": "Iron Helm",
+    "description": "80% less damage on bust",
+    "tags": ["equipment", "helm", "iron", "defense"],
+    "effects": [
+      { "type": "reduce_bust_damage", "value": 0.8 }
+    ],
+    "equipment": { "slot": "helm", "tier": "iron", "cost": 80 }
+  },
+  {
+    "id": "helm_iron_2",
+    "name": "Sultan's Crown",
+    "description": "75% less bust damage; heal 4 HP on bust",
+    "tags": ["equipment", "helm", "iron", "defense", "healing"],
+    "effects": [
+      { "type": "reduce_bust_damage", "value": 0.75 },
+      { "type": "heal_on_bust", "value": 4 }
+    ],
+    "equipment": { "slot": "helm", "tier": "iron", "cost": 85 }
+  }
+]

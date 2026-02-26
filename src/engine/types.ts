@@ -158,7 +158,37 @@ export type BlessingEffectType =
   | 'percent_gold_bonus'
   | 'gold_per_hand_won'
   | 'gold_per_blackjack'
-  | 'shop_discount';
+  | 'shop_discount'
+  // ── Universal Effect Types (equipment, consumables, enemies, curses) ──
+  // Damage
+  | 'conditional_flat_damage'
+  | 'dealer_hand_size_bonus_damage'
+  | 'bonus_damage_on_opponent_bust'
+  | 'bonus_damage_on_score_win'
+  | 'consecutive_loss_damage_bonus'
+  | 'color_card_damage_bonus'
+  | 'own_hand_color_damage_bonus'
+  | 'first_hand_damage_multiplier'
+  | 'percent_damage_penalty'
+  // Defense
+  | 'conditional_damage_reduction'
+  | 'random_suit_damage_reduction'
+  | 'suit_in_attacker_hand_damage_reduction'
+  // Healing
+  | 'heal_on_bust'
+  | 'heal_on_opponent_bust'
+  | 'heal_on_opponent_near_blackjack'
+  // DoT / Direct
+  | 'dot_to_opponent'
+  | 'self_damage_on_bust'
+  // Economy
+  | 'gold_if_hands_won_gte'
+  // Instant (consumable-only)
+  | 'instant_heal'
+  | 'instant_damage'
+  | 'instant_gold'
+  // Curse-specific
+  | 'extra_damage_on_dealer_blackjack';
 
 export type BlessingConditionType =
   | 'when_player_draws_rank'
@@ -192,7 +222,10 @@ export type BlessingConditionType =
   | 'first_hand_of_battle'
   | 'same_score_as_previous'
   | 'enemy_killed_by_dot'
-  | 'enemy_killed_by_blackjack';
+  | 'enemy_killed_by_blackjack'
+  // Universal condition types
+  | 'hand_size_lte'
+  | 'dealer_hand_size_gte';
 
 export interface BlessingCondition {
   type: BlessingConditionType;

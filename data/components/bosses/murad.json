@@ -1,0 +1,52 @@
+[
+  {
+    "id": "enemy_murad",
+    "name": "Murad the Brass Ifrit",
+    "description": "A fire spirit bound in brass rings, enforcer of the Shadow King across the Oasis Ruins.",
+    "tags": ["boss", "stage_2"],
+    "effects": [],
+    "combatant": {
+      "maxHp": 75,
+      "isBoss": true,
+      "stagePool": 2,
+      "equipmentIds": ["enemy_equip_murad_weapon", "enemy_equip_murad_armor", "enemy_equip_murad_trinket"],
+      "curseId": "curse_murad"
+    }
+  },
+  {
+    "id": "enemy_equip_murad_weapon",
+    "name": "Murad's Ember",
+    "description": "+8 flat damage",
+    "tags": ["equipment", "weapon", "enemy", "damage"],
+    "effects": [
+      { "type": "flat_damage_bonus", "value": 8 }
+    ]
+  },
+  {
+    "id": "enemy_equip_murad_armor",
+    "name": "Brass Shackle",
+    "description": "20% less damage",
+    "tags": ["equipment", "armor", "enemy", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.2 }
+    ]
+  },
+  {
+    "id": "enemy_equip_murad_trinket",
+    "name": "Sihr Amulet",
+    "description": "Heals 8 HP when player busts",
+    "tags": ["equipment", "trinket", "enemy", "healing"],
+    "effects": [
+      { "type": "heal_on_opponent_bust", "value": 8 }
+    ]
+  },
+  {
+    "id": "curse_murad",
+    "name": "Murad's Brand",
+    "description": "Take 4 damage whenever you bust",
+    "tags": ["curse", "stage_2"],
+    "effects": [
+      { "type": "self_damage_on_bust", "value": 4 }
+    ]
+  }
+]

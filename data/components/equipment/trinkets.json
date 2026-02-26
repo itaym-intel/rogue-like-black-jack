@@ -1,0 +1,123 @@
+[
+  {
+    "id": "trinket_cloth",
+    "name": "Cloth Trinket",
+    "description": "+10 gold per battle",
+    "tags": ["equipment", "trinket", "cloth", "economy"],
+    "effects": [
+      { "type": "flat_gold_bonus", "value": 10 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "cloth", "cost": 15 }
+  },
+  {
+    "id": "trinket_cloth_2",
+    "name": "Copper Coin Ring",
+    "description": "+8 gold per battle",
+    "tags": ["equipment", "trinket", "cloth", "economy"],
+    "effects": [
+      { "type": "flat_gold_bonus", "value": 8 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "cloth", "cost": 18 }
+  },
+  {
+    "id": "trinket_cloth_3",
+    "name": "Wanderer's Pouch",
+    "description": "+3 gold per hand won this battle",
+    "tags": ["equipment", "trinket", "cloth", "economy"],
+    "effects": [
+      { "type": "gold_per_hand_won", "value": 3 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "cloth", "cost": 22 }
+  },
+  {
+    "id": "trinket_cloth_4",
+    "name": "Lucky Knucklebone",
+    "description": "+15 gold per battle if player won 2 or more hands",
+    "tags": ["equipment", "trinket", "cloth", "economy"],
+    "effects": [
+      { "type": "gold_if_hands_won_gte", "value": 15, "threshold": 2 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "cloth", "cost": 25 }
+  },
+  {
+    "id": "trinket_bronze",
+    "name": "Bronze Trinket",
+    "description": "25% less damage from random suit",
+    "tags": ["equipment", "trinket", "bronze", "defense"],
+    "effects": [
+      { "type": "random_suit_damage_reduction", "value": 0.25 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "bronze", "cost": 40 }
+  },
+  {
+    "id": "trinket_bronze_2",
+    "name": "Merchant's Medallion",
+    "description": "+18 gold per battle",
+    "tags": ["equipment", "trinket", "bronze", "economy"],
+    "effects": [
+      { "type": "flat_gold_bonus", "value": 18 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "bronze", "cost": 45 }
+  },
+  {
+    "id": "trinket_bronze_3",
+    "name": "Serpent Amulet",
+    "description": "+8 gold per battle; +5 gold per blackjack scored",
+    "tags": ["equipment", "trinket", "bronze", "economy"],
+    "effects": [
+      { "type": "flat_gold_bonus", "value": 8 },
+      { "type": "gold_per_blackjack", "value": 5 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "bronze", "cost": 50 }
+  },
+  {
+    "id": "trinket_bronze_4",
+    "name": "Desert Eye",
+    "description": "15% less damage from a randomly chosen suit each battle",
+    "tags": ["equipment", "trinket", "bronze", "defense"],
+    "effects": [
+      { "type": "random_suit_damage_reduction", "value": 0.15 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "bronze", "cost": 42 }
+  },
+  {
+    "id": "trinket_iron",
+    "name": "Iron Trinket",
+    "description": "Bust counts as score of 10",
+    "tags": ["equipment", "trinket", "iron", "utility"],
+    "effects": [
+      { "type": "bust_save", "value": 10 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "iron", "cost": 75 }
+  },
+  {
+    "id": "trinket_iron_2",
+    "name": "Lamp of Fortune",
+    "description": "+30 gold per battle",
+    "tags": ["equipment", "trinket", "iron", "economy"],
+    "effects": [
+      { "type": "flat_gold_bonus", "value": 30 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "iron", "cost": 80 }
+  },
+  {
+    "id": "trinket_iron_3",
+    "name": "Ring of Solomon",
+    "description": "15% less incoming damage from all sources",
+    "tags": ["equipment", "trinket", "iron", "defense"],
+    "effects": [
+      { "type": "percent_damage_reduction", "value": 0.15 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "iron", "cost": 90 }
+  },
+  {
+    "id": "trinket_iron_4",
+    "name": "Seal of the Caliph",
+    "description": "First hand of each battle deals double damage",
+    "tags": ["equipment", "trinket", "iron", "damage"],
+    "effects": [
+      { "type": "first_hand_damage_multiplier", "value": 2 }
+    ],
+    "equipment": { "slot": "trinket", "tier": "iron", "cost": 85 }
+  }
+]
